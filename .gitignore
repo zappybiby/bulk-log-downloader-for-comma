@@ -1,0 +1,17 @@
+# Build output
+dist/
+*.zip
+
+# Local captures and debugging exports
+page_*_html.txt
+light_theme.txt
+*.har
+*.log
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

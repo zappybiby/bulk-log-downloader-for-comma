@@ -1,0 +1,55 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  package:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate manifest JSON
+        shell: pwsh
+        run: |
+          Get-Content -Raw -LiteralPath manifest.json | ConvertFrom-Json | Out-Null
+
+      - name: Validate PowerShell syntax
+        shell: pwsh
+        run: |
+          [scriptblock]::Create((Get-Content -Raw -LiteralPath package.ps1)) | Out-Null
+
+      - name: Build release ZIP
+        shell: pwsh
+        run: |
+          .\package.ps1
+          $zips = Get-ChildItem -LiteralPath dist -Filter *.zip
+          if ($zips.Count -ne 1) {
+            throw "Expected exactly one release ZIP, found $($zips.Count)."
+          }
+
+      - name: Check LF endings
+        shell: pwsh
+        run: |
+          $textExtensions = @(".css", ".js", ".json", ".md", ".ps1", ".yml", ".yaml")
+          $textNames = @(".editorconfig", ".gitattributes", ".gitignore")
+          $bad = foreach ($path in git ls-files) {
+            $name = [System.IO.Path]::GetFileName($path)
+            $extension = [System.IO.Path]::GetExtension($path)
+            if (($textExtensions -contains $extension) -or ($textNames -contains $name)) {
+              $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $path))
+              for ($index = 0; $index -lt ($bytes.Length - 1); $index += 1) {
+                if ($bytes[$index] -eq 13 -and $bytes[$index + 1] -eq 10) {
+                  $path
+                  break
+                }
+              }
+            }
+          }
+
+          if ($bad) {
+            throw "CRLF line endings found:`n$($bad -join "`n")"
+          }
