@@ -18,7 +18,7 @@ const PAGE_FETCH_TIMEOUT_MS = 45000;
 const DOWNLOAD_IDLE_TIMEOUT_MS = 90000;
 const ROUTE_DISCOVERY_CONCURRENCY = 4;
 const DEFAULT_ROUTE_DATE_FILTER_DAYS = 7;
-const LOG_PREFIX = "[comma-log-downloader]";
+const LOG_PREFIX = "[useradmin-route-log-downloader]";
 const DEBUG_LOGGING = false;
 const LOG_TYPES = [
   { key: "rlog", fileName: "rlog.zst", folderName: "rlog", checked: true },
@@ -41,10 +41,10 @@ log("page actions", getPageActions());
 
 function createPanel() {
   const root = document.createElement("div");
-  root.id = "comma-log-downloader";
+  root.id = "useradmin-route-log-downloader";
 
   const actions = document.createElement("div");
-  actions.className = "comma-log-actions";
+  actions.className = "useradmin-route-log-actions";
 
   const folderButton = createButton("Select DL Folder", chooseFolder);
   const routeButton = createButton("D/L Route", () => runCurrentRoute());
@@ -55,7 +55,7 @@ function createPanel() {
   actions.append(folderButton, routeButton, listedButton, stopButton);
 
   const typeControls = document.createElement("div");
-  typeControls.className = "comma-log-types";
+  typeControls.className = "useradmin-route-log-types";
   const typeInputs = new Map();
 
   for (const type of LOG_TYPES) {
@@ -77,36 +77,36 @@ function createPanel() {
   const dateFilter = createDateFilter();
 
   const notice = document.createElement("div");
-  notice.className = "comma-log-notice";
+  notice.className = "useradmin-route-log-notice";
   notice.textContent = "Keep this page open while downloads are running.";
 
   const overallProgress = document.createElement("progress");
-  overallProgress.className = "comma-log-progress";
+  overallProgress.className = "useradmin-route-log-progress";
   overallProgress.max = 1;
   overallProgress.value = 0;
   overallProgress.hidden = true;
 
   const overallProgressText = document.createElement("div");
-  overallProgressText.className = "comma-log-progress-text";
+  overallProgressText.className = "useradmin-route-log-progress-text";
   overallProgressText.hidden = true;
 
   const fileProgress = document.createElement("progress");
-  fileProgress.className = "comma-log-progress comma-log-progress-file";
+  fileProgress.className = "useradmin-route-log-progress useradmin-route-log-progress-file";
   fileProgress.max = 1;
   fileProgress.value = 0;
   fileProgress.hidden = true;
 
   const fileProgressText = document.createElement("div");
-  fileProgressText.className = "comma-log-progress-text";
+  fileProgressText.className = "useradmin-route-log-progress-text";
   fileProgressText.hidden = true;
 
   const status = document.createElement("div");
-  status.className = "comma-log-status";
+  status.className = "useradmin-route-log-status";
   status.textContent = supportsDirectoryPicker() ? "" : "Directory picker unavailable";
   status.hidden = !status.textContent;
 
   const detail = document.createElement("div");
-  detail.className = "comma-log-detail";
+  detail.className = "useradmin-route-log-detail";
   detail.hidden = true;
 
   root.append(
@@ -142,16 +142,16 @@ function createPanel() {
 
 function createDateFilter() {
   const root = document.createElement("div");
-  root.className = "comma-log-date-filter";
+  root.className = "useradmin-route-log-date-filter";
 
-  const modeName = "comma-log-route-date-filter";
+  const modeName = "useradmin-route-log-route-date-filter";
   const recentRadio = createRadio(modeName, "recent", true);
   const allRadio = createRadio(modeName, "all", false);
   const customRadio = createRadio(modeName, "custom", false);
 
-  recentRadio.id = "comma-log-date-recent";
-  allRadio.id = "comma-log-date-all";
-  customRadio.id = "comma-log-date-custom";
+  recentRadio.id = "useradmin-route-log-date-recent";
+  allRadio.id = "useradmin-route-log-date-all";
+  customRadio.id = "useradmin-route-log-date-custom";
 
   const daysInput = document.createElement("input");
   daysInput.type = "number";
@@ -169,7 +169,7 @@ function createDateFilter() {
   toInput.value = formatDateInputValue(today);
 
   const recentRow = document.createElement("div");
-  recentRow.className = "comma-log-date-row";
+  recentRow.className = "useradmin-route-log-date-row";
   const recentText = document.createElement("span");
   recentText.append(
     document.createTextNode("Download past "),
@@ -182,18 +182,18 @@ function createDateFilter() {
   );
 
   const allRow = document.createElement("div");
-  allRow.className = "comma-log-date-row";
+  allRow.className = "useradmin-route-log-date-row";
   allRow.append(allRadio, document.createTextNode("Download All"));
 
   const custom = document.createElement("div");
-  custom.className = "comma-log-date-custom";
+  custom.className = "useradmin-route-log-date-custom";
 
   const customRow = document.createElement("div");
-  customRow.className = "comma-log-date-row";
+  customRow.className = "useradmin-route-log-date-row";
   customRow.append(customRadio, document.createTextNode("Custom Range"));
 
   const customDates = document.createElement("div");
-  customDates.className = "comma-log-date-inputs";
+  customDates.className = "useradmin-route-log-date-inputs";
 
   const fromLabel = document.createElement("label");
   fromLabel.append(document.createTextNode("from"), fromInput);
@@ -721,7 +721,7 @@ async function saveFile(file) {
 function streamToWriter(url, writer, onProgress) {
   return new Promise((resolve, reject) => {
     const id = crypto.randomUUID();
-    const port = chrome.runtime.connect({ name: "comma-log-fetch" });
+    const port = chrome.runtime.connect({ name: "useradmin-route-log-fetch" });
     let writeChain = Promise.resolve();
     let totalSize = 0;
     let settled = false;

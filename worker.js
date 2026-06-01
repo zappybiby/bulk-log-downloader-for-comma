@@ -1,8 +1,8 @@
-const LOG_PREFIX = "[comma-log-downloader]";
+const LOG_PREFIX = "[useradmin-route-log-downloader]";
 const DEBUG_LOGGING = false;
 
 chrome.runtime.onConnect.addListener((port) => {
-  if (port.name !== "comma-log-fetch") {
+  if (port.name !== "useradmin-route-log-fetch") {
     return;
   }
 

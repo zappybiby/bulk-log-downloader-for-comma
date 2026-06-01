@@ -1,6 +1,6 @@
 # Privacy
 
-Comma Log Downloader runs only on `useradmin.comma.ai`.
+Useradmin Route Log Downloader runs only on `useradmin.comma.ai`.
 
 The extension reads the current useradmin page to find route links and selected segment file links. When a download is started, it fetches the selected files from comma-hosted blob storage and writes them to the folder selected in Chrome.
 

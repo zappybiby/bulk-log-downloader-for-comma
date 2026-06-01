@@ -4,7 +4,7 @@ $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $dist = Join-Path $root "dist"
 $manifestPath = Join-Path $root "manifest.json"
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
-$zipName = "comma-log-downloader-$($manifest.version).zip"
+$zipName = "useradmin-route-log-downloader-$($manifest.version).zip"
 $zipPath = Join-Path $dist $zipName
 
 $files = @(
@@ -20,9 +20,6 @@ $files = @(
 )
 
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
-if (Test-Path -LiteralPath $zipPath) {
-  Remove-Item -LiteralPath $zipPath
-}
 
 $missing = $files | Where-Object { -not (Test-Path -LiteralPath (Join-Path $root $_)) }
 if ($missing) {
@@ -39,6 +36,8 @@ if (-not $resolvedDist.StartsWith($resolvedRoot, [System.StringComparison]::Ordi
 if (-not $resolvedTemp.StartsWith($resolvedDist, [System.StringComparison]::OrdinalIgnoreCase)) {
   throw "Temporary package directory must be inside the output directory."
 }
+
+Get-ChildItem -LiteralPath $dist -Filter "*.zip" -File | Remove-Item
 
 if (Test-Path -LiteralPath $temp) {
   Remove-Item -LiteralPath $temp -Recurse -Force

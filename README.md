@@ -1,12 +1,12 @@
-# Comma Log Downloader
+# Useradmin Route Log Downloader
 
-Chrome extension for downloading selected comma useradmin route segment files into local route and file-type folders.
+Unofficial Chrome extension for downloading selected comma.ai useradmin route segment files into local route and file-type folders.
 
-This project is not affiliated with comma.ai.
+This project is not affiliated with, endorsed by, or sponsored by comma.ai or Comma.ai, Inc. comma and comma.ai are trademarks of Comma.ai, Inc.
 
 ## Features
 
-- Downloads `rlog.zst`, `qlog.zst`, `qcamera.ts`, `fcamera.hevc`, `ecamera.hevc`, and `dcamera.hevc` files exposed by comma useradmin route pages.
+- Downloads `rlog.zst`, `qlog.zst`, `qcamera.ts`, `fcamera.hevc`, `ecamera.hevc`, and `dcamera.hevc` files exposed by comma.ai useradmin route pages.
 - Writes each route to a folder named like `dongle__route`.
 - Writes each selected file type to its own subfolder under the route folder.
 - Skips files already present in the selected download folder.

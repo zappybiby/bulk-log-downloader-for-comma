@@ -1,4 +1,4 @@
-#comma-log-downloader {
+#useradmin-route-log-downloader {
   position: fixed;
   top: 10px;
   right: 10px;
@@ -14,19 +14,19 @@
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.18);
 }
 
-#comma-log-downloader,
-#comma-log-downloader * {
+#useradmin-route-log-downloader,
+#useradmin-route-log-downloader * {
   box-sizing: border-box;
   letter-spacing: 0;
 }
 
-.comma-log-actions {
+.useradmin-route-log-actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
   gap: 6px;
 }
 
-.comma-log-types {
+.useradmin-route-log-types {
   display: grid;
   grid-template-columns: repeat(3, max-content);
   gap: 9px 0;
@@ -34,7 +34,7 @@
   margin-top: 10px;
 }
 
-.comma-log-types label {
+.useradmin-route-log-types label {
   display: flex;
   align-items: center;
   gap: 7px;
@@ -45,14 +45,14 @@
   white-space: nowrap;
 }
 
-#comma-log-downloader .comma-log-types input[type="checkbox"] {
+#useradmin-route-log-downloader .useradmin-route-log-types input[type="checkbox"] {
   flex: 0 0 auto;
   width: 14px !important;
   height: 14px;
   margin: 0;
 }
 
-.comma-log-date-filter {
+.useradmin-route-log-date-filter {
   display: grid;
   grid-template-rows: repeat(3, 22px) 22px;
   gap: 2px;
@@ -60,23 +60,23 @@
   margin-top: 10px;
 }
 
-.comma-log-date-filter[data-active="false"] {
+.useradmin-route-log-date-filter[data-active="false"] {
   visibility: hidden;
   pointer-events: none;
 }
 
-.comma-log-date-row,
-.comma-log-date-custom {
+.useradmin-route-log-date-row,
+.useradmin-route-log-date-custom {
   min-width: 0;
 }
 
-.comma-log-date-custom {
+.useradmin-route-log-date-custom {
   display: grid;
   grid-template-rows: 22px 22px;
   gap: 2px;
 }
 
-.comma-log-date-row {
+.useradmin-route-log-date-row {
   display: flex;
   align-items: center;
   gap: 7px;
@@ -84,34 +84,34 @@
   white-space: nowrap;
 }
 
-.comma-log-date-row span {
+.useradmin-route-log-date-row span {
   display: flex;
   align-items: center;
   gap: 7px;
 }
 
-.comma-log-date-inputs {
+.useradmin-route-log-date-inputs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
   margin-left: 21px;
 }
 
-.comma-log-date-inputs label {
+.useradmin-route-log-date-inputs label {
   height: 22px;
   gap: 5px;
   line-height: 22px;
 }
 
-#comma-log-downloader .comma-log-date-filter input[type="radio"] {
+#useradmin-route-log-downloader .useradmin-route-log-date-filter input[type="radio"] {
   flex: 0 0 auto;
   width: 14px !important;
   height: 14px;
   margin: 0;
 }
 
-#comma-log-downloader .comma-log-date-filter input[type="number"],
-#comma-log-downloader .comma-log-date-filter input[type="date"] {
+#useradmin-route-log-downloader .useradmin-route-log-date-filter input[type="number"],
+#useradmin-route-log-downloader .useradmin-route-log-date-filter input[type="date"] {
   min-width: 0;
   height: 22px;
   padding: 1px 4px;
@@ -122,22 +122,22 @@
   font: inherit;
 }
 
-#comma-log-downloader .comma-log-date-filter input[type="number"] {
+#useradmin-route-log-downloader .useradmin-route-log-date-filter input[type="number"] {
   width: 48px;
   height: 18px;
   padding-top: 0;
   padding-bottom: 0;
 }
 
-#comma-log-downloader .comma-log-date-filter input[type="date"] {
+#useradmin-route-log-downloader .useradmin-route-log-date-filter input[type="date"] {
   width: 122px;
 }
 
-#comma-log-downloader [hidden] {
+#useradmin-route-log-downloader [hidden] {
   display: none !important;
 }
 
-#comma-log-downloader button {
+#useradmin-route-log-downloader button {
   min-height: 30px;
   border: 1px solid #000;
   border-radius: 2px;
@@ -147,56 +147,56 @@
   cursor: pointer;
 }
 
-#comma-log-downloader button:hover:not(:disabled) {
+#useradmin-route-log-downloader button:hover:not(:disabled) {
   background: #e8e8e8;
 }
 
-#comma-log-downloader button:disabled {
+#useradmin-route-log-downloader button:disabled {
   cursor: default;
   opacity: 0.5;
 }
 
-#comma-log-downloader button[data-role="stop"] {
+#useradmin-route-log-downloader button[data-role="stop"] {
   background: #ffecec;
   border-color: #900;
   color: #900;
 }
 
-.comma-log-notice,
-.comma-log-progress-text,
-.comma-log-status,
-.comma-log-detail {
+.useradmin-route-log-notice,
+.useradmin-route-log-progress-text,
+.useradmin-route-log-status,
+.useradmin-route-log-detail {
   min-height: 18px;
   margin-top: 8px;
   overflow: hidden;
   overflow-wrap: anywhere;
 }
 
-.comma-log-progress {
+.useradmin-route-log-progress {
   width: 100%;
   height: 10px;
   margin-top: 10px;
 }
 
-.comma-log-progress-file {
+.useradmin-route-log-progress-file {
   height: 6px;
   margin-top: 6px;
 }
 
-.comma-log-progress-text {
+.useradmin-route-log-progress-text {
   min-height: 14px;
   margin-top: 4px;
   color: #444;
 }
 
-.comma-log-notice {
+.useradmin-route-log-notice {
   padding: 5px 6px;
   border: 1px solid #b7791f;
   background: #fff8e6;
   color: #7a4b00;
 }
 
-.comma-log-detail {
+.useradmin-route-log-detail {
   color: #444;
   max-height: 54px;
 }
