@@ -93,7 +93,12 @@ async function streamFile(port, context, message, pendingAcks) {
     log("worker stream finished", { id, received });
     post(port, context, { type: "done", id, received });
   } catch (error) {
-    log("worker stream failed", { id, error: error?.message || String(error) });
+    if (context.disconnected && error?.name === "AbortError") {
+      log("worker stream aborted after disconnect", { id });
+      return;
+    }
+
+    logError("worker stream failed", { id, error: error?.message || String(error) });
     post(port, context, {
       type: "error",
       id,
@@ -133,10 +138,18 @@ function log(message, data) {
     return;
   }
 
+  writeConsole(console.info, message, data);
+}
+
+function logError(message, data) {
+  writeConsole(console.error, message, data);
+}
+
+function writeConsole(writer, message, data) {
   if (data === undefined) {
-    console.info(LOG_PREFIX, message);
+    writer.call(console, LOG_PREFIX, message);
     return;
   }
 
-  console.info(LOG_PREFIX, message, data);
+  writer.call(console, LOG_PREFIX, message, data);
 }

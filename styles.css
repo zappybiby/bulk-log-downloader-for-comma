@@ -98,9 +98,12 @@
 }
 
 .useradmin-route-log-date-inputs label {
+  display: flex;
+  align-items: center;
   height: 22px;
   gap: 5px;
   line-height: 22px;
+  white-space: nowrap;
 }
 
 #useradmin-route-log-downloader .useradmin-route-log-date-filter input[type="radio"] {

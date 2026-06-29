@@ -284,7 +284,7 @@ async function chooseFolder() {
     return true;
   } catch (error) {
     if (error?.name !== "AbortError") {
-      log("folder selection failed", { error: error?.message || String(error) });
+      logWarning("folder selection failed", { error: error?.message || String(error) });
       setStatus(error?.message || String(error));
     }
     refreshControls();
@@ -520,7 +520,7 @@ function failRun(error) {
   state.totals.failed += 1;
   resetOverallProgressBar();
   resetFileProgressBar();
-  log("run failed", { error: error?.message || String(error), totals: { ...state.totals } });
+  logError("run failed", { error: error?.message || String(error), totals: { ...state.totals } });
   setStatus(error?.message || String(error));
   refreshControls();
 }
@@ -711,7 +711,7 @@ async function saveFile(file) {
     await typeHandle.removeEntry(file.name).catch(() => {});
     if (!state.cancelled) {
       state.totals.failed += 1;
-      log("file failed", { targetPath, error: error?.message || String(error) });
+      logWarning("file failed", { targetPath, error: error?.message || String(error) });
       setDetail(`${error?.message || String(error)}: ${targetPath}`);
     }
     return false;
@@ -734,6 +734,7 @@ function streamToWriter(url, writer, onProgress) {
       return window.setTimeout(() => {
         if (!settled) {
           settled = true;
+          logError("download stream idle timeout", { url, timeoutMs: DOWNLOAD_IDLE_TIMEOUT_MS });
           port.disconnect();
           reject(new Error("Download timed out"));
         }
@@ -780,6 +781,7 @@ function streamToWriter(url, writer, onProgress) {
           .catch((error) => {
             settled = true;
             clearIdleTimer();
+            logError("download writer failed", { url, error: error?.message || String(error) });
             port.disconnect();
             reject(error);
           });
@@ -804,6 +806,7 @@ function streamToWriter(url, writer, onProgress) {
       if (message.type === "error") {
         settled = true;
         clearIdleTimer();
+        logError("download stream error", { url, error: message.message });
         if (state.activePort === port) {
           state.activePort = null;
         }
@@ -820,6 +823,9 @@ function streamToWriter(url, writer, onProgress) {
       if (!settled) {
         settled = true;
         clearIdleTimer();
+        if (!state.cancelled) {
+          logWarning("download stream disconnected", { url });
+        }
         reject(new Error(state.cancelled ? "Stopped" : "Download connection closed"));
       }
     });
@@ -1148,12 +1154,14 @@ function updateFileProgressBar(received, size) {
     panel.fileProgress.max = size;
     panel.fileProgress.value = Math.min(received, size);
     const percent = Math.floor((Math.min(received, size) / size) * 100);
-    panel.fileProgressText.textContent = `${percent}% current file`;
+    panel.fileProgressText.textContent = `${percent}% current file (${formatBytes(received)})`;
     return;
   }
 
   panel.fileProgress.removeAttribute("value");
-  panel.fileProgressText.textContent = "Receiving current file";
+  panel.fileProgressText.textContent = received
+    ? `Receiving current file (${formatBytes(received)})`
+    : "Receiving current file";
 }
 
 function resetOverallProgressBar() {
@@ -1356,7 +1364,7 @@ function restoreRouteDateFilter() {
   storage.get(ROUTE_DATE_FILTER_STORAGE_KEY, (items) => {
     const error = getStorageError();
     if (error) {
-      log("settings restore failed", { error });
+      logWarning("settings restore failed", { error });
       return;
     }
 
@@ -1432,7 +1440,7 @@ function restoreSelectedLogTypes() {
   storage.get(LOG_TYPE_SELECTION_STORAGE_KEY, (items) => {
     const error = getStorageError();
     if (error) {
-      log("settings restore failed", { error });
+      logWarning("settings restore failed", { error });
       return;
     }
 
@@ -1468,7 +1476,7 @@ function reportStorageError(message) {
   return () => {
     const error = getStorageError();
     if (error) {
-      log(message, { error });
+      logWarning(message, { error });
     }
   };
 }
@@ -1496,10 +1504,22 @@ function log(message, data) {
     return;
   }
 
+  writeConsole(console.info, message, data);
+}
+
+function logWarning(message, data) {
+  writeConsole(console.warn, message, data);
+}
+
+function logError(message, data) {
+  writeConsole(console.error, message, data);
+}
+
+function writeConsole(writer, message, data) {
   if (data === undefined) {
-    console.info(LOG_PREFIX, message);
+    writer.call(console, LOG_PREFIX, message);
     return;
   }
 
-  console.info(LOG_PREFIX, message, data);
+  writer.call(console, LOG_PREFIX, message, data);
 }
