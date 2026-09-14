@@ -368,7 +368,8 @@ class Harness:
         ], ['^review-panel$', '^file-preview$'])
 
     def review_selection(self, name, files, routes, archive=False):
-        self.await_text('Scan complete', timeout=30)
+        # ZIP progress replaces the scan status in the compact review screen.
+        self.await_text('ZIP ready to save' if archive else 'Scan complete', timeout=30)
         if not archive:
             self.await_text(f'{files} files · {routes} ' + ('route' if routes == 1 else 'routes'), timeout=30)
         self.assert_compact_view(name, [
