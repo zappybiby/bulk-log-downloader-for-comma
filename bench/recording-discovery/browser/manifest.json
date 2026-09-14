@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Comma discovery synthetic Android test",
+  "version": "0.1.0",
+  "description": "Synthetic recording-date discovery benchmark. No network access.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "comma-discovery-selftest@example.invalid",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {"required": ["none"]}
+    },
+    "gecko_android": {"strict_min_version": "142.0"}
+  },
+  "background": {"scripts": ["launch.js"]},
+  "browser_action": {"default_title": "Open discovery benchmark"},
+  "content_security_policy": "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'none'; media-src 'none'"
+}

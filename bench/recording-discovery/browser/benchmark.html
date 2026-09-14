@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Discovery Android benchmark</title>
+  <link rel="stylesheet" href="benchmark.css">
+  <script src="parser.js" defer></script>
+  <script src="benchmark.js" defer></script>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">SYNTHETIC DATA ONLY</p>
+    <h1>Recording-date discovery</h1>
+    <p>Real Firefox parsing. Artificial 20 ms response delay. No network requests.</p>
+    <p id="status" role="status">DISCOVERY READY</p>
+    <button id="run" type="button">Run discovery benchmark</button>
+    <a id="save" hidden download="comma-discovery-report.json">Save benchmark JSON</a>
+    <div id="results"></div>
+  </main>
+</body>
+</html>
