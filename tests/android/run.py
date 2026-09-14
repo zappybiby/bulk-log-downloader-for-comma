@@ -34,9 +34,12 @@ class Harness:
                               capture_output=True, **kwargs)
 
     def snapshot(self, name):
-        self.device.screenshot(str(self.output / f'{name}.png'))
+        # Accessibility can update before Gecko paints the matching frame.
+        # Settle the frame so screenshots document the asserted UI state.
+        time.sleep(0.4)
         xml = self.device.dump_hierarchy()
         (self.output / f'{name}.xml').write_text(xml)
+        self.device.screenshot(str(self.output / f'{name}.png'))
         return xml
 
     def nodes(self):
@@ -236,10 +239,18 @@ class Harness:
         raise AssertionError(f'No complete, independently verified {kind} ZIP in Android Downloads')
 
     def page_top(self):
-        # The production route groups use ordinary page scrolling, not an inner
-        # file-list scroller. Two swipes also reveal controls after a browser prompt.
-        self.device.swipe_ext('down', scale=0.8)
-        self.device.swipe_ext('down', scale=0.8)
+        # Stop as soon as the heading is visible. Blind extra downward swipes at
+        # scrollTop=0 invoke Firefox's pull-to-refresh and discard scan results.
+        for _ in range(8):
+            heading = self.find(r'^Bulk logs$')
+            if heading is not None:
+                bounds = list(map(int, re.findall(r'-?\d+', heading.attrib['bounds'])))
+                if bounds[3] > bounds[1] >= 0:
+                    return
+            self.device.swipe_ext('down', scale=0.25)
+            time.sleep(0.3)
+        self.snapshot('page-top-not-found')
+        raise RuntimeError('Could not reveal the downloader heading without reloading')
 
     def exercise_selection(self):
         self.click('^Open downloader UI$')

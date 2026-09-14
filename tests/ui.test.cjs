@@ -16,11 +16,6 @@ const SOURCE = "https://useradmin.comma.ai/?onebox=demo-device";
 const TODAY = "2026-09-14";
 const FROZEN_NOW = new Date(2026, 8, 14, 12, 0, 0).getTime();
 
-class TestDate extends Date {
-  constructor(...args) { super(...(args.length ? args : [FROZEN_NOW])); }
-  static now() { return FROZEN_NOW; }
-}
-
 function file(segment = "0", type = "rlog", route = "11111111--abc") {
   const extension = { rlog: "zst", qlog: "zst", qcamera: "ts" }[type] || "hevc";
   const name = `demo_${route}--${segment}--${type}.${extension}`;
@@ -58,6 +53,15 @@ async function until(predicate, description = "UI update") {
 
 function harness({ source = snapshot({ files: [file()] }), sourceTab = "42", read, build, preferences } = {}) {
   const { document, window } = parseHTML(html);
+  let currentTime = FROZEN_NOW;
+  class TestDate extends Date {
+    constructor(...args) { super(...(args.length ? args : [currentTime])); }
+    static now() { return currentTime; }
+  }
+  function setNow(value) {
+    assert.ok(value instanceof Date && Number.isFinite(value.getTime()), "test clock requires a valid Date");
+    currentTime = value.getTime();
+  }
   // linkedom does not reflect checked properties or enforce radio groups itself.
   Object.defineProperty(window.HTMLInputElement.prototype, "checked", {
     configurable: true,
@@ -127,7 +131,7 @@ function harness({ source = snapshot({ files: [file()] }), sourceTab = "42", rea
     click("scan-button");
     await until(() => el("cancel-scan-button").hidden, "scan completion");
   }
-  return { document, window, el, click, choose, input, ready, scan, reads, builds, revoked, saves, disposed };
+  return { document, window, el, click, choose, input, ready, scan, setNow, reads, builds, revoked, saves, disposed };
 }
 
 function listedHarness(routes, options = {}) {
@@ -190,6 +194,24 @@ test("Today and Last 30 presets update the number of days and resolved bounds", 
   assert.equal(ui.el("date-preset-30").getAttribute("aria-pressed"), "true");
   assert.match(ui.el("date-summary").textContent, /2026-08-16/);
   assert.match(ui.el("date-summary").textContent, /2026-09-14/);
+});
+
+test("a tab kept overnight displays the exact new scan range and holds it fixed during that scan", async () => {
+  const expired = route("11111111--aaa", "2026-09-08");
+  const first = route("22222222--bbb", "2026-09-09");
+  const today = route("33333333--ccc", "2026-09-15");
+  const later = route("44444444--ddd", "2026-09-16");
+  const ui = listedHarness([expired, first, today, later]);
+  await ui.ready();
+  assert.equal(ui.el("date-summary").textContent, "2026-09-08 → 2026-09-14");
+  ui.setNow(new Date(2026, 8, 15, 23, 59, 59));
+  ui.click("scan-button");
+  assert.equal(ui.el("date-summary").textContent, "2026-09-09 → 2026-09-15");
+  ui.setNow(new Date(2026, 8, 16, 0, 0, 1));
+  await until(() => ui.el("cancel-scan-button").hidden, "scan completion after midnight");
+  assert.deepEqual(fetchedRoutes(ui), [first.url, today.url]);
+  assert.equal(ui.el("file-count").textContent, "2");
+  assert.equal(ui.el("date-summary").textContent, "2026-09-09 → 2026-09-15", "displayed dates must still describe the collected files");
 });
 
 test("typing arbitrary days selects recent mode and invalidates stale scan results", async () => {

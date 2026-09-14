@@ -88,6 +88,11 @@
       : "Choose files, then scan";
   }
 
+  function showDateRange(range) {
+    el("date-summary").textContent = range.mode === "all" ? "All upload dates" : `${range.fromDate} → ${range.toDate}`;
+    el("date-summary").classList.remove("error");
+  }
+
   function updateControls() {
     const prefs = settings();
     el("date-settings").hidden = prefs.scope !== "listed";
@@ -102,9 +107,7 @@
       el(`date-preset-${preset}`).setAttribute("aria-pressed", String(pressed));
     }
     try {
-      const range = CommaParser.dateFilter(prefs.date);
-      el("date-summary").textContent = range.mode === "all" ? "All upload dates" : `${range.fromDate} → ${range.toDate}`;
-      el("date-summary").classList.remove("error");
+      showDateRange(CommaParser.dateFilter(prefs.date));
     } catch (error) {
       el("date-summary").textContent = errorMessage(error, "Choose a start and end date.");
       el("date-summary").classList.add("error");
@@ -275,6 +278,9 @@
     try {
       if (!prefs.selectedTypes.length) throw new Error("Choose at least one file type.");
       filter = prefs.scope === "listed" ? CommaParser.dateFilter(prefs.date) : { mode: "all" };
+      // A tab may have stayed open overnight. Display the exact range captured
+      // for this scan, and keep it fixed while those results are being collected.
+      if (prefs.scope === "listed") showDateRange(filter);
     } catch (error) {
       showNotice(errorMessage(error, "Check your file and date choices."), true);
       return;
