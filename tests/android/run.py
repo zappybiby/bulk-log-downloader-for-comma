@@ -26,6 +26,7 @@ class Harness:
         self.webext = None
         self.log = None
         self.archive_results = []
+        self.waiting_for_test_tab = False
 
     def adb(self, *args, check=True, **kwargs):
         return subprocess.run(['adb', '-s', self.serial, *args], check=check,
@@ -92,7 +93,7 @@ class Harness:
             return True
         # Firefox can restore its home screen after the install sheet even
         # though onInstalled already opened our extension tab (shown under Continue).
-        test_tab = self.find(r'^Archive Android self-test$')
+        test_tab = self.find(r'^Archive Android self-test$') if self.waiting_for_test_tab else None
         if test_tab is not None:
             self.tap(test_tab)
             print('Opening the existing synthetic test tab from Firefox home', flush=True)
@@ -160,7 +161,11 @@ class Harness:
             f'--source-dir={ROOT / ".android-selftest"}', '--no-reload', '--no-input', '--verbose',
             '--adb-remove-old-artifacts'
         ], cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT)
-        self.await_text('SELFTEST READY', timeout=210)
+        self.waiting_for_test_tab = True
+        try:
+            self.await_text('SELFTEST READY', timeout=210)
+        finally:
+            self.waiting_for_test_tab = False
         self.snapshot('selftest-ready')
         print('Synthetic extension installed and open in Firefox Nightly', flush=True)
 
