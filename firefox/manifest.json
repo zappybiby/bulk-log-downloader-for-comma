@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Comma Bulk Logs for Firefox",
-  "version": "0.1.0",
-  "description": "Collect rlogs and qlogs from comma useradmin into a ZIP in a dedicated mobile-friendly tab.",
+  "version": "0.2.0",
+  "description": "Choose upload dates and log or camera files from comma useradmin, then save them together in a ZIP.",
   "permissions": ["storage", "https://useradmin.comma.ai/*", "https://commadata2.blob.core.windows.net/*"],
   "background": { "scripts": ["background.js"], "persistent": false },
   "browser_action": { "default_title": "Open Bulk Logs", "default_icon": "icons/icon48.png" },

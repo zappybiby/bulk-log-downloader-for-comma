@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Drive a fresh Android emulator. Only synthetic test pages are opened."""
 import argparse
+import datetime
 import json
 import os
 import pathlib
@@ -12,7 +13,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 
 import uiautomator2 as u2
-from verify import verify
+from verify import verify, verify_ui_selection
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 PACKAGE = 'org.mozilla.fenix'
@@ -183,17 +184,18 @@ class Harness:
         print('Synthetic extension installed and open in Firefox Nightly', flush=True)
 
     def pull_zip(self, kind):
+        pattern = 'comma-logs-*.zip' if kind == 'ui-selection' else f'comma-selftest-{kind}*.zip'
         until = time.monotonic() + 120
         while time.monotonic() < until:
             self.dismiss_prompts()
             listing = self.adb('shell', 'find', '/sdcard/Download', '-maxdepth', '1', '-type',
-                               'f', '-name', f'comma-selftest-{kind}*.zip', check=False, text=True).stdout
+                               'f', '-name', pattern, check=False, text=True).stdout
             paths = [line.strip() for line in listing.splitlines() if line.startswith('/sdcard/')]
             if paths:
                 destination = self.output / f'comma-selftest-{kind}.zip'
                 self.adb('pull', paths[0], str(destination))
                 try:
-                    report = verify(destination, kind)
+                    report = verify_ui_selection(destination) if kind == 'ui-selection' else verify(destination, kind)
                     (self.output / f'{kind}-verified.json').write_text(json.dumps(report, indent=2))
                     print(json.dumps(report), flush=True)
                     return
@@ -203,6 +205,55 @@ class Harness:
             time.sleep(2)
         self.snapshot('zip-save-failed')
         raise AssertionError(f'No complete, independently verified {kind} ZIP in Android Downloads')
+
+    def page_top(self):
+        # The production route groups use ordinary page scrolling, not an inner
+        # file-list scroller. Two swipes also reveal controls after a browser prompt.
+        self.device.swipe_ext('down', scale=0.8)
+        self.device.swipe_ext('down', scale=0.8)
+
+    def exercise_selection(self):
+        self.click('^Open downloader UI$')
+        self.await_text('Synthetic device', timeout=30)
+        self.click('^Last 7$', timeout=20, scroll=True)
+        today = datetime.date.fromisoformat(self.adb('shell', 'date', '+%Y-%m-%d', text=True).stdout.strip())
+        first = today - datetime.timedelta(days=6)
+        self.await_text(first.isoformat(), timeout=10)
+        self.await_text(today.isoformat(), timeout=10)
+        self.snapshot('production-ui-source')
+        self.click('^Custom$', scroll=True)
+        self.await_text('From', timeout=10)
+        self.await_text('Through', timeout=10)
+        self.snapshot('production-ui-custom-dates')
+        self.click('^Camera files', scroll=True)
+        for camera in ('qcamera', 'fcamera', 'ecamera', 'dcamera'):
+            self.await_text(camera, timeout=15, scroll=True)
+        self.snapshot('production-ui-camera-options')
+        self.page_top()
+        self.click('^Camera files', scroll=True)
+        self.page_top()
+        self.click('^Today$', scroll=True)
+        self.click('Scan files', timeout=20, scroll=True)
+        self.await_text('1 route', timeout=30, scroll=True)
+        self.snapshot('production-ui-today')
+        self.page_top()
+        self.click('^Last 7$', scroll=True)
+        self.click('Scan files', timeout=20, scroll=True)
+        self.await_text('3 routes', timeout=30, scroll=True)
+        self.page_top()
+        self.snapshot('production-ui-populated')
+        self.click('Prepare ZIP', timeout=30, scroll=True)
+        self.await_text('Save ZIP', timeout=30, scroll=True)
+        self.snapshot('production-ui-zip-ready')
+        self.click('^Save ZIP$', timeout=20)
+        self.pull_zip('ui-selection')
+        self.page_top()
+        self.snapshot('production-ui-saved')
+        return {'preset':'Last 7 days', 'fromDate':first.isoformat(), 'toDate':today.isoformat(),
+                'matchedRoutes':3, 'savedFiles':6, 'todayMatchedRoutes':1,
+                'customDateControls':'visible; numerical ranges verified by local UI tests',
+                'fileTypes':'rlog/qlog and four camera options displayed; rlog selection saved',
+                'selectionDownload':'saved through native Firefox prompt; every path, byte and CRC verified'}
 
     def exercise(self):
         for kind in ('small', 'medium'):
@@ -230,17 +281,7 @@ class Harness:
         self.click('^HTTP failure test$')
         self.await_text('FAILURE PASS', timeout=30)
         self.snapshot('http-failure-pass')
-        self.click('^Open downloader UI$')
-        self.await_text('Synthetic route', timeout=30)
-        self.snapshot('production-ui-source')
-        self.click('Scan files', timeout=20, scroll=True)
-        self.click('Prepare ZIP', timeout=30, scroll=True)
-        self.await_text('Save ZIP', timeout=30, scroll=True)
-        self.snapshot('production-ui-zip-ready')
-        # Capture the top of the populated production layout as well as the save controls.
-        self.device.swipe_ext('down', scale=0.8)
-        self.device.swipe_ext('down', scale=0.8)
-        self.snapshot('production-ui-populated')
+        selection = self.exercise_selection()
         (self.output / 'result.json').write_text(json.dumps({
             'status':'passed', 'archiveRuns':self.archive_results,
             'largestVerifiedPayloadMiB':60 if len(self.archive_results) == 3 else 30,
@@ -249,6 +290,7 @@ class Harness:
             'smallPayloadMiB':7.5, 'mediumPayloadMiB':30,
             'cancellation':'passed', 'httpFailure':'passed',
             'productionUi':'synthetic API adapter; production HTML/CSS/handlers',
+            'dateSelection':selection,
             'liveAuthentication':'not tested', 'backgroundDownloads':'not tested'
         }, indent=2))
 

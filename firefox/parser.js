@@ -52,20 +52,47 @@
     return /^[a-z\d_-]+[|/](?:[0-9a-f]{8}--[0-9a-f]+|\d{4}-\d{2}-\d{2}--\d{2}-\d{2}-\d{2})$/i.test(name);
   }
 
-  function parseRouteUploadTime(text) {
+  function calendarDate(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+    const [year, month, day] = value.split("-").map(Number);
+    if (year < 1) return null;
+    const date = new Date(0);
+    date.setUTCFullYear(year, month - 1, day);
+    date.setUTCHours(0, 0, 0, 0);
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1
+      && date.getUTCDate() === day ? value : null;
+  }
+
+  function parseRouteUploadDate(text) {
     const match = String(text).match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}):(\d{2}))?$/);
     if (!match) return null;
-    const [year, month, day, hour, minute, second] = match.slice(1).map(value => Number(value || 0));
-    const date = new Date(year, month - 1, day, hour, minute, second);
-    if (date.getFullYear() !== year || date.getMonth() !== month - 1
-        || date.getDate() !== day || date.getHours() !== hour
-        || date.getMinutes() !== minute || date.getSeconds() !== second) return null;
-    return date.getTime();
+    if (Number(match[4] || 0) > 23 || Number(match[5] || 0) > 59 || Number(match[6] || 0) > 59) return null;
+    // The site does not declare a timezone for this column. Preserve its displayed
+    // calendar date, including times that fall in the phone's local DST gap.
+    return calendarDate(`${match[1]}-${match[2]}-${match[3]}`);
+  }
+
+  function uploadColumn(table) {
+    if (!table) return 0;
+    for (const row of table.querySelectorAll("tr")) {
+      if (row.closest("table") !== table) continue;
+      const cells = Array.from(row.children).filter(cell => /^(?:TD|TH)$/.test(cell.tagName));
+      if (!cells.length) continue;
+      const labels = cells.map(cell => (cell.textContent || "").trim().toLowerCase().replace(/[_\s]+/g, " "));
+      const column = labels.indexOf("upload time");
+      if (column !== -1) return column;
+      // The first row is data only if it actually contains a route link. Named
+      // headers without "upload time" must not make another date a substitute.
+      return Array.from(row.querySelectorAll('a[href*="onebox="]'))
+        .some(link => isRouteName((link.textContent || "").trim())) ? 0 : -1;
+    }
+    return -1;
   }
 
   function collectRouteLinks(doc, baseUrl) {
     const routes = [];
     const seen = new Set();
+    const columns = new Map();
     // Device pages also contain route links in crash/event tables. Those are
     // unrelated to the visible route list and must not enter a bulk download.
     const scope = doc.querySelector("#table_routes") || doc;
@@ -78,8 +105,12 @@
       if (!isRouteName(onebox) || normalizeRouteKey(onebox) !== key) continue;
       if (seen.has(key)) continue;
       seen.add(key);
-      const uploaded = link.closest("tr")?.querySelector("td, th")?.textContent || "";
-      routes.push({ key, name, url: url.href, uploadedAt: parseRouteUploadTime(uploaded.trim().replace(/\s+/g, " ")) });
+      const row = link.closest("tr");
+      const table = row?.closest("table");
+      if (!columns.has(table)) columns.set(table, uploadColumn(table));
+      const cells = Array.from(row?.children || []).filter(cell => /^(?:TD|TH)$/.test(cell.tagName));
+      const uploaded = cells[columns.get(table)]?.textContent || "";
+      routes.push({ key, name, url: url.href, uploadDate: parseRouteUploadDate(uploaded.trim().replace(/\s+/g, " ")) });
     }
     return routes;
   }
@@ -177,35 +208,54 @@
   function dateFilter(settings = {}, now = new Date()) {
     if (!settings || typeof settings !== "object") throw new Error("Choose a valid date filter.");
     const mode = settings.mode || "recent";
-    if (mode === "all") return { mode, from: null, to: null };
+    if (mode === "all") return { mode, fromDate: null, toDate: null };
     if (mode === "recent") {
       const days = Number(settings.days === undefined ? 7 : settings.days);
       if (!Number.isSafeInteger(days) || days < 1 || days > 36500) {
         throw new Error("Enter a whole number of days between 1 and 36500.");
       }
-      const from = new Date(now);
-      const to = new Date(now);
+      const current = new Date(now);
+      if (!Number.isFinite(current.getTime())) throw new Error("Invalid current date.");
+      const toDate = calendarDate(`${String(current.getFullYear()).padStart(4, "0")}-${String(current.getMonth() + 1).padStart(2, "0")}-${String(current.getDate()).padStart(2, "0")}`);
+      if (!toDate) throw new Error("Invalid current date.");
+      const from = new Date(`${toDate}T00:00:00Z`);
       // "Last N days" includes today and N - 1 preceding calendar dates.
-      from.setDate(from.getDate() - (days - 1));
-      from.setHours(0, 0, 0, 0);
-      to.setHours(23, 59, 59, 999);
-      if (!Number.isFinite(from.getTime()) || !Number.isFinite(to.getTime())) throw new Error("Invalid current date.");
-      return { mode, from: from.getTime(), to: to.getTime() };
+      from.setUTCDate(from.getUTCDate() - (days - 1));
+      const fromDate = calendarDate(from.toISOString().slice(0, 10));
+      if (!fromDate) throw new Error("Invalid current date.");
+      return { mode, fromDate, toDate };
     }
     if (mode !== "custom") throw new Error("Choose a valid date filter.");
-    const from = /^\d{4}-\d{2}-\d{2}$/.test(settings.from) ? parseRouteUploadTime(settings.from) : null;
-    const end = /^\d{4}-\d{2}-\d{2}$/.test(settings.to) ? parseRouteUploadTime(settings.to) : null;
-    if (from === null || end === null || from > end) throw new Error("Choose a valid start and end date.");
-    const to = new Date(end);
-    to.setHours(23, 59, 59, 999);
-    return { mode, from, to: to.getTime() };
+    const fromDate = calendarDate(settings.from);
+    const toDate = calendarDate(settings.to);
+    if (!fromDate || !toDate || fromDate > toDate) throw new Error("Choose a valid start and end date.");
+    return { mode, fromDate, toDate };
   }
 
   function routeMatches(route, filter) {
     if (filter.mode === "all") return true;
-    return Number.isFinite(route.uploadedAt)
-      && (filter.from === null || route.uploadedAt >= filter.from)
-      && (filter.to === null || route.uploadedAt <= filter.to);
+    const date = calendarDate(route?.uploadDate);
+    return date !== null
+      && (filter.fromDate === null || date >= filter.fromDate)
+      && (filter.toDate === null || date <= filter.toDate);
+  }
+
+  function getDeviceUrl(doc, baseUrl) {
+    const source = new URL(requirePageUrl(baseUrl));
+    const query = source.searchParams.getAll("onebox");
+    const name = query.length === 1 ? query[0] : "";
+    const deviceName = isRouteName(name) ? name.split(/[|/]/)[0] : /^[a-z\d_-]+$/i.test(name) ? name : "";
+    const deviceUrl = device => `${PAGE_ORIGIN}/?onebox=${encodeURIComponent(device)}`;
+    if (deviceName) return deviceUrl(deviceName);
+    const devices = new Set();
+    for (const link of doc.querySelectorAll('a[href*="onebox="]')) {
+      const url = allowedUrl(link.getAttribute("href"), PAGE_ORIGIN, baseUrl);
+      if (!url || url.pathname !== "/" || url.searchParams.getAll("onebox").length !== 1) continue;
+      const candidate = url.searchParams.get("onebox") || "";
+      if (/^[a-z\d_-]+$/i.test(candidate) && (link.textContent || "").trim() === candidate) devices.add(candidate);
+    }
+    // Multiple device links are ambiguous; do not choose an unrelated device.
+    return devices.size === 1 ? deviceUrl(devices.values().next().value) : "";
   }
 
   function snapshot(doc, baseUrl, selectedTypes) {
@@ -230,6 +280,7 @@
     return {
       url,
       title,
+      deviceUrl: getDeviceUrl(doc, url),
       pageKind: isDevice ? "device" : isRoute ? "route" : "route-list",
       availableTypes,
       routes,
@@ -241,7 +292,7 @@
   const api = Object.freeze({
     PAGE_ORIGIN, DOWNLOAD_ORIGIN, LOG_TYPES, snapshot, dateFilter, routeMatches,
     isAllowedPageUrl, isAllowedDownloadUrl, requirePageUrl, sanitizeFileName,
-    collectRouteLinks, collectLogFiles, getNextPageUrl, parseRouteUploadTime
+    collectRouteLinks, collectLogFiles, getNextPageUrl, parseRouteUploadDate, getDeviceUrl
   });
   root.CommaParser = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;

@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const vm = require("node:vm");
 const path = require("node:path");
+const { execFileSync } = require("node:child_process");
 const { parseHTML, DOMParser } = require("linkedom");
 const P = require("../firefox/parser.js");
 
@@ -23,7 +24,8 @@ test("device route discovery excludes incident links and deduplicates its route 
   assert.equal(result.pageKind, "device");
   assert.equal(result.routes.length, 2);
   assert.equal(result.routes[0].key, ROUTE.replace("/", "|"));
-  assert.equal(result.routes[0].uploadedAt, new Date(2026, 3, 15, 12, 30).getTime());
+  assert.equal(result.routes[0].uploadDate, "2026-04-15");
+  assert.equal(result.deviceUrl, BASE);
   assert.equal(result.files.length, 0);
 });
 
@@ -32,6 +34,44 @@ test("route identity comes from a validated link and matching text", () => {
   const external = row().replace('/?onebox=', 'https://untrusted.example/?onebox=');
   const legacy = "demo-device/2020-01-02--03-04-05";
   assert.deepEqual(P.collectRouteLinks(device(mismatch + external + row(legacy)), BASE).map(route => route.name), [legacy]);
+});
+
+test("date selection uses the labelled upload column and ignores other date fields and route IDs", () => {
+  const legacy = "demo-device/2020-01-02--03-04-05";
+  const headers = "<tr><td>start_time</td><td>route_name</td><td>upload time</td><td>create_time</td><td>git_commit_date</td></tr>";
+  const rows = headers + row(legacy, "2020-01-02 03:04:05", "<td>2026-04-15 23:59:59</td><td>1999-01-01</td><td>2021-01-01</td>");
+  const routes = P.collectRouteLinks(device(rows), BASE);
+  assert.equal(routes[0].uploadDate, "2026-04-15");
+  assert.equal(P.routeMatches(routes[0], P.dateFilter({ mode: "custom", from: "2026-04-15", to: "2026-04-15" })), true);
+});
+
+test("named columns without upload time remain undated; headerless fragments keep first-column support", () => {
+  const headers = "<tr><th>start_time</th><th>route_name</th></tr>";
+  const route = P.collectRouteLinks(device(headers + row()), BASE)[0];
+  assert.equal(route.uploadDate, null);
+  assert.equal(P.routeMatches(route, P.dateFilter({ mode: "custom", from: "2026-04-15", to: "2026-04-15" })), false);
+  assert.equal(P.routeMatches(route, P.dateFilter({ mode: "all" })), true);
+  assert.equal(P.collectRouteLinks(device(row()), BASE)[0].uploadDate, "2026-04-15");
+  const labelled = "<tr><td>UPLOAD_TIME</td><td>route_name</td></tr>";
+  assert.equal(P.collectRouteLinks(device(labelled + row()), BASE)[0].uploadDate, "2026-04-15");
+});
+
+test("device URLs derive from the current route or a unique matching device link", () => {
+  assert.equal(P.getDeviceUrl(documentFor(""), `${ROUTE_URL}&page=3#details`), BASE);
+  assert.equal(P.getDeviceUrl(documentFor(""), `${P.PAGE_ORIGIN}/?onebox=${encodeURIComponent(ROUTE)}`), BASE);
+  assert.equal(P.getDeviceUrl(documentFor(""), `${BASE}&page=2`), BASE);
+  const deviceLink = '<a href="/?onebox=other-device">other-device</a>';
+  assert.equal(P.getDeviceUrl(documentFor(deviceLink), `${P.PAGE_ORIGIN}/route`), `${P.PAGE_ORIGIN}/?onebox=other-device`);
+  assert.equal(P.getDeviceUrl(documentFor(deviceLink), ROUTE_URL), BASE);
+  for (const html of [
+    '<a href="https://untrusted.example/?onebox=other-device">other-device</a>',
+    '<a href="https://useradmin.comma.ai:443/?onebox=other-device">other-device</a>',
+    '<a href="/?onebox=other-device">different-device</a>',
+    '<a href="/?onebox=other-device&onebox=another-device">other-device</a>',
+    '<a href="/unrelated?onebox=other-device">other-device</a>',
+    deviceLink + '<a href="/?onebox=another-device">another-device</a>'
+  ]) assert.equal(P.getDeviceUrl(documentFor(html), `${P.PAGE_ORIGIN}/route`), "");
+  assert.equal(P.getDeviceUrl(documentFor(""), `${P.PAGE_ORIGIN}/?onebox=first&onebox=second`), "");
 });
 
 test("qlog-only routes remain recognized when rlogs were selected", () => {
@@ -106,21 +146,51 @@ test("pagination stops on an exhausted table or stale, disabled, or invalid cont
   }
 });
 
-test("date filters reject invalid calendar dates and include the complete end date", () => {
-  assert.equal(P.parseRouteUploadTime("2026-02-29"), null);
-  assert.equal(P.parseRouteUploadTime("2024-02-29 24:00:00"), null);
-  assert.notEqual(P.parseRouteUploadTime("2024-02-29"), null);
+test("date filters reject invalid dates and include both complete calendar endpoints", () => {
+  for (const text of ["2026-02-29", "2024-02-29 24:00:00", "2024-02-29 23:60:00", "2024-02-29 23:59:60", "0000-01-01", "2026-13-01", "2026-04-31", "2026-04-15T12:00:00Z"]) {
+    assert.equal(P.parseRouteUploadDate(text), null);
+  }
+  assert.equal(P.parseRouteUploadDate("2024-02-29"), "2024-02-29");
+  assert.equal(P.parseRouteUploadDate("2024-02-29 23:59:59"), "2024-02-29");
   assert.throws(() => P.dateFilter({ mode: "custom", from: "2026-04-16", to: "2026-04-15" }), /valid start/);
+  assert.throws(() => P.dateFilter({ mode: "custom", from: "2026-02-29", to: "2026-03-01" }), /valid start/);
   assert.throws(() => P.dateFilter({ mode: "recent", days: 1.5 }), /whole number/);
   const filter = P.dateFilter({ mode: "custom", from: "2026-04-15", to: "2026-04-16" });
-  assert.equal(P.routeMatches({ uploadedAt: new Date(2026, 3, 16, 23, 59, 59, 999).getTime() }, filter), true);
-  assert.equal(P.routeMatches({ uploadedAt: new Date(2026, 3, 17).getTime() }, filter), false);
-  assert.equal(P.routeMatches({ uploadedAt: null }, filter), false);
-  assert.equal(P.routeMatches({ uploadedAt: null }, P.dateFilter({ mode: "all" })), true);
+  assert.deepEqual(filter, { mode: "custom", fromDate: "2026-04-15", toDate: "2026-04-16" });
+  for (const text of ["2026-04-15 00:00:00", "2026-04-16 23:59:59"]) {
+    assert.equal(P.routeMatches({ uploadDate: P.parseRouteUploadDate(text) }, filter), true);
+  }
+  for (const date of ["2026-04-14", "2026-04-17", "2026-04-31", null, undefined]) {
+    assert.equal(P.routeMatches({ uploadDate: date }, filter), false);
+  }
+  assert.equal(P.routeMatches({ uploadedAt: new Date(2026, 3, 15).getTime() }, filter), false);
+  assert.equal(P.routeMatches({ uploadDate: null }, P.dateFilter({ mode: "all" })), true);
+});
+
+test("recent windows contain exactly N calendar dates including today across month and year boundaries", () => {
   const recent = P.dateFilter({ mode: "recent", days: 7 }, new Date(2026, 3, 16, 12));
-  assert.equal(recent.from, new Date(2026, 3, 10).getTime());
-  assert.equal(recent.to, new Date(2026, 3, 16, 23, 59, 59, 999).getTime());
-  assert.equal(P.dateFilter({ mode: "recent", days: 1 }, new Date(2026, 3, 16, 12)).from, new Date(2026, 3, 16).getTime());
+  assert.deepEqual(recent, { mode: "recent", fromDate: "2026-04-10", toDate: "2026-04-16" });
+  assert.deepEqual(P.dateFilter({ mode: "recent", days: 1 }, new Date(2026, 3, 16, 12)), { mode: "recent", fromDate: "2026-04-16", toDate: "2026-04-16" });
+  assert.deepEqual(P.dateFilter({ mode: "recent", days: 7 }, new Date(2026, 0, 3, 12)), { mode: "recent", fromDate: "2025-12-28", toDate: "2026-01-03" });
+  assert.deepEqual(P.dateFilter({ mode: "recent", days: 2 }, new Date(2024, 2, 1, 12)), { mode: "recent", fromDate: "2024-02-29", toDate: "2024-03-01" });
+  assert.throws(() => P.dateFilter({ mode: "recent" }, new Date(NaN)), /Invalid current date/);
+});
+
+test("displayed upload dates survive DST gaps and calendar filtering does not reinterpret their timezone", () => {
+  const script = `const P = require(${JSON.stringify(require.resolve("../firefox/parser.js"))});
+    console.log(JSON.stringify({
+      gap: P.parseRouteUploadDate("2026-03-08 02:30:00"),
+      skippedLocalDate: P.parseRouteUploadDate("2011-12-30 12:00:00"),
+      recent: P.dateFilter({mode:"recent",days:7}, new Date(2026,2,9,12)),
+      matches: P.routeMatches({uploadDate:"2026-03-08"},P.dateFilter({mode:"custom",from:"2026-03-08",to:"2026-03-08"}))
+    }));`;
+  for (const TZ of ["UTC", "America/New_York", "Pacific/Auckland", "Pacific/Apia"]) {
+    const result = JSON.parse(execFileSync(process.execPath, ["-e", script], { env: { ...process.env, TZ }, encoding: "utf8" }));
+    assert.deepEqual(result, {
+      gap: "2026-03-08", skippedLocalDate: "2011-12-30", matches: true,
+      recent: { mode: "recent", fromDate: "2026-03-03", toDate: "2026-03-09" }
+    }, TZ);
+  }
 });
 
 test("login, raw log viewers, and unrelated pages give actionable errors", () => {

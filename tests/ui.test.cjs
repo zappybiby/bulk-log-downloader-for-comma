@@ -13,24 +13,32 @@ const UI_DIR = path.join(__dirname, "../firefox");
 const html = fs.readFileSync(path.join(UI_DIR, "downloads.html"), "utf8");
 const script = fs.readFileSync(path.join(UI_DIR, "downloads.js"), "utf8");
 const SOURCE = "https://useradmin.comma.ai/?onebox=demo-device";
+const TODAY = "2026-09-14";
+const FROZEN_NOW = new Date(2026, 8, 14, 12, 0, 0).getTime();
+
+class TestDate extends Date {
+  constructor(...args) { super(...(args.length ? args : [FROZEN_NOW])); }
+  static now() { return FROZEN_NOW; }
+}
 
 function file(segment = "0", type = "rlog", route = "11111111--abc") {
-  const name = `demo_${route}--${segment}--${type}.zst`;
+  const extension = { rlog: "zst", qlog: "zst", qcamera: "ts" }[type] || "hevc";
+  const name = `demo_${route}--${segment}--${type}.${extension}`;
   return {
-    url: `https://commadata2.blob.core.windows.net/demo/${route}/${segment}/${type}.zst?sig=synthetic`,
+    url: `https://commadata2.blob.core.windows.net/demo/${route}/${segment}/${type}.${extension}?sig=synthetic`,
     name, routeFolderName: `demo__${route}`, typeFolderName: type, typeKey: type,
     targetPath: `demo__${route}/${type}/${name}`
   };
 }
 
-function snapshot({ url = SOURCE, files = [], routes = [], nextPageUrl = "", pageKind = "route" } = {}) {
-  return { url, title: "Synthetic test route", files, routes, nextPageUrl, pageKind };
+function snapshot({ url = SOURCE, files = [], routes = [], nextPageUrl = "", pageKind = "route", deviceUrl = "" } = {}) {
+  return { url, title: "Synthetic test route", files, routes, nextPageUrl, pageKind, deviceUrl };
 }
 
 function route(key, date = "2026-09-10") {
   return {
     key, name: `demo/${key}`, url: `${SOURCE}|${key}`,
-    uploadedAt: date ? new Date(`${date}T12:00:00`).getTime() : null
+    uploadDate: date
   };
 }
 
@@ -97,7 +105,9 @@ function harness({ source = snapshot({ files: [file()] }), sourceTab = "42", rea
   };
   const context = vm.createContext({
     document, location: { href: `moz-extension://synthetic/downloads.html${sourceTab === null ? "" : `?sourceTab=${sourceTab}`}` },
-    browser, CommaParser, CommaArchive, URL: TestURL, AbortController, DOMException,
+    browser,
+    CommaParser: { ...CommaParser, dateFilter: (settings, now = new TestDate()) => CommaParser.dateFilter(settings, now) },
+    CommaArchive, URL: TestURL, Date: TestDate, AbortController, DOMException,
     crypto: webcrypto, addEventListener: window.addEventListener.bind(window)
   });
   vm.runInContext(script, context, { filename: "downloads.js" });
@@ -108,12 +118,37 @@ function harness({ source = snapshot({ files: [file()] }), sourceTab = "42", rea
     input.checked = checked;
     input.dispatchEvent(new window.Event("change", { bubbles: true }));
   }
+  function input(id, value) {
+    el(id).value = value;
+    el(id).dispatchEvent(new window.Event("input", { bubbles: true }));
+  }
   async function ready() { await until(() => el("source-indicator").classList.contains("connected") || el("source-title").textContent === "Source page unavailable", "initial source check"); }
   async function scan() {
     click("scan-button");
     await until(() => el("cancel-scan-button").hidden, "scan completion");
   }
-  return { document, window, el, click, choose, ready, scan, reads, builds, revoked, saves, disposed };
+  return { document, window, el, click, choose, input, ready, scan, reads, builds, revoked, saves, disposed };
+}
+
+function listedHarness(routes, options = {}) {
+  return harness({
+    ...options,
+    read(message) {
+      if (message.type === "comma:cancel-read") return { cancelled: true };
+      if (!message.url) return snapshot({ routes, pageKind: "device" });
+      const match = routes.find(item => item.url === message.url);
+      assert.ok(match, "Only a listed route may be read");
+      return snapshot({ url: match.url, files: [file("0", "rlog", match.key)] });
+    }
+  });
+}
+
+function selectedMode(ui) {
+  return ui.document.querySelector('input[name="date-mode"]:checked')?.value;
+}
+
+function fetchedRoutes(ui) {
+  return ui.reads.filter(message => message.url).map(message => message.url);
 }
 
 test("missing source tab shows recovery instructions and prevents scanning", async () => {
@@ -124,12 +159,224 @@ test("missing source tab shows recovery instructions and prevents scanning", asy
   assert.equal(ui.reads.length, 0);
 });
 
+test("Last 7 uses seven inclusive upload dates, shows the exact range, and selects the preset", async () => {
+  const before = route("11111111--aaa", "2026-09-07");
+  const first = route("22222222--bbb", "2026-09-08");
+  const today = route("33333333--ccc", TODAY);
+  const future = route("44444444--ddd", "2026-09-15");
+  const ui = listedHarness([before, first, today, future]);
+  await ui.ready();
+  ui.click("date-preset-7");
+  assert.equal(selectedMode(ui), "recent");
+  assert.equal(ui.el("date-days").value, "7");
+  assert.equal(ui.el("date-preset-7").getAttribute("aria-pressed"), "true");
+  assert.match(ui.el("date-summary").textContent, /2026-09-08/);
+  assert.match(ui.el("date-summary").textContent, /2026-09-14/);
+  await ui.scan();
+  assert.deepEqual(fetchedRoutes(ui), [first.url, today.url]);
+  assert.equal(ui.el("file-count").textContent, "2");
+});
+
+test("Today and Last 30 presets update the number of days and resolved bounds", async () => {
+  const ui = listedHarness([route("11111111--aaa", TODAY)]);
+  await ui.ready();
+  ui.click("date-preset-1");
+  assert.equal(ui.el("date-days").value, "1");
+  assert.equal(ui.el("date-preset-1").getAttribute("aria-pressed"), "true");
+  assert.equal(ui.el("date-preset-7").getAttribute("aria-pressed"), "false");
+  assert.match(ui.el("date-summary").textContent, /2026-09-14/);
+  ui.click("date-preset-30");
+  assert.equal(ui.el("date-days").value, "30");
+  assert.equal(ui.el("date-preset-30").getAttribute("aria-pressed"), "true");
+  assert.match(ui.el("date-summary").textContent, /2026-08-16/);
+  assert.match(ui.el("date-summary").textContent, /2026-09-14/);
+});
+
+test("typing arbitrary days selects recent mode and invalidates stale scan results", async () => {
+  const older = route("11111111--aaa", "2026-09-05");
+  const first = route("22222222--bbb", "2026-09-06");
+  const today = route("33333333--ccc", TODAY);
+  const ui = listedHarness([older, first, today]);
+  await ui.ready();
+  await ui.scan();
+  assert.equal(ui.el("file-count").textContent, "1");
+  ui.click("date-preset-custom");
+  ui.input("date-days", "9");
+  assert.equal(selectedMode(ui), "recent");
+  assert.equal(ui.el("download-button").disabled, true);
+  assert.equal(ui.el("results-content").hidden, true);
+  assert.match(ui.el("date-summary").textContent, /2026-09-06/);
+  for (const days of [1, 7, 30]) assert.equal(ui.el(`date-preset-${days}`).getAttribute("aria-pressed"), "false");
+  await ui.scan();
+  assert.deepEqual(fetchedRoutes(ui).slice(1), [first.url, today.url]);
+  assert.equal(ui.el("file-count").textContent, "2");
+  assert.equal(ui.saves.at(-1).firefoxPreferences.date.days, "9");
+});
+
+test("editing either custom date selects custom mode and includes both boundary dates", async () => {
+  const before = route("11111111--aaa", "2026-09-08");
+  const first = route("22222222--bbb", "2026-09-09");
+  const last = route("33333333--ccc", "2026-09-10");
+  const after = route("44444444--ddd", "2026-09-11");
+  const ui = listedHarness([before, first, last, after]);
+  await ui.ready();
+  ui.click("date-preset-all");
+  ui.input("date-from", "2026-09-09");
+  assert.equal(selectedMode(ui), "custom");
+  ui.click("date-preset-7");
+  ui.input("date-to", "2026-09-10");
+  assert.equal(selectedMode(ui), "custom");
+  assert.equal(ui.el("date-preset-custom").getAttribute("aria-pressed"), "true");
+  assert.match(ui.el("date-summary").textContent, /2026-09-09/);
+  assert.match(ui.el("date-summary").textContent, /2026-09-10/);
+  await ui.scan();
+  assert.deepEqual(fetchedRoutes(ui), [first.url, last.url]);
+  assert.equal(ui.el("file-count").textContent, "2");
+});
+
+test("invalid custom ranges cannot reuse a previously successful selection", async () => {
+  const ui = listedHarness([route("11111111--aaa", TODAY)]);
+  await ui.ready();
+  await ui.scan();
+  assert.equal(ui.el("download-button").disabled, false);
+  const priorReads = ui.reads.length;
+  ui.input("date-from", "2026-09-15");
+  ui.input("date-to", "2026-09-14");
+  assert.equal(ui.el("download-button").disabled, true);
+  ui.click("scan-button");
+  assert.equal(ui.reads.length, priorReads, "invalid dates must not start a page read");
+  assert.equal(ui.el("download-button").disabled, true);
+});
+
+test("All dates includes undated and older routes", async () => {
+  const older = route("11111111--aaa", "2020-01-01");
+  const undated = route("22222222--bbb", null);
+  const ui = listedHarness([older, undated]);
+  await ui.ready();
+  ui.click("date-preset-all");
+  assert.equal(selectedMode(ui), "all");
+  assert.equal(ui.el("date-preset-all").getAttribute("aria-pressed"), "true");
+  await ui.scan();
+  assert.deepEqual(fetchedRoutes(ui), [older.url, undated.url]);
+  assert.equal(ui.el("file-count").textContent, "2");
+});
+
+test("route upload date governs UI filtering when drive dates and route timestamp IDs disagree", async () => {
+  const rows = [
+    { id: "2026-01-01--10-00-00", upload: "2026-09-10 23:59:59", drive: "2026-01-01" },
+    { id: "2026-09-10--10-00-00", upload: "2026-09-09 12:00:00", drive: "2026-09-10" }
+  ];
+  const { document } = parseHTML(`<html><head><title>Invented date fixture</title></head><body>
+    <table id="table_routes"><thead><tr><th>Upload time</th><th>route</th><th>Drive date</th></tr></thead><tbody>
+      ${rows.map(row => `<tr><td>${row.upload}</td><td><a href="?onebox=demo|${row.id}">demo/${row.id}</a></td><td>${row.drive}</td></tr>`).join("")}
+    </tbody></table></body></html>`);
+  const parsed = CommaParser.snapshot(document, SOURCE, ["rlog"]);
+  assert.deepEqual(parsed.routes.map(item => item.uploadDate), ["2026-09-10", "2026-09-09"]);
+  const ui = harness({
+    read(message) {
+      if (!message.url) return parsed;
+      assert.equal(message.url, parsed.routes[0].url, "drive date and route ID must not select the second route");
+      return snapshot({ url: message.url, files: [file("0", "rlog", rows[0].id)] });
+    }
+  });
+  await ui.ready();
+  ui.input("date-from", "2026-09-10");
+  ui.input("date-to", "2026-09-10");
+  await ui.scan();
+  assert.deepEqual(fetchedRoutes(ui), [parsed.routes[0].url]);
+  assert.equal(ui.el("file-count").textContent, "1");
+});
+
+test("all original log and camera choices reach the scan and ZIP builder", async () => {
+  const types = ["rlog", "qlog", "qcamera", "fcamera", "ecamera", "dcamera"];
+  const ui = harness({ source: snapshot({ files: types.map(type => file("0", type)) }) });
+  await ui.ready();
+  for (const type of types) {
+    const input = ui.document.querySelector(`input[name="file-type"][value="${type}"]`);
+    assert.ok(input, `${type} must be available`);
+    if (type.endsWith("camera")) assert.ok(input.closest("details"), "camera choices belong in a disclosure");
+    ui.choose("file-type", type);
+  }
+  await ui.scan();
+  assert.equal(ui.el("file-count").textContent, "6");
+  assert.deepEqual(Array.from(ui.reads.at(-1).selectedTypes).sort(), [...types].sort());
+  ui.click("download-button");
+  await until(() => !ui.el("save-button").hidden);
+  assert.deepEqual(Array.from(ui.builds[0].files, item => item.typeKey).sort(), [...types].sort());
+});
+
+test("bulk selection from a route reads its device listing and keeps the source navigation guard", async () => {
+  const sourceUrl = `${SOURCE}|11111111--aaa`;
+  const selected = route("22222222--bbb", TODAY);
+  const ui = harness({
+    read(message) {
+      if (!message.url) return snapshot({ url: sourceUrl, files: [file()], deviceUrl: SOURCE });
+      if (message.url === SOURCE) return snapshot({ routes: [selected], pageKind: "device" });
+      if (message.url === selected.url) return snapshot({ url: selected.url, files: [file("0", "rlog", selected.key)] });
+      assert.fail("unexpected URL");
+    }
+  });
+  await ui.ready();
+  assert.equal(ui.document.querySelector('input[name="scope"][value="listed"]').disabled, false);
+  ui.choose("scope", "listed");
+  ui.click("date-preset-7");
+  await ui.scan();
+  assert.deepEqual(fetchedRoutes(ui), [SOURCE, selected.url]);
+  assert.equal(ui.el("file-count").textContent, "1");
+  assert.ok(ui.reads.slice(1).every(message => message.expectedUrl === sourceUrl));
+});
+
+test("source capabilities disable invalid scopes and override stale saved scope preferences", async () => {
+  const device = listedHarness([route("11111111--aaa", TODAY)], { preferences: { scope: "current" } });
+  await device.ready();
+  const deviceCurrent = device.document.querySelector('input[name="scope"][value="current"]');
+  assert.equal(deviceCurrent.disabled, true);
+  assert.equal(device.document.querySelector('input[name="scope"]:checked').value, "listed");
+  assert.equal(device.el("date-settings").hidden, false);
+  const isolatedRoute = harness({ source: snapshot({ files: [file()] }), preferences: { scope: "listed" } });
+  await isolatedRoute.ready();
+  assert.equal(isolatedRoute.document.querySelector('input[name="scope"][value="listed"]').disabled, true);
+  assert.equal(isolatedRoute.document.querySelector('input[name="scope"]:checked').value, "current");
+  assert.equal(isolatedRoute.el("date-settings").hidden, true);
+  const viewer = harness({ source: snapshot({ pageKind: "viewer" }) });
+  await viewer.ready();
+  assert.equal(viewer.el("scan-button").disabled, true);
+  for (const scope of viewer.document.querySelectorAll('input[name="scope"]')) assert.equal(scope.disabled, true);
+});
+
+test("results group files by route and the sticky bar exposes only the next primary action", async () => {
+  const one = route("11111111--aaa", "2026-09-12");
+  const two = route("22222222--bbb", TODAY);
+  const ui = harness({ read(message) {
+    if (!message.url) return snapshot({ routes: [one, two], pageKind: "device" });
+    const item = [one, two].find(candidate => candidate.url === message.url);
+    return snapshot({ url: item.url, files: [file("0", "rlog", item.key), file("1", "rlog", item.key)] });
+  } });
+  const primary = () => ["scan-button", "download-button", "save-button"].filter(id => !ui.el(id).hidden);
+  await ui.ready();
+  assert.deepEqual(primary(), ["scan-button"]);
+  await ui.scan();
+  assert.deepEqual(primary(), ["download-button"]);
+  assert.equal(ui.el("file-count").textContent, "4");
+  const groups = ui.el("file-preview").querySelectorAll("details.route-group");
+  assert.equal(groups.length, 2);
+  for (const [index, group] of Array.from(groups).entries()) {
+    assert.equal(group.hasAttribute("open"), false, "individual filenames stay collapsed initially");
+    assert.match(group.querySelector("summary").textContent, /2/);
+    assert.match(group.querySelector("summary").textContent, /rlog/);
+    assert.ok(group.querySelector("summary").textContent.includes([one, two][index].uploadDate));
+  }
+  ui.click("download-button");
+  await until(() => !ui.el("save-button").hidden);
+  assert.deepEqual(primary(), ["save-button"]);
+});
+
 test("qlog-only route reports no matching rlogs, then prepares selected qlogs", async () => {
   const ui = harness({ source: snapshot({ files: [file("0", "qlog"), file("1", "qlog")] }) });
   await ui.ready();
   await ui.scan();
   assert.equal(ui.el("file-count").textContent, "0");
-  assert.match(ui.el("scan-detail").textContent, /Try qlog/);
+  assert.match(ui.el("scan-detail").textContent, /Choose another file type/);
   assert.equal(ui.el("download-button").disabled, true);
   ui.choose("file-type", "rlog", false);
   ui.choose("file-type", "qlog");

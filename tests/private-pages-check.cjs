@@ -28,14 +28,22 @@ for (const [index, input] of inputs.entries()) {
         throw new Error("Download validation failed.");
       }
     }
+    const deviceUrl = P.getDeviceUrl(document, P.PAGE_ORIGIN);
+    if (deviceUrl && !P.isAllowedPageUrl(deviceUrl)) throw new Error("Device navigation validation failed.");
+    if (all.length) {
+      const device = new URL(all[0].url).pathname.split("/").filter(Boolean).at(-4);
+      if (!deviceUrl || new URL(deviceUrl).searchParams.get("onebox") !== decodeURIComponent(device)) {
+        throw new Error("Device navigation does not match the route files.");
+      }
+    }
     try {
       const result = P.snapshot(document, base, ["rlog", "qlog"]);
       if (result.files.length !== all.length) throw new Error("Snapshot file count differs.");
       console.log(JSON.stringify({ input: index + 1, status: "pass", kind: result.pageKind,
-        routes: result.routes.length, datedRoutes: result.routes.filter(route => Number.isFinite(route.uploadedAt)).length,
+        routes: result.routes.length, datedRoutes: result.routes.filter(route => /^\d{4}-\d{2}-\d{2}$/.test(route.uploadDate)).length,
         rlogFiles: result.files.filter(file => file.typeKey === "rlog").length,
         qlogFiles: result.files.filter(file => file.typeKey === "qlog").length,
-        hasNextPage: Boolean(result.nextPageUrl) }));
+        hasNextPage: Boolean(result.nextPageUrl), hasDeviceNavigation: Boolean(deviceUrl) }));
     } catch (error) {
       if (!table && !all.length && /^This is a log viewer\./.test(error.message)) {
         console.log(JSON.stringify({ input: index + 1, status: "pass", kind: "log-viewer", supportedSource: false }));

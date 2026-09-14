@@ -2,6 +2,7 @@
 (function () {
   "use strict";
 
+  const FILE_TYPES = ["rlog", "qlog", "qcamera", "fcamera", "ecamera", "dcamera"];
   const MAX_PAGES = 100;
   const MAX_FILES = 10000;
   const MAX_BYTES = 256 * 1024 * 1024;
@@ -46,16 +47,44 @@
       : bytes >= 1024 ? `${Math.round(bytes / 1024)} KiB` : `${Math.round(bytes)} bytes`;
   }
 
+  function scopeAvailable(scope) {
+    if (!state.source) return false;
+    return scope === "current" ? state.source.pageKind === "route"
+      : state.source.pageKind === "device" || CommaParser.isAllowedPageUrl(state.source.deviceUrl);
+  }
+
+  function setRadio(name, value) {
+    for (const input of document.querySelectorAll(`input[name="${name}"]`)) input.checked = input.value === value;
+  }
+
   function setMode(mode) {
     state.mode = mode;
     const busy = mode !== "idle";
+    const hasArchive = Boolean(state.archive);
+    const hasFiles = Boolean(state.files.length);
+    const prefs = settings();
     el("settings-fieldset").disabled = busy;
     el("check-source-button").disabled = busy || !Number.isSafeInteger(sourceTabId);
-    el("scan-button").disabled = busy || !state.source || !settings().selectedTypes.length;
+    for (const input of document.querySelectorAll('input[name="scope"]')) input.disabled = !scopeAvailable(input.value);
+    el("scan-button").hidden = hasFiles || hasArchive;
+    el("scan-button").disabled = busy || !scopeAvailable(prefs.scope) || !prefs.selectedTypes.length;
+    el("scan-button").textContent = mode === "scan" ? "Scanning…" : mode === "check" ? "Checking source…" : "Scan files";
     el("cancel-scan-button").hidden = mode !== "scan";
-    el("download-button").disabled = busy || !state.files.length || Boolean(state.archive);
+    el("download-button").hidden = !hasFiles || hasArchive;
+    el("download-button").disabled = busy || !hasFiles || hasArchive;
+    el("download-button").textContent = mode === "build" ? "Preparing…" : "Prepare ZIP";
+    el("save-button").hidden = !hasArchive;
     el("stop-button").hidden = mode !== "build";
+    el("clear-button").hidden = !hasArchive;
     el("clear-button").disabled = busy;
+    const routes = new Set(state.files.map(file => file.routeFolderName)).size;
+    el("action-summary").textContent = mode === "scan" ? "Scanning · keep the source tab open"
+      : mode === "build" ? "Preparing ZIP · keep this tab open"
+      : hasArchive ? `${state.archive.count} files · ${formatBytes(state.archive.bytes)} · ready to save`
+      : hasFiles ? `${state.files.length} files · ${routes} ${routes === 1 ? "route" : "routes"} · ready to prepare`
+      : !state.source ? "Open a device or route page to begin"
+      : !prefs.selectedTypes.length ? "Choose at least one file type"
+      : "Choose files, then scan";
   }
 
   function updateControls() {
@@ -64,8 +93,23 @@
     el("recent-settings").hidden = prefs.date.mode !== "recent";
     el("custom-settings").hidden = prefs.date.mode !== "custom";
     el("scope-help").textContent = prefs.scope === "current"
-      ? "Use the log file list on your open route page."
-      : "Read routes listed on your device page, including additional route pages.";
+      ? "Include matching uploaded files from this route."
+      : "Filter this device’s routes by the upload dates shown in its table.";
+    for (const preset of ["1", "7", "30", "all", "custom"]) {
+      const pressed = preset === "all" || preset === "custom" ? prefs.date.mode === preset
+        : prefs.date.mode === "recent" && Number(prefs.date.days) === Number(preset);
+      el(`date-preset-${preset}`).setAttribute("aria-pressed", String(pressed));
+    }
+    try {
+      const range = CommaParser.dateFilter(prefs.date);
+      el("date-summary").textContent = range.mode === "all" ? "All upload dates" : `${range.fromDate} → ${range.toDate}`;
+      el("date-summary").classList.remove("error");
+    } catch (error) {
+      el("date-summary").textContent = errorMessage(error, "Choose a start and end date.");
+      el("date-summary").classList.add("error");
+    }
+    const cameraCount = prefs.selectedTypes.filter(type => type.endsWith("camera")).length;
+    el("camera-selection").textContent = cameraCount ? `${cameraCount} selected` : "Optional";
     setMode(state.mode);
   }
 
@@ -89,6 +133,7 @@
     el("scan-progress").hidden = true;
     el("transfer-card").hidden = true;
     el("file-preview").replaceChildren();
+    el("scan-hint").textContent = "Scan to review";
     void discardArchive().catch(() => showNotice("The old ZIP could not be cleared from temporary storage. Close this tab before trying again.", true));
     setMode(state.mode);
   }
@@ -101,7 +146,7 @@
     try {
       response = await browser.tabs.sendMessage(sourceTabId, { type: "comma:read", ...options });
     } catch {
-      throw new Error("Cannot reach the source tab. Open it, sign in if needed, and reload the page. Then return here and tap Check source.");
+      throw new Error("Cannot reach the source tab. Open it, sign in if needed, and reload the page. Then return here and tap Refresh.");
     }
     if (!response || response.error) throw new Error(response?.error || "The source page did not respond. Reload it and try again.");
     if (!CommaParser.isAllowedPageUrl(response.url) || !Array.isArray(response.routes) || !Array.isArray(response.files)) {
@@ -120,22 +165,25 @@
     el("source-title").textContent = "Checking your comma page…";
     el("source-url").textContent = "";
     try {
-      const source = await readPage({ selectedTypes: ["rlog", "qlog"] });
+      const source = await readPage({ selectedTypes: FILE_TYPES });
       state.source = source;
       el("source-title").textContent = source.title || "comma useradmin";
       el("source-url").textContent = source.url;
       el("source-link").href = source.url;
       el("source-indicator").classList.add("connected");
-      if (!state.scopeChosen) {
-        const scope = source.pageKind === "route" || source.files.length ? "current" : "listed";
-        document.querySelector(`input[name="scope"][value="${scope}"]`).checked = true;
+      if (!state.scopeChosen || !scopeAvailable(settings().scope)) {
+        setRadio("scope", source.pageKind === "route" ? "current" : "listed");
       }
-      if (!source.routes.length && !source.files.length) {
-        showNotice("No rlogs, qlogs, or listed routes were found on this page. Open a route or device page in the source tab, then tap Check source.");
+      if (!scopeAvailable(settings().scope)) {
+        showNotice("No device or route was found on this page. Open a device or route page in the source tab, then tap Refresh.");
+        el("source-disclosure").open = true;
+      } else if (!source.routes.length && !source.files.length && !source.deviceUrl) {
+        showNotice("No uploaded files or listed routes were found. Check the source page, then tap Refresh.");
       }
       updateControls();
     } catch (error) {
       el("source-title").textContent = "Source page unavailable";
+      el("source-disclosure").open = true;
       showNotice(errorMessage(error, "Unable to read the source page."), true);
     } finally {
       setMode("idle");
@@ -158,33 +206,72 @@
     el("results-content").hidden = false;
     el("file-count").textContent = String(files.length);
     el("file-count-label").textContent = files.length === 1 ? "file found" : "files found";
-    const routes = new Set(files.map(file => file.routeFolderName)).size;
-    el("route-count").textContent = `${routes} ${routes === 1 ? "route" : "routes"} · ZIP folders preserve route and log type`;
+    const groups = new Map();
+    for (const file of files) {
+      if (!groups.has(file.routeFolderName)) groups.set(file.routeFolderName, []);
+      groups.get(file.routeFolderName).push(file);
+    }
+    el("route-count").textContent = `${groups.size} ${groups.size === 1 ? "route" : "routes"}`;
     el("scan-detail").textContent = detail;
     const preview = document.createDocumentFragment();
-    for (const file of files.slice(0, 30)) {
+    for (const [routeName, routeFiles] of groups) {
       const item = document.createElement("li");
+      const group = document.createElement("details");
+      group.className = "route-group";
+      const summary = document.createElement("summary");
+      const heading = document.createElement("span");
+      heading.className = "route-heading";
       const name = document.createElement("span");
-      name.className = "file-name";
-      name.textContent = file.name;
-      const route = document.createElement("span");
-      route.className = "file-route";
-      route.textContent = `${file.routeFolderName} / ${file.typeFolderName}`;
-      item.append(name, route);
+      name.className = "route-name";
+      name.textContent = routeName;
+      const date = document.createElement("span");
+      date.className = "route-date";
+      date.textContent = routeFiles[0].uploadDate ? `Uploaded ${routeFiles[0].uploadDate}`
+        : settings().scope === "current" ? "Current route" : "Upload date unavailable";
+      heading.append(name, date);
+      const counts = document.createElement("span");
+      counts.className = "route-counts";
+      const typeCounts = FILE_TYPES.map(type => {
+        const count = routeFiles.filter(file => file.typeKey === type).length;
+        return count ? `${count} ${type}` : null;
+      }).filter(Boolean);
+      counts.textContent = typeCounts.length === 1 ? typeCounts[0] : `${routeFiles.length} files`;
+      summary.append(heading, counts);
+      group.append(summary);
+      // Only populate filenames when a route is expanded; every matched file is still archived.
+      let expanded = false;
+      group.addEventListener("toggle", () => {
+        if (!group.open || expanded) return;
+        expanded = true;
+        const types = document.createElement("p");
+        types.className = "route-types help";
+        types.textContent = typeCounts.join(" · ");
+        group.append(types);
+        const filenames = document.createElement("ul");
+        filenames.className = "route-files";
+        for (const file of routeFiles) {
+          const filename = document.createElement("li");
+          filename.textContent = `${file.typeFolderName} / ${file.name}`;
+          filenames.append(filename);
+        }
+        group.append(filenames);
+      });
+      item.append(group);
       preview.append(item);
     }
     el("file-preview").replaceChildren(preview);
     el("file-preview").hidden = !files.length;
-    el("preview-note").textContent = `Showing the first 30 of ${files.length} files. All matched files will be included.`;
-    el("preview-note").hidden = files.length <= 30;
+    el("preview-note").textContent = "Expand a route to see its filenames. All matching files are included.";
+    el("preview-note").hidden = !files.length;
+    el("scan-hint").textContent = files.length ? "Grouped by route" : "No matches";
   }
 
   async function scanFiles() {
-    if (state.mode !== "idle" || !state.source) return;
+    if (state.mode !== "idle" || !scopeAvailable(settings().scope)) return;
     const prefs = settings();
     let filter;
     try {
-      if (!prefs.selectedTypes.length) throw new Error("Choose rlog, qlog, or both.");
+      if (!prefs.selectedTypes.length) throw new Error("Choose at least one file type.");
       filter = prefs.scope === "listed" ? CommaParser.dateFilter(prefs.date) : { mode: "all" };
     } catch (error) {
       showNotice(errorMessage(error, "Check your file and date choices."), true);
@@ -222,14 +309,14 @@
       return page;
     }
 
-    function addFiles(files) {
+    function addFiles(files, uploadDate = null) {
       for (const file of files) {
         if (!prefs.selectedTypes.includes(file.typeKey)) continue;
         if (!CommaParser.isAllowedDownloadUrl(file.url)) throw new Error("A file address could not be verified. Reload the source page and scan again.");
         const previous = found.get(file.targetPath);
         if (previous) continue;
         if (found.size >= MAX_FILES) throw new Error("This scan reached the 10,000-file limit. No partial ZIP was prepared. Choose fewer dates or one log type.");
-        found.set(file.targetPath, file);
+        found.set(file.targetPath, { ...file, uploadDate });
       }
     }
 
@@ -238,7 +325,8 @@
       if (prefs.scope === "current") {
         addFiles(initial.files);
       } else {
-        let page = initial;
+        let page = initial.pageKind === "device" ? initial : await getPage(initial.deviceUrl || state.source.deviceUrl);
+        if (page.pageKind !== "device") throw new Error("The device route list could not be read. Open the device page, then launch Bulk Logs again.");
         const listingPages = new Set();
         while (page) {
           throwIfAborted(controller.signal);
@@ -249,13 +337,13 @@
             seenRoutes.add(route.key);
             if (!CommaParser.routeMatches(route, filter)) {
               filteredRoutes += 1;
-              if (!Number.isFinite(route.uploadedAt)) undatedRoutes += 1;
+              if (!/^\d{4}-\d{2}-\d{2}$/.test(route.uploadDate || "")) undatedRoutes += 1;
               continue;
             }
             matchedRoutes += 1;
             scanStatus(`Reading route ${matchedRoutes} · ${found.size} files found…`);
             const routePage = await getPage(route.url);
-            addFiles(routePage.files);
+            addFiles(routePage.files, route.uploadDate);
           }
           if (!page.nextPageUrl) break;
           scanStatus(`Checking more listed routes · ${found.size} files found…`);
@@ -264,9 +352,9 @@
       }
       throwIfAborted(controller.signal);
       const files = Array.from(found.values()).sort((a, b) => a.targetPath.localeCompare(b.targetPath, undefined, { numeric: true }));
-      let detail = files.length ? "All matching files from this scan will go into the ZIP. Their sizes are checked while preparing it."
-        : prefs.scope === "current" ? "No matching log files on this page. Try qlog, another route, or Listed routes from a device page."
-        : "No matching log files found. Try qlog, a wider date range, or another device page.";
+      let detail = files.length ? "Sizes are checked while preparing the ZIP."
+        : prefs.scope === "current" ? "No matching files on this route. Choose another file type or scan Device routes."
+        : "No matching files. Choose another file type, a wider date range, or another device.";
       if (filteredRoutes) detail += ` ${filteredRoutes} ${filteredRoutes === 1 ? "route was" : "routes were"} excluded by the date filter.`;
       if (undatedRoutes) detail += ` ${undatedRoutes} had no readable upload date.`;
       showResults(files, detail);
@@ -329,6 +417,7 @@
           transferStatus(`${done} of ${total} files prepared`);
           const cap = Number(progress.maxBytes) || MAX_BYTES;
           el("transfer-detail").textContent = `${formatBytes(progress.bytesReceived)} received · ${formatBytes(cap)} ZIP limit. Keep this tab open.`;
+          el("action-summary").textContent = `${done} / ${total} files · ${formatBytes(progress.bytesReceived)} received`;
           if (progress.storage === "memory") el("storage-fallback").hidden = false;
         }
       });
@@ -366,13 +455,13 @@
       const saved = (await browser.storage.local.get(PREF_KEY))[PREF_KEY];
       if (!saved || typeof saved !== "object") return;
       if (["current", "listed"].includes(saved.scope)) {
-        document.querySelector(`input[name="scope"][value="${saved.scope}"]`).checked = true;
+        setRadio("scope", saved.scope);
         state.scopeChosen = true;
       }
-      if (Array.isArray(saved.selectedTypes) && saved.selectedTypes.some(type => ["rlog", "qlog"].includes(type))) {
+      if (Array.isArray(saved.selectedTypes) && saved.selectedTypes.some(type => FILE_TYPES.includes(type))) {
         for (const input of document.querySelectorAll('input[name="file-type"]')) input.checked = saved.selectedTypes.includes(input.value);
       }
-      if (["recent", "all", "custom"].includes(saved.date?.mode)) document.querySelector(`input[name="date-mode"][value="${saved.date.mode}"]`).checked = true;
+      if (["recent", "all", "custom"].includes(saved.date?.mode)) setRadio("date-mode", saved.date.mode);
       if (/^\d{1,5}$/.test(String(saved.date?.days))) el("date-days").value = saved.date.days;
       if (/^\d{4}-\d{2}-\d{2}$/.test(saved.date?.from)) el("date-from").value = saved.date.from;
       if (/^\d{4}-\d{2}-\d{2}$/.test(saved.date?.to)) el("date-to").value = saved.date.to;
@@ -381,14 +470,44 @@
     }
   }
 
+  function settingsChanged() {
+    invalidateResults();
+    updateControls();
+    void browser.storage.local.set({ [PREF_KEY]: settings() }).catch(() => showNotice("Your choices could not be saved. This scan can still continue."));
+  }
+
   el("settings-form").addEventListener("submit", event => event.preventDefault());
   el("settings-form").addEventListener("change", event => {
     if (state.mode !== "idle") return;
     if (event.target.name === "scope") state.scopeChosen = true;
-    invalidateResults();
-    updateControls();
-    void browser.storage.local.set({ [PREF_KEY]: settings() }).catch(() => showNotice("Your choices could not be saved. This scan can still continue."));
+    if (event.target.id === "date-days") setRadio("date-mode", "recent");
+    if (["date-from", "date-to"].includes(event.target.id)) setRadio("date-mode", "custom");
+    settingsChanged();
   });
+  el("settings-form").addEventListener("input", event => {
+    if (state.mode !== "idle") return;
+    if (event.target.id === "date-days") setRadio("date-mode", "recent");
+    else if (["date-from", "date-to"].includes(event.target.id)) setRadio("date-mode", "custom");
+    else return;
+    settingsChanged();
+  });
+  for (const preset of ["1", "7", "30", "all", "custom"]) {
+    el(`date-preset-${preset}`).addEventListener("click", () => {
+      if (state.mode !== "idle") return;
+      if (preset === "all" || preset === "custom") {
+        setRadio("date-mode", preset);
+        if (preset === "custom" && (!el("date-from").value || !el("date-to").value)) {
+          const range = CommaParser.dateFilter({ mode: "recent", days: 7 });
+          if (!el("date-from").value) el("date-from").value = range.fromDate;
+          if (!el("date-to").value) el("date-to").value = range.toDate;
+        }
+      } else {
+        setRadio("date-mode", "recent");
+        el("date-days").value = preset;
+      }
+      settingsChanged();
+    });
+  }
   el("check-source-button").addEventListener("click", () => void checkSource());
   el("scan-button").addEventListener("click", () => {
     el("cancel-scan-button").disabled = false;
