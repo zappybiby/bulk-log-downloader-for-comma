@@ -1,0 +1,12 @@
+:root { font: 16px/1.4 system-ui, sans-serif; color: #172033; background: #f7f9fc; }
+body { margin: 0; }
+main { padding: 22px 18px 40px; max-width: 620px; margin: auto; }
+h1 { font-size: 25px; line-height: 1.15; margin: 8px 0 12px; }
+p { margin: 10px 0; }
+.eyebrow { color: #5f6b83; font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+#status { font-weight: 650; }
+button, #save { box-sizing: border-box; display: block; width: 100%; border: 0; border-radius: 8px; padding: 13px; margin: 16px 0; font: inherit; font-weight: 650; color: white; background: #4257db; text-align: center; text-decoration: none; }
+[hidden] { display: none !important; }
+button:disabled { opacity: .5; }
+.row { border-top: 1px solid #dce1ec; padding: 10px 0; font-size: 13px; }
+.row strong { display: block; font-size: 14px; }

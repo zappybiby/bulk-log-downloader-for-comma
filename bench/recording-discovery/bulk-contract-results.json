@@ -1,0 +1,88 @@
+{
+  "kind": "Offline API contract adversarial simulations",
+  "networkRequests": 0,
+  "actualBackendContractVerified": false,
+  "privateDataUsed": false,
+  "fixtureRoutes": 1000,
+  "assertionsPassed": 9,
+  "checks": [
+    {
+      "name": "Same-window prefix growth: cumulative +5 versus doubling",
+      "plusFive": {
+        "requests": 201,
+        "transferredRows": 101500,
+        "found": 1000
+      },
+      "doubling": {
+        "requests": 9,
+        "transferredRows": 2275,
+        "found": 1000
+      },
+      "assumption": "Server honors limit and returns a complete stable prefix."
+    },
+    {
+      "name": "A silent cap makes length < requested limit a false completeness signal",
+      "requests": 51,
+      "transferredRows": 6625,
+      "found": 250,
+      "missed": 750,
+      "hypotheticalServerCap": 250
+    },
+    {
+      "name": "Timestamp-only cursor can skip records sharing the boundary timestamp",
+      "expected": 100,
+      "returned": 50,
+      "missed": 50,
+      "assumption": "A hypothetical newest-first strict timestamp cursor, not a documented comma API feature."
+    },
+    {
+      "name": "Partitioning a containment query loses a route crossing the split",
+      "expected": 1,
+      "returned": 0,
+      "assumption": "One plausible start/end containment contract; backend predicates remain unverified."
+    },
+    {
+      "name": "Missing segment zero, epoch clocks and corrected-clock conflicts need fallback",
+      "ambiguousCases": 3,
+      "allRequireFallback": true,
+      "policy": "Research prototype conservatively defers all conflicts, rather than reproducing Connect clock repair as authoritative truth."
+    },
+    {
+      "name": "Complete broad metadata eliminates only known nonmatching detail reads",
+      "selectedRoutes": 224,
+      "usableApiDates": 1000,
+      "excludedWithoutDetailRead": 776,
+      "missingOrAmbiguousFallbackReads": 0,
+      "selectedFreshFilePageReads": 224,
+      "totalDetailPageReads": 224
+    },
+    {
+      "name": "A date-matching-only API result cannot safely skip absent catalog IDs",
+      "selectedRoutes": 224,
+      "usableApiDates": 224,
+      "excludedWithoutDetailRead": 0,
+      "missingOrAmbiguousFallbackReads": 776,
+      "selectedFreshFilePageReads": 224,
+      "totalDetailPageReads": 1000
+    },
+    {
+      "name": "Capped and ambiguous bulk data remains correct with catalog fallback",
+      "hypotheticalServerCap": 250,
+      "selectedRoutes": 224,
+      "usableApiDates": 225,
+      "excludedWithoutDetailRead": 175,
+      "missingOrAmbiguousFallbackReads": 775,
+      "selectedFreshFilePageReads": 50,
+      "totalDetailPageReads": 825
+    },
+    {
+      "name": "Conflicting duplicates and foreign IDs cannot silently select or exclude a route",
+      "selectedRoutes": 224,
+      "usableApiDates": 999,
+      "excludedWithoutDetailRead": 776,
+      "missingOrAmbiguousFallbackReads": 1,
+      "selectedFreshFilePageReads": 223,
+      "totalDetailPageReads": 224
+    }
+  ]
+}

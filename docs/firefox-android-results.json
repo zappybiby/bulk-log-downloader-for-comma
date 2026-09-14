@@ -1,0 +1,99 @@
+{
+  "sourceCommit": "af6a2d9086c1ea14e6ebb1a2a8313662391dccc5",
+  "runUrl": "https://github.com/zappybiby/bulk-log-downloader-for-comma/actions/runs/34871702020",
+  "syntheticDataOnly": true,
+  "result": {
+    "status": "passed",
+    "archiveRuns": [
+      {
+        "kind": "small",
+        "storage": "opfs"
+      },
+      {
+        "kind": "medium",
+        "storage": "opfs"
+      },
+      {
+        "kind": "large",
+        "storage": "opfs"
+      }
+    ],
+    "largestVerifiedPayloadMiB": 60,
+    "diskAbove32MiB": "passed",
+    "smallZipFiles": 120,
+    "mediumZipFiles": 120,
+    "smallPayloadMiB": 7.5,
+    "mediumPayloadMiB": 30,
+    "cancellation": "passed",
+    "httpFailure": "passed",
+    "productionUi": "synthetic API adapter; production HTML/CSS/handlers",
+    "dateSelection": {
+      "preset": "Last 7 days",
+      "fromDate": "2026-09-08",
+      "toDate": "2026-09-14",
+      "matchedRoutes": 3,
+      "savedFiles": 6,
+      "todayMatchedRoutes": 1,
+      "customDateControls": "visible; numerical ranges verified by local UI tests",
+      "fileTypes": "rlog/qlog and four camera options displayed; rlog selection saved",
+      "selectionDownload": "saved through native Firefox prompt; every path, byte and CRC verified"
+    },
+    "liveAuthentication": "not tested",
+    "backgroundDownloads": "not tested"
+  },
+  "device": {
+    "serial": "emulator-5554",
+    "package": "org.mozilla.fenix",
+    "version": [
+      "versionCode=2016184550 minSdk=26 targetSdk=37",
+      "versionName=158.0a1"
+    ],
+    "android": "15",
+    "abi": "x86_64"
+  },
+  "verifiedArchives": [
+    {
+      "status": "passed",
+      "kind": "small",
+      "files": 120,
+      "payloadBytes": 7864320,
+      "zipBytes": 7882822,
+      "sha256": "27bdf2bf36f970a0777ca4a333c84b17fba22e74a51be82aa4d12d8a2b35e0d9"
+    },
+    {
+      "status": "passed",
+      "kind": "medium",
+      "files": 120,
+      "payloadBytes": 31457280,
+      "zipBytes": 31475782,
+      "sha256": "6f76f9e42469921fe2682b39b6d73a22e0c39127a810ba9420287b4eb517b973"
+    },
+    {
+      "status": "passed",
+      "kind": "large",
+      "files": 120,
+      "payloadBytes": 62914560,
+      "zipBytes": 62933062,
+      "sha256": "be3dfa8b9f0c2d82a81e5bf727e8f4705d1705d908bb22fcdac79551915e8a0b"
+    },
+    {
+      "status": "passed",
+      "kind": "ui-selection",
+      "files": 6,
+      "routes": 3,
+      "dateBasis": "upload date; unrelated recording dates are all in 2020",
+      "includedUploadDaysAgo": [
+        0,
+        2,
+        6
+      ],
+      "excludedUploadDaysAgo": [
+        8,
+        31
+      ],
+      "payloadBytes": 24576,
+      "zipBytes": 26254,
+      "sha256": "252958d16539427dbc195d42d842ea10081fbc821a8d5f567d3d381b1e76eb73"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light">
+    <title>Bulk logs · Firefox</title>
+    <link rel="stylesheet" href="downloads.css">
+    <script src="parser.js" defer></script>
+    <script src="scanner.js" defer></script>
+    <script src="archive.js" defer></script>
+    <script src="downloads.js" defer></script>
+  </head>
+  <body>
+    <main id="app" class="app">
+      <header class="page-header"><h1 id="page-title">Bulk logs</h1>
+      <details id="source-disclosure" class="source-disclosure">
+        <summary><span id="source-indicator" class="source-indicator" aria-hidden="true"></span><span id="source-title">Connecting to your comma page…</span><span class="disclosure-label" aria-hidden="true">⌄</span></summary>
+        <div class="source-expanded"><p id="source-url" class="source-url"></p><div class="source-actions"><button id="check-source-button" class="text-button" type="button">Refresh</button><a id="source-link" class="text-button" href="https://useradmin.comma.ai/" target="_blank" rel="noopener noreferrer">Open source ↗</a></div></div>
+      </details>
+      </header>
+      <div id="page-notice" class="notice" role="status" hidden></div>
+
+      <form id="settings-form" aria-labelledby="choose-title">
+        <h2 id="choose-title" class="visually-hidden" tabindex="-1">Choose logs</h2>
+        <fieldset id="settings-fieldset">
+          <p id="scope-summary" class="scope-summary" hidden>From this device</p>
+          <fieldset id="scope-settings" class="control-group scope-group">
+            <legend class="visually-hidden">Routes to include</legend>
+            <div class="segmented scope-options">
+              <label><input type="radio" name="scope" value="current" checked><span>This route</span></label>
+              <label><input type="radio" name="scope" value="listed"><span>Device routes</span></label>
+            </div>
+            <p id="scope-help" class="visually-hidden">Use the file list on your open route page.</p>
+          </fieldset>
+
+          <fieldset id="date-settings" class="control-group" hidden>
+            <legend class="visually-hidden">Date range</legend>
+            <div class="date-heading"><h2 aria-hidden="true">Dates</h2>
+            <div class="segmented date-basis" role="group" aria-label="Filter dates by" aria-describedby="date-explanation">
+              <label><input type="radio" name="date-basis" value="recording" checked><span>Recorded</span></label>
+              <label><input type="radio" name="date-basis" value="upload"><span>Uploaded</span></label>
+            </div>
+            </div>
+            <div class="date-presets" aria-label="Date range">
+              <button id="date-preset-1" type="button" aria-pressed="false">Today</button>
+              <button id="date-preset-7" type="button" aria-pressed="true">Last 7</button>
+              <button id="date-preset-30" type="button" aria-pressed="false">Last 30</button>
+              <button id="date-preset-all" type="button" aria-pressed="false">All</button>
+              <button id="date-preset-custom" type="button" aria-pressed="false">Custom</button>
+            </div>
+            <div hidden aria-hidden="true"><input type="radio" name="date-mode" value="recent" checked><input type="radio" name="date-mode" value="all"><input type="radio" name="date-mode" value="custom"></div>
+            <label id="recent-settings" class="recent-settings" hidden>Past <input id="date-days" aria-label="Number of past days" type="number" min="1" max="36500" step="1" inputmode="numeric" value="7"> days <span class="inline-help">including today</span></label>
+            <div id="custom-settings" class="custom-settings" hidden>
+              <label>From<input id="date-from" type="date"></label>
+              <label>Through<input id="date-to" type="date"></label>
+            </div>
+            <div class="date-meta"><p id="date-summary" class="date-summary" aria-live="polite"></p><button id="edit-days-button" class="text-button" type="button" aria-expanded="false" aria-controls="recent-settings">Set days</button></div>
+            <p id="date-explanation" class="visually-hidden">Recording start date as shown on each route page.</p>
+          </fieldset>
+
+          <fieldset class="control-group types-group">
+            <legend>Files to include</legend>
+            <div id="file-types" class="file-types">
+              <label class="file-type"><input type="checkbox" name="file-type" value="rlog" checked><span class="type-name">Full logs</span><span class="type-description">rlog</span></label>
+              <label class="file-type"><input type="checkbox" name="file-type" value="qlog"><span class="type-name">Quick logs</span><span class="type-description">qlog</span></label>
+            </div>
+            <details id="camera-types" class="camera-types">
+              <summary>Camera files <span id="camera-selection" class="muted"></span></summary>
+              <div class="file-types camera-options">
+                <label class="file-type"><input type="checkbox" name="file-type" value="qcamera"><span class="type-name">qcamera</span></label>
+                <label class="file-type"><input type="checkbox" name="file-type" value="fcamera"><span class="type-name">fcamera</span></label>
+                <label class="file-type"><input type="checkbox" name="file-type" value="ecamera"><span class="type-name">ecamera</span></label>
+                <label class="file-type"><input type="checkbox" name="file-type" value="dcamera"><span class="type-name">dcamera</span></label>
+              </div>
+            </details>
+          </fieldset>
+        </fieldset>
+      </form>
+
+      <section id="review-panel" class="review-panel" aria-labelledby="review-title" hidden>
+        <div class="review-heading"><h2 id="review-title" tabindex="-1">Review download</h2><button id="edit-filters-button" class="text-button" type="button">Edit filters</button></div>
+        <div id="selection-summary" class="selection-context">
+          <p id="selection-title" class="selection-title"></p>
+          <p id="selection-range" class="selection-range"></p>
+          <p id="selection-files" class="selection-files"></p>
+        </div>
+      <section id="transfer-card" class="transfer-section" aria-labelledby="transfer-title" hidden>
+        <h2 id="transfer-title" class="visually-hidden">ZIP preparation</h2>
+        <p id="transfer-status" class="transfer-status" role="status"></p>
+        <progress id="transfer-progress" value="0" max="1" aria-label="ZIP preparation progress"></progress>
+        <p id="transfer-detail" class="help"></p>
+        <p id="storage-fallback" class="notice" hidden>ZIP limit: 32 MiB</p>
+      </section>
+      <section id="results-section" class="results-section" aria-labelledby="results-title">
+        <h2 id="results-title" class="visually-hidden">Matching files</h2><span id="scan-hint" hidden></span>
+        <p id="empty-results" class="empty-results">Your matching routes and files will appear here.</p>
+        <div id="scan-status" class="scan-status" role="status" hidden></div>
+        <progress id="scan-progress" aria-label="File scan progress" hidden></progress>
+        <div id="results-content" hidden>
+          <div class="result-summary"><span><strong id="file-count">0</strong> <span id="file-count-label">files found</span></span><span id="route-count" class="muted"></span></div>
+          <p id="scan-detail" class="help scan-detail"></p>
+          <details id="routes-disclosure" class="routes-disclosure">
+            <summary><span id="routes-label">Review routes</span><span class="disclosure-arrow" aria-hidden="true">⌄</span></summary>
+            <ul id="file-preview" class="file-preview" aria-label="Discovered routes"></ul>
+            <button id="show-more-routes-button" class="more-routes text-button" type="button" hidden>Show more routes</button>
+            <p id="preview-note" class="help" hidden></p>
+          </details>
+        </div>
+      </section>
+      </section>
+    </main>
+    <footer class="action-bar" aria-label="Download actions">
+      <p id="action-summary" class="action-summary" aria-live="polite" hidden></p>
+      <div class="action-buttons">
+        <button id="scan-button" class="button primary" type="button" disabled>Scan files</button>
+        <button id="download-button" class="button primary" type="button" disabled hidden>Prepare ZIP</button>
+        <a id="save-button" class="button primary" download hidden>Save ZIP</a>
+        <button id="review-button" class="button secondary" type="button" hidden>Back to results</button>
+        <button id="cancel-scan-button" class="button secondary" type="button" hidden>Stop</button>
+        <button id="stop-button" class="button secondary" type="button" hidden>Cancel</button>
+        <button id="clear-button" class="button secondary" type="button" hidden>Clear ZIP</button>
+      </div>
+    </footer>
+  </body>
+</html>

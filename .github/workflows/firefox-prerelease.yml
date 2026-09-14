@@ -1,0 +1,76 @@
+name: Publish Firefox v0.4.1 prerelease
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['codex/firefox-android-prototype']
+    paths: ['.github/workflows/firefox-prerelease.yml', 'docs/releases/firefox-v0.4.1.md']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: firefox-v0.4.1-prerelease
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'zappybiby/bulk-log-downloader-for-comma' && github.ref == 'refs/heads/codex/firefox-android-prototype'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      RELEASE_TAG: firefox-v0.4.1
+      XPI: docs/downloads/comma-firefox-0.4.1-unsigned.xpi
+      EXPECTED_SHA256: eae229c220f4ae420f75030f686ab57c919225f54cfbf416fb945768d9fa9eb2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify the already-tested package
+        run: |
+          git diff --exit-code f3828b33ea48d51fd23b61d6fdef6c347838b360 -- firefox
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, zipfile
+          package = pathlib.Path(os.environ['XPI'])
+          digest = hashlib.sha256(package.read_bytes()).hexdigest()
+          assert digest == os.environ['EXPECTED_SHA256'], 'Package differs from tested build'
+          with zipfile.ZipFile(package) as archive:
+              assert archive.testzip() is None
+              assert len(archive.namelist()) == 13
+              manifest = json.loads(archive.read('manifest.json'))
+              assert manifest['version'] == '0.4.1'
+              assert manifest['browser_specific_settings']['gecko']['id'] == 'comma-bulk-logs-android@zappybiby'
+              for name in archive.namelist():
+                  assert archive.read(name) == (pathlib.Path('firefox') / name).read_bytes(), name
+          checksum = pathlib.Path(os.environ['RUNNER_TEMP']) / 'comma-firefox-0.4.1-unsigned.xpi.sha256'
+          checksum.write_text(f'{digest}  {package.name}\n')
+          print(f'Verified {package.name}: {digest}')
+          PY
+      - name: Create draft with XPI and checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$RELEASE_TAG" "$XPI" "$RUNNER_TEMP/comma-firefox-0.4.1-unsigned.xpi.sha256" \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --draft --prerelease \
+            --title "Firefox Android v0.4.1 — unsigned preview" \
+            --notes-file docs/releases/firefox-v0.4.1.md
+      - name: Verify uploaded XPI and publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          def gh(*args):
+              return subprocess.check_output(['gh', *args], text=True).strip()
+          release_id = gh('release', 'view', os.environ['RELEASE_TAG'], '--repo', os.environ['GITHUB_REPOSITORY'], '--json', 'databaseId', '--jq', '.databaseId')
+          release = json.loads(gh('api', f"repos/{os.environ['GITHUB_REPOSITORY']}/releases/{release_id}"))
+          assert release['draft'] and release['prerelease']
+          assert release['target_commitish'] == os.environ['GITHUB_SHA']
+          assert len(release['assets']) == 2
+          asset = next(a for a in release['assets'] if a['name'] == 'comma-firefox-0.4.1-unsigned.xpi')
+          assert asset['state'] == 'uploaded' and asset['size'] == 36473
+          assert asset['digest'] == 'sha256:' + os.environ['EXPECTED_SHA256']
+          print('Uploaded XPI matches the verified package')
+          PY
+          gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease --latest=false

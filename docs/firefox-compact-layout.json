@@ -1,0 +1,7212 @@
+{
+  "provenance": {
+    "engine": "152.0.7977.82",
+    "executablePath": "/usr/bin/google-chrome",
+    "currentCommit": "5f8aab1407c6a78432317e5093b5cf4488cc8b78",
+    "baselineCommit": "1fa9a345",
+    "fixture": "Invented device and route fixture; extension API boundary replaced; all HTTP(S) blocked.",
+    "viewportMeaning": "CSS viewport without native Firefox toolbar. Separate Android emulator checks cover Firefox.",
+    "textScaleMeaning": "2x multiplies every pre-measured computed font size by two. This is a text stress probe, not Android system font scaling."
+  },
+  "checksPassed": true,
+  "errors": [],
+  "rows": [
+    {
+      "version": "before",
+      "state": "configure",
+      "textScale": 1,
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 675,
+        "clientHeight": 548,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 548,
+          "right": 360,
+          "bottom": 548
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 548,
+        "width": 360,
+        "height": 92,
+        "right": 360,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 336,
+        "height": 46,
+        "right": 348,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 336,
+        "height": 419.21875,
+        "right": 348,
+        "bottom": 529.21875
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 529.21875,
+        "width": 336,
+        "height": 72.6875,
+        "right": 348,
+        "bottom": 601.90625
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 163.5,
+            "height": 44,
+            "right": 178.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 181.5,
+            "y": 113,
+            "width": 163.5,
+            "height": 44,
+            "right": 345,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 204.390625,
+            "width": 163.5,
+            "height": 44,
+            "right": 178.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 181.5,
+            "y": 204.390625,
+            "width": 163.5,
+            "height": 44,
+            "right": 345,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 259.390625,
+            "width": 63.1875,
+            "height": 44,
+            "right": 75.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 80.1875,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 143.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 148.390625,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 211.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 216.59375,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 279.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 284.796875,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 348,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 311.390625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 46.015625,
+            "y": 311.390625,
+            "width": 72,
+            "height": 44,
+            "right": 118.015625,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 441.21875,
+            "width": 164,
+            "height": 44,
+            "right": 176,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 184,
+            "y": 441.21875,
+            "width": 164,
+            "height": 44,
+            "right": 348,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 485.21875,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 529.21875
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 614.90625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 658.90625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 336,
+            "height": 46,
+            "right": 348,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-360x640-1x-configure.png"
+    },
+    {
+      "version": "before",
+      "state": "review",
+      "textScale": 1,
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 955,
+        "clientHeight": 548,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 548,
+          "right": 360,
+          "bottom": 548
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 548,
+        "width": 360,
+        "height": 92,
+        "right": 360,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 336,
+        "height": 46,
+        "right": 348,
+        "bottom": 628
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 336,
+        "height": 419.21875,
+        "right": 348,
+        "bottom": 529.21875
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 529.21875,
+        "width": 336,
+        "height": 353.25,
+        "right": 348,
+        "bottom": 882.46875
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 163.5,
+            "height": 44,
+            "right": 178.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 181.5,
+            "y": 113,
+            "width": 163.5,
+            "height": 44,
+            "right": 345,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 204.390625,
+            "width": 163.5,
+            "height": 44,
+            "right": 178.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 181.5,
+            "y": 204.390625,
+            "width": 163.5,
+            "height": 44,
+            "right": 345,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 259.390625,
+            "width": 63.1875,
+            "height": 44,
+            "right": 75.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 80.1875,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 143.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 148.390625,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 211.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 216.59375,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 279.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 284.796875,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 348,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 311.390625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 46.015625,
+            "y": 311.390625,
+            "width": 72,
+            "height": 44,
+            "right": 118.015625,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 441.21875,
+            "width": 164,
+            "height": 44,
+            "right": 176,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 184,
+            "y": 441.21875,
+            "width": 164,
+            "height": 44,
+            "right": 348,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 485.21875,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 529.21875
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-02--08-00-00Recorded 2026-09-132 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 627.09375,
+            "width": 336,
+            "height": 54,
+            "right": 348,
+            "bottom": 681.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-04--08-00-00Recorded 2026-09-142 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 682.09375,
+            "width": 336,
+            "height": 54,
+            "right": 348,
+            "bottom": 736.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-05--08-00-00Recorded 2026-09-082 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 737.09375,
+            "width": 336,
+            "height": 54,
+            "right": 348,
+            "bottom": 791.09375
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 895.46875,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 939.46875
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 336,
+            "height": 46,
+            "right": 348,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-360x640-1x-review.png"
+    },
+    {
+      "version": "before",
+      "state": "custom",
+      "textScale": 1,
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 697,
+        "clientHeight": 548,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 548,
+          "right": 360,
+          "bottom": 548
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 548,
+        "width": 360,
+        "height": 92,
+        "right": 360,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 336,
+        "height": 46,
+        "right": 348,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 336,
+        "height": 441.15625,
+        "right": 348,
+        "bottom": 551.15625
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 551.15625,
+        "width": 336,
+        "height": 72.6875,
+        "right": 348,
+        "bottom": 623.84375
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 163.5,
+            "height": 44,
+            "right": 178.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 181.5,
+            "y": 113,
+            "width": 163.5,
+            "height": 44,
+            "right": 345,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 204.390625,
+            "width": 163.5,
+            "height": 44,
+            "right": 178.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 181.5,
+            "y": 204.390625,
+            "width": 163.5,
+            "height": 44,
+            "right": 345,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 259.390625,
+            "width": 63.1875,
+            "height": 44,
+            "right": 75.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 80.1875,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 143.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 148.390625,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 211.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 216.59375,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 279.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 284.796875,
+            "y": 259.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 348,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 313.390625,
+            "width": 163,
+            "height": 63.9375,
+            "right": 175,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 333.328125,
+            "width": 163,
+            "height": 44,
+            "right": 175,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 185,
+            "y": 313.390625,
+            "width": 163,
+            "height": 63.9375,
+            "right": 348,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 185,
+            "y": 333.328125,
+            "width": 163,
+            "height": 44,
+            "right": 348,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 463.15625,
+            "width": 164,
+            "height": 44,
+            "right": 176,
+            "bottom": 507.15625
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 184,
+            "y": 463.15625,
+            "width": 164,
+            "height": 44,
+            "right": 348,
+            "bottom": 507.15625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 507.15625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 551.15625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 636.84375,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 680.84375
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 336,
+            "height": 46,
+            "right": 348,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-360x640-1x-custom.png"
+    },
+    {
+      "version": "before",
+      "state": "configure",
+      "textScale": 1,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "main": {
+        "scrollHeight": 752,
+        "clientHeight": 752,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 752,
+          "right": 390,
+          "bottom": 752
+        }
+      },
+      "body": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 752,
+        "width": 390,
+        "height": 92,
+        "right": 390,
+        "bottom": 844
+      },
+      "primary": {
+        "x": 16,
+        "y": 786,
+        "width": 358,
+        "height": 46,
+        "right": 374,
+        "bottom": 832
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 16,
+        "y": 110,
+        "width": 358,
+        "height": 419.21875,
+        "right": 374,
+        "bottom": 529.21875
+      },
+      "review": null,
+      "results": {
+        "x": 16,
+        "y": 529.21875,
+        "width": 358,
+        "height": 72.6875,
+        "right": 374,
+        "bottom": 601.90625
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 49,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 19,
+            "y": 113,
+            "width": 174.5,
+            "height": 44,
+            "right": 193.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 196.5,
+            "y": 113,
+            "width": 174.5,
+            "height": 44,
+            "right": 371,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 19,
+            "y": 204.390625,
+            "width": 174.5,
+            "height": 44,
+            "right": 193.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 196.5,
+            "y": 204.390625,
+            "width": 174.5,
+            "height": 44,
+            "right": 371,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 83.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 88.59375,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 156.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 161.1875,
+            "y": 259.390625,
+            "width": 67.609375,
+            "height": 44,
+            "right": 228.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 233.796875,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 301.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 306.390625,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 373.984375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 311.390625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 50.015625,
+            "y": 311.390625,
+            "width": 72,
+            "height": 44,
+            "right": 122.015625,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 441.21875,
+            "width": 175,
+            "height": 44,
+            "right": 191,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 199,
+            "y": 441.21875,
+            "width": 175,
+            "height": 44,
+            "right": 374,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 485.21875,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 529.21875
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 614.90625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 658.90625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 786,
+            "width": 358,
+            "height": 46,
+            "right": 374,
+            "bottom": 832
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-390x844-1x-configure.png"
+    },
+    {
+      "version": "before",
+      "state": "review",
+      "textScale": 1,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "main": {
+        "scrollHeight": 937,
+        "clientHeight": 752,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 752,
+          "right": 390,
+          "bottom": 752
+        }
+      },
+      "body": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 752,
+        "width": 390,
+        "height": 92,
+        "right": 390,
+        "bottom": 844
+      },
+      "primary": {
+        "x": 16,
+        "y": 786,
+        "width": 358,
+        "height": 46,
+        "right": 374,
+        "bottom": 832
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": {
+        "x": 16,
+        "y": 110,
+        "width": 358,
+        "height": 419.21875,
+        "right": 374,
+        "bottom": 529.21875
+      },
+      "review": null,
+      "results": {
+        "x": 16,
+        "y": 529.21875,
+        "width": 358,
+        "height": 334.65625,
+        "right": 374,
+        "bottom": 863.875
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 49,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 19,
+            "y": 113,
+            "width": 174.5,
+            "height": 44,
+            "right": 193.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 196.5,
+            "y": 113,
+            "width": 174.5,
+            "height": 44,
+            "right": 371,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 19,
+            "y": 204.390625,
+            "width": 174.5,
+            "height": 44,
+            "right": 193.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 196.5,
+            "y": 204.390625,
+            "width": 174.5,
+            "height": 44,
+            "right": 371,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 83.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 88.59375,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 156.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 161.1875,
+            "y": 259.390625,
+            "width": 67.609375,
+            "height": 44,
+            "right": 228.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 233.796875,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 301.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 306.390625,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 373.984375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 311.390625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 50.015625,
+            "y": 311.390625,
+            "width": 72,
+            "height": 44,
+            "right": 122.015625,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 441.21875,
+            "width": 175,
+            "height": 44,
+            "right": 191,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 199,
+            "y": 441.21875,
+            "width": 175,
+            "height": 44,
+            "right": 374,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 485.21875,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 529.21875
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-02--08-00-00Recorded 2026-09-132 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 627.09375,
+            "width": 358,
+            "height": 54,
+            "right": 374,
+            "bottom": 681.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-04--08-00-00Recorded 2026-09-142 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 682.09375,
+            "width": 358,
+            "height": 54,
+            "right": 374,
+            "bottom": 736.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-05--08-00-00Recorded 2026-09-082 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 737.09375,
+            "width": 358,
+            "height": 54,
+            "right": 374,
+            "bottom": 791.09375
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 876.875,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 920.875
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 786,
+            "width": 358,
+            "height": 46,
+            "right": 374,
+            "bottom": 832
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-390x844-1x-review.png"
+    },
+    {
+      "version": "before",
+      "state": "custom",
+      "textScale": 1,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "main": {
+        "scrollHeight": 752,
+        "clientHeight": 752,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 752,
+          "right": 390,
+          "bottom": 752
+        }
+      },
+      "body": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 752,
+        "width": 390,
+        "height": 92,
+        "right": 390,
+        "bottom": 844
+      },
+      "primary": {
+        "x": 16,
+        "y": 786,
+        "width": 358,
+        "height": 46,
+        "right": 374,
+        "bottom": 832
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 16,
+        "y": 110,
+        "width": 358,
+        "height": 441.15625,
+        "right": 374,
+        "bottom": 551.15625
+      },
+      "review": null,
+      "results": {
+        "x": 16,
+        "y": 551.15625,
+        "width": 358,
+        "height": 72.6875,
+        "right": 374,
+        "bottom": 623.84375
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 49,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 19,
+            "y": 113,
+            "width": 174.5,
+            "height": 44,
+            "right": 193.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 196.5,
+            "y": 113,
+            "width": 174.5,
+            "height": 44,
+            "right": 371,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 19,
+            "y": 204.390625,
+            "width": 174.5,
+            "height": 44,
+            "right": 193.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 196.5,
+            "y": 204.390625,
+            "width": 174.5,
+            "height": 44,
+            "right": 371,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 83.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 88.59375,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 156.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 161.1875,
+            "y": 259.390625,
+            "width": 67.609375,
+            "height": 44,
+            "right": 228.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 233.796875,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 301.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 306.390625,
+            "y": 259.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 373.984375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 313.390625,
+            "width": 174,
+            "height": 63.9375,
+            "right": 190,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 333.328125,
+            "width": 174,
+            "height": 44,
+            "right": 190,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 200,
+            "y": 313.390625,
+            "width": 174,
+            "height": 63.9375,
+            "right": 374,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 200,
+            "y": 333.328125,
+            "width": 174,
+            "height": 44,
+            "right": 374,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 463.15625,
+            "width": 175,
+            "height": 44,
+            "right": 191,
+            "bottom": 507.15625
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 199,
+            "y": 463.15625,
+            "width": 175,
+            "height": 44,
+            "right": 374,
+            "bottom": 507.15625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 507.15625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 551.15625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 636.84375,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 680.84375
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 786,
+            "width": 358,
+            "height": 46,
+            "right": 374,
+            "bottom": 832
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-390x844-1x-custom.png"
+    },
+    {
+      "version": "before",
+      "state": "configure",
+      "textScale": 1,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 675,
+        "clientHeight": 548,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 548,
+          "right": 320,
+          "bottom": 548
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 548,
+        "width": 320,
+        "height": 92,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 296,
+        "height": 46,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 296,
+        "height": 419.21875,
+        "right": 308,
+        "bottom": 529.21875
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 529.21875,
+        "width": 296,
+        "height": 72.6875,
+        "right": 308,
+        "bottom": 601.90625
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 113,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 204.390625,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 204.390625,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 259.390625,
+            "width": 55.1875,
+            "height": 44,
+            "right": 67.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 127.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 187.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 247.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 308,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 311.390625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 46.015625,
+            "y": 311.390625,
+            "width": 72,
+            "height": 44,
+            "right": 118.015625,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 441.21875,
+            "width": 144,
+            "height": 44,
+            "right": 156,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 441.21875,
+            "width": 144,
+            "height": 44,
+            "right": 308,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 485.21875,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 529.21875
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 614.90625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 658.90625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 296,
+            "height": 46,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-320x640-1x-configure.png"
+    },
+    {
+      "version": "before",
+      "state": "review",
+      "textScale": 1,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 955,
+        "clientHeight": 548,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 548,
+          "right": 320,
+          "bottom": 548
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 548,
+        "width": 320,
+        "height": 92,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 296,
+        "height": 46,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 296,
+        "height": 419.21875,
+        "right": 308,
+        "bottom": 529.21875
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 529.21875,
+        "width": 296,
+        "height": 353.25,
+        "right": 308,
+        "bottom": 882.46875
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 113,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 204.390625,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 204.390625,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 259.390625,
+            "width": 55.1875,
+            "height": 44,
+            "right": 67.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 127.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 187.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 247.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 308,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 311.390625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 46.015625,
+            "y": 311.390625,
+            "width": 72,
+            "height": 44,
+            "right": 118.015625,
+            "bottom": 355.390625
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 441.21875,
+            "width": 144,
+            "height": 44,
+            "right": 156,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 441.21875,
+            "width": 144,
+            "height": 44,
+            "right": 308,
+            "bottom": 485.21875
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 485.21875,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 529.21875
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-02--08-00-00Recorded 2026-09-132 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 627.09375,
+            "width": 296,
+            "height": 54,
+            "right": 308,
+            "bottom": 681.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-04--08-00-00Recorded 2026-09-142 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 682.09375,
+            "width": 296,
+            "height": 54,
+            "right": 308,
+            "bottom": 736.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-05--08-00-00Recorded 2026-09-082 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 737.09375,
+            "width": 296,
+            "height": 54,
+            "right": 308,
+            "bottom": 791.09375
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 895.46875,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 939.46875
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 296,
+            "height": 46,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-320x640-1x-review.png"
+    },
+    {
+      "version": "before",
+      "state": "custom",
+      "textScale": 1,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 697,
+        "clientHeight": 548,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 548,
+          "right": 320,
+          "bottom": 548
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 548,
+        "width": 320,
+        "height": 92,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 296,
+        "height": 46,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 296,
+        "height": 441.15625,
+        "right": 308,
+        "bottom": 551.15625
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 551.15625,
+        "width": 296,
+        "height": 72.6875,
+        "right": 308,
+        "bottom": 623.84375
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 113,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 157
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 204.390625,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 204.390625,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 248.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 259.390625,
+            "width": 55.1875,
+            "height": 44,
+            "right": 67.1875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 127.390625,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 187.59375,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 247.796875,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 259.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 308,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 313.390625,
+            "width": 143,
+            "height": 63.9375,
+            "right": 155,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 333.328125,
+            "width": 143,
+            "height": 44,
+            "right": 155,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 165,
+            "y": 313.390625,
+            "width": 143,
+            "height": 63.9375,
+            "right": 308,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 165,
+            "y": 333.328125,
+            "width": 143,
+            "height": 44,
+            "right": 308,
+            "bottom": 377.328125
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 463.15625,
+            "width": 144,
+            "height": 44,
+            "right": 156,
+            "bottom": 507.15625
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 463.15625,
+            "width": 144,
+            "height": 44,
+            "right": 308,
+            "bottom": 507.15625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 507.15625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 551.15625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 636.84375,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 680.84375
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 296,
+            "height": 46,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-320x640-1x-custom.png"
+    },
+    {
+      "version": "before",
+      "state": "configure",
+      "textScale": 2,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 968,
+        "clientHeight": 517,
+        "scrollWidth": 345,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 516.921875,
+          "right": 320,
+          "bottom": 516.921875
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": true,
+      "footer": {
+        "x": 0,
+        "y": 516.921875,
+        "width": 320,
+        "height": 123.078125,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 566.8125,
+        "width": 296,
+        "height": 61.1875,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 296,
+        "height": 639.515625,
+        "right": 308,
+        "bottom": 749.515625
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 749.515625,
+        "width": 296,
+        "height": 145.1875,
+        "right": 308,
+        "bottom": 894.703125
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 143.5,
+            "height": 75.375,
+            "right": 158.5,
+            "bottom": 188.375
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 113,
+            "width": 143.5,
+            "height": 75.375,
+            "right": 305,
+            "bottom": 188.375
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 253.171875,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 297.171875
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 253.171875,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 297.171875
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 308.171875,
+            "width": 55.1875,
+            "height": 81.59375,
+            "right": 67.1875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 127.390625,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 187.59375,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 247.796875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 308,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 397.765625,
+            "width": 296,
+            "height": 63.78125,
+            "right": 308,
+            "bottom": 461.546875
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 72.03125,
+            "y": 400.8125,
+            "width": 57.9375,
+            "height": 57.6875,
+            "right": 129.96875,
+            "bottom": 458.5
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 633.328125,
+            "width": 141.109375,
+            "height": 72.1875,
+            "right": 153.109375,
+            "bottom": 705.515625
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 161.109375,
+            "y": 633.328125,
+            "width": 146.890625,
+            "height": 72.1875,
+            "right": 308,
+            "bottom": 705.515625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 705.515625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 749.515625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 907.703125,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 951.703125
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 566.8125,
+            "width": 296,
+            "height": 61.1875,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [
+        {
+          "name": "date-preset-1",
+          "scrollWidth": 71,
+          "clientWidth": 53,
+          "rect": {
+            "x": 12,
+            "y": 308.171875,
+            "width": 55.1875,
+            "height": 81.59375,
+            "right": 67.1875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "scrollWidth": 91,
+          "clientWidth": 53,
+          "rect": {
+            "x": 252.796875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 308,
+            "bottom": 389.765625
+          }
+        }
+      ],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-320x640-2x-configure.png"
+    },
+    {
+      "version": "before",
+      "state": "review",
+      "textScale": 2,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 1457,
+        "clientHeight": 517,
+        "scrollWidth": 345,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 516.921875,
+          "right": 320,
+          "bottom": 516.921875
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": true,
+      "footer": {
+        "x": 0,
+        "y": 516.921875,
+        "width": 320,
+        "height": 123.078125,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 566.8125,
+        "width": 296,
+        "height": 61.1875,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 296,
+        "height": 639.515625,
+        "right": 308,
+        "bottom": 749.515625
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 749.515625,
+        "width": 296,
+        "height": 634.890625,
+        "right": 308,
+        "bottom": 1384.40625
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 143.5,
+            "height": 75.375,
+            "right": 158.5,
+            "bottom": 188.375
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 113,
+            "width": 143.5,
+            "height": 75.375,
+            "right": 305,
+            "bottom": 188.375
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 253.171875,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 297.171875
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 253.171875,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 297.171875
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 308.171875,
+            "width": 55.1875,
+            "height": 81.59375,
+            "right": 67.1875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 127.390625,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 187.59375,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 247.796875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 308,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 397.765625,
+            "width": 296,
+            "height": 63.78125,
+            "right": 308,
+            "bottom": 461.546875
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 72.03125,
+            "y": 400.8125,
+            "width": 57.9375,
+            "height": 57.6875,
+            "right": 129.96875,
+            "bottom": 458.5
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 633.328125,
+            "width": 141.109375,
+            "height": 72.1875,
+            "right": 153.109375,
+            "bottom": 705.515625
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 161.109375,
+            "y": 633.328125,
+            "width": 146.890625,
+            "height": 72.1875,
+            "right": 308,
+            "bottom": 705.515625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 705.515625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 749.515625
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-02--08-00-00Recorded 2026-09-132 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 943.09375,
+            "width": 296,
+            "height": 54,
+            "right": 308,
+            "bottom": 997.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-04--08-00-00Recorded 2026-09-142 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 998.09375,
+            "width": 296,
+            "height": 54,
+            "right": 308,
+            "bottom": 1052.09375
+          }
+        },
+        {
+          "name": "syntheticdevice__2020-01-05--08-00-00Recorded 2026-09-082 rlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 1053.09375,
+            "width": 296,
+            "height": 54,
+            "right": 308,
+            "bottom": 1107.09375
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 1397.40625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 1441.40625
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 566.8125,
+            "width": 296,
+            "height": 61.1875,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [
+        {
+          "name": "date-preset-1",
+          "scrollWidth": 71,
+          "clientWidth": 53,
+          "rect": {
+            "x": 12,
+            "y": 308.171875,
+            "width": 55.1875,
+            "height": 81.59375,
+            "right": 67.1875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "scrollWidth": 91,
+          "clientWidth": 53,
+          "rect": {
+            "x": 252.796875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 308,
+            "bottom": 389.765625
+          }
+        }
+      ],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-320x640-2x-review.png"
+    },
+    {
+      "version": "before",
+      "state": "custom",
+      "textScale": 2,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 1002,
+        "clientHeight": 517,
+        "scrollWidth": 345,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 516.921875,
+          "right": 320,
+          "bottom": 516.921875
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": true,
+      "footer": {
+        "x": 0,
+        "y": 516.921875,
+        "width": 320,
+        "height": 123.078125,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 566.8125,
+        "width": 296,
+        "height": 61.1875,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 110,
+        "width": 296,
+        "height": 673.3125,
+        "right": 308,
+        "bottom": 783.3125
+      },
+      "review": null,
+      "results": {
+        "x": 12,
+        "y": 783.3125,
+        "width": 296,
+        "height": 145.1875,
+        "right": 308,
+        "bottom": 928.5
+      },
+      "selection": null,
+      "routeDisclosureOpen": null,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection testSource",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 49,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 93
+          }
+        },
+        {
+          "name": "This route",
+          "disabled": true,
+          "rect": {
+            "x": 15,
+            "y": 113,
+            "width": 143.5,
+            "height": 75.375,
+            "right": 158.5,
+            "bottom": 188.375
+          }
+        },
+        {
+          "name": "Device routes",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 113,
+            "width": 143.5,
+            "height": 75.375,
+            "right": 305,
+            "bottom": 188.375
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 15,
+            "y": 253.171875,
+            "width": 143.5,
+            "height": 44,
+            "right": 158.5,
+            "bottom": 297.171875
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 161.5,
+            "y": 253.171875,
+            "width": 143.5,
+            "height": 44,
+            "right": 305,
+            "bottom": 297.171875
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 308.171875,
+            "width": 55.1875,
+            "height": 81.59375,
+            "right": 67.1875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 127.390625,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 187.59375,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 247.796875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 308,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 399.765625,
+            "width": 143,
+            "height": 95.578125,
+            "right": 155,
+            "bottom": 495.34375
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 435.65625,
+            "width": 143,
+            "height": 59.6875,
+            "right": 155,
+            "bottom": 495.34375
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 165,
+            "y": 399.765625,
+            "width": 143,
+            "height": 95.578125,
+            "right": 308,
+            "bottom": 495.34375
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 165,
+            "y": 435.65625,
+            "width": 143,
+            "height": 59.6875,
+            "right": 308,
+            "bottom": 495.34375
+          }
+        },
+        {
+          "name": "rlogFull logs",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 667.125,
+            "width": 141.109375,
+            "height": 72.1875,
+            "right": 153.109375,
+            "bottom": 739.3125
+          }
+        },
+        {
+          "name": "qlogQuick logs",
+          "disabled": false,
+          "rect": {
+            "x": 161.109375,
+            "y": 667.125,
+            "width": 146.890625,
+            "height": 72.1875,
+            "right": 308,
+            "bottom": 739.3125
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 739.3125,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 783.3125
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 941.5,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 985.5
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 566.8125,
+            "width": 296,
+            "height": 61.1875,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [
+        {
+          "name": "date-preset-1",
+          "scrollWidth": 71,
+          "clientWidth": 53,
+          "rect": {
+            "x": 12,
+            "y": 308.171875,
+            "width": 55.1875,
+            "height": 81.59375,
+            "right": 67.1875,
+            "bottom": 389.765625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "scrollWidth": 91,
+          "clientWidth": 53,
+          "rect": {
+            "x": 252.796875,
+            "y": 308.171875,
+            "width": 55.203125,
+            "height": 81.59375,
+            "right": 308,
+            "bottom": 389.765625
+          }
+        }
+      ],
+      "pageErrors": [],
+      "screenshot": "screenshots/before-320x640-2x-custom.png"
+    },
+    {
+      "version": "after",
+      "state": "configure",
+      "textScale": 1,
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 546.609375,
+          "right": 360,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 360,
+        "height": 93.390625,
+        "right": 360,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 336,
+        "height": 46,
+        "right": 348,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 80,
+        "width": 336,
+        "height": 350.140625,
+        "right": 348,
+        "bottom": 430.140625
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 226.125,
+            "height": 44,
+            "right": 348,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 172.609375,
+            "y": 108.390625,
+            "width": 87.1875,
+            "height": 44,
+            "right": 259.796875,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 259.796875,
+            "y": 108.390625,
+            "width": 87.203125,
+            "height": 44,
+            "right": 347,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 163.390625,
+            "width": 63.1875,
+            "height": 44,
+            "right": 75.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 80.1875,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 143.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 148.390625,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 211.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 216.59375,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 279.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 284.796875,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 348,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 294.640625,
+            "y": 207.390625,
+            "width": 53.359375,
+            "height": 44,
+            "right": 348,
+            "bottom": 251.390625
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 293.140625,
+            "width": 164,
+            "height": 44,
+            "right": 176,
+            "bottom": 337.140625
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 184,
+            "y": 293.140625,
+            "width": 164,
+            "height": 44,
+            "right": 348,
+            "bottom": 337.140625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 337.140625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 381.140625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 386.140625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 430.140625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 336,
+            "height": 46,
+            "right": 348,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-360x640-1x-configure.png"
+    },
+    {
+      "version": "after",
+      "state": "review",
+      "textScale": 1,
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 546.609375,
+          "right": 360,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 360,
+        "height": 93.390625,
+        "right": 360,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 336,
+        "height": 46,
+        "right": 348,
+        "bottom": 628
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": null,
+      "review": {
+        "x": 12,
+        "y": 80,
+        "width": 336,
+        "height": 338.25,
+        "right": 348,
+        "bottom": 418.25
+      },
+      "results": {
+        "x": 12,
+        "y": 216.078125,
+        "width": 336,
+        "height": 202.171875,
+        "right": 348,
+        "bottom": 418.25
+      },
+      "selection": {
+        "x": 12,
+        "y": 132,
+        "width": 336,
+        "height": 66.078125,
+        "right": 348,
+        "bottom": 198.078125
+      },
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 226.125,
+            "height": 44,
+            "right": 348,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "edit-filters-button",
+          "disabled": false,
+          "rect": {
+            "x": 284.421875,
+            "y": 80,
+            "width": 63.578125,
+            "height": 44,
+            "right": 348,
+            "bottom": 124
+          }
+        },
+        {
+          "name": "Review 3 routes⌄",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 370.25,
+            "width": 336,
+            "height": 48,
+            "right": 348,
+            "bottom": 418.25
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 336,
+            "height": 46,
+            "right": 348,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-360x640-1x-review.png"
+    },
+    {
+      "version": "after",
+      "state": "custom",
+      "textScale": 1,
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 546.609375,
+          "right": 360,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 360,
+        "height": 93.390625,
+        "right": 360,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 336,
+        "height": 46,
+        "right": 348,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 80,
+        "width": 336,
+        "height": 424.078125,
+        "right": 348,
+        "bottom": 504.078125
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 226.125,
+            "height": 44,
+            "right": 348,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 172.609375,
+            "y": 108.390625,
+            "width": 87.1875,
+            "height": 44,
+            "right": 259.796875,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 259.796875,
+            "y": 108.390625,
+            "width": 87.203125,
+            "height": 44,
+            "right": 347,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 163.390625,
+            "width": 63.1875,
+            "height": 44,
+            "right": 75.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 80.1875,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 143.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 148.390625,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 211.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 216.59375,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 279.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 284.796875,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 348,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 217.390625,
+            "width": 163,
+            "height": 63.9375,
+            "right": 175,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 237.328125,
+            "width": 163,
+            "height": 44,
+            "right": 175,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 185,
+            "y": 217.390625,
+            "width": 163,
+            "height": 63.9375,
+            "right": 348,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 185,
+            "y": 237.328125,
+            "width": 163,
+            "height": 44,
+            "right": 348,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 294.640625,
+            "y": 281.328125,
+            "width": 53.359375,
+            "height": 44,
+            "right": 348,
+            "bottom": 325.328125
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 367.078125,
+            "width": 164,
+            "height": 44,
+            "right": 176,
+            "bottom": 411.078125
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 184,
+            "y": 367.078125,
+            "width": 164,
+            "height": 44,
+            "right": 348,
+            "bottom": 411.078125
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 411.078125,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 455.078125
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 460.078125,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 504.078125
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 336,
+            "height": 46,
+            "right": 348,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-360x640-1x-custom.png"
+    },
+    {
+      "version": "after",
+      "state": "days",
+      "textScale": 1,
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 546.609375,
+          "right": 360,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 360,
+        "height": 93.390625,
+        "right": 360,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 336,
+        "height": 46,
+        "right": 348,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 80,
+        "width": 336,
+        "height": 402.140625,
+        "right": 348,
+        "bottom": 482.140625
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 226.125,
+            "height": 44,
+            "right": 348,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 172.609375,
+            "y": 108.390625,
+            "width": 87.1875,
+            "height": 44,
+            "right": 259.796875,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 259.796875,
+            "y": 108.390625,
+            "width": 87.203125,
+            "height": 44,
+            "right": 347,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 163.390625,
+            "width": 63.1875,
+            "height": 44,
+            "right": 75.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 80.1875,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 143.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 148.390625,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 211.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 216.59375,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 279.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 284.796875,
+            "y": 163.390625,
+            "width": 63.203125,
+            "height": 44,
+            "right": 348,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 215.390625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 259.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 46.015625,
+            "y": 215.390625,
+            "width": 71.5,
+            "height": 44,
+            "right": 117.515625,
+            "bottom": 259.390625
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 294.640625,
+            "y": 259.390625,
+            "width": 53.359375,
+            "height": 44,
+            "right": 348,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 345.140625,
+            "width": 164,
+            "height": 44,
+            "right": 176,
+            "bottom": 389.140625
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 184,
+            "y": 345.140625,
+            "width": 164,
+            "height": 44,
+            "right": 348,
+            "bottom": 389.140625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 389.140625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 433.140625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 438.140625,
+            "width": 336,
+            "height": 44,
+            "right": 348,
+            "bottom": 482.140625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 336,
+            "height": 46,
+            "right": 348,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-360x640-1x-days.png"
+    },
+    {
+      "version": "after",
+      "state": "configure",
+      "textScale": 1,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "main": {
+        "scrollHeight": 751,
+        "clientHeight": 751,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 750.609375,
+          "right": 390,
+          "bottom": 750.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 750.609375,
+        "width": 390,
+        "height": 93.390625,
+        "right": 390,
+        "bottom": 844
+      },
+      "primary": {
+        "x": 16,
+        "y": 786,
+        "width": 358,
+        "height": 46,
+        "right": 374,
+        "bottom": 832
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 16,
+        "y": 80,
+        "width": 358,
+        "height": 350.140625,
+        "right": 374,
+        "bottom": 430.140625
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 131.875,
+            "y": 9.5,
+            "width": 242.125,
+            "height": 44,
+            "right": 374,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 187.40625,
+            "y": 108.390625,
+            "width": 92.796875,
+            "height": 44,
+            "right": 280.203125,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 280.203125,
+            "y": 108.390625,
+            "width": 92.796875,
+            "height": 44,
+            "right": 373,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 83.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 88.59375,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 156.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 161.1875,
+            "y": 163.390625,
+            "width": 67.609375,
+            "height": 44,
+            "right": 228.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 233.796875,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 301.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 306.390625,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 373.984375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 320.640625,
+            "y": 207.390625,
+            "width": 53.359375,
+            "height": 44,
+            "right": 374,
+            "bottom": 251.390625
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 293.140625,
+            "width": 175,
+            "height": 44,
+            "right": 191,
+            "bottom": 337.140625
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 199,
+            "y": 293.140625,
+            "width": 175,
+            "height": 44,
+            "right": 374,
+            "bottom": 337.140625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 337.140625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 381.140625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 386.140625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 430.140625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 786,
+            "width": 358,
+            "height": 46,
+            "right": 374,
+            "bottom": 832
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-390x844-1x-configure.png"
+    },
+    {
+      "version": "after",
+      "state": "review",
+      "textScale": 1,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "main": {
+        "scrollHeight": 751,
+        "clientHeight": 751,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 750.609375,
+          "right": 390,
+          "bottom": 750.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 750.609375,
+        "width": 390,
+        "height": 93.390625,
+        "right": 390,
+        "bottom": 844
+      },
+      "primary": {
+        "x": 16,
+        "y": 786,
+        "width": 358,
+        "height": 46,
+        "right": 374,
+        "bottom": 832
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": null,
+      "review": {
+        "x": 16,
+        "y": 80,
+        "width": 358,
+        "height": 338.25,
+        "right": 374,
+        "bottom": 418.25
+      },
+      "results": {
+        "x": 16,
+        "y": 216.078125,
+        "width": 358,
+        "height": 202.171875,
+        "right": 374,
+        "bottom": 418.25
+      },
+      "selection": {
+        "x": 16,
+        "y": 132,
+        "width": 358,
+        "height": 66.078125,
+        "right": 374,
+        "bottom": 198.078125
+      },
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 131.875,
+            "y": 9.5,
+            "width": 242.125,
+            "height": 44,
+            "right": 374,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "edit-filters-button",
+          "disabled": false,
+          "rect": {
+            "x": 310.421875,
+            "y": 80,
+            "width": 63.578125,
+            "height": 44,
+            "right": 374,
+            "bottom": 124
+          }
+        },
+        {
+          "name": "Review 3 routes⌄",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 370.25,
+            "width": 358,
+            "height": 48,
+            "right": 374,
+            "bottom": 418.25
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 786,
+            "width": 358,
+            "height": 46,
+            "right": 374,
+            "bottom": 832
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-390x844-1x-review.png"
+    },
+    {
+      "version": "after",
+      "state": "custom",
+      "textScale": 1,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "main": {
+        "scrollHeight": 751,
+        "clientHeight": 751,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 750.609375,
+          "right": 390,
+          "bottom": 750.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 750.609375,
+        "width": 390,
+        "height": 93.390625,
+        "right": 390,
+        "bottom": 844
+      },
+      "primary": {
+        "x": 16,
+        "y": 786,
+        "width": 358,
+        "height": 46,
+        "right": 374,
+        "bottom": 832
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 16,
+        "y": 80,
+        "width": 358,
+        "height": 424.078125,
+        "right": 374,
+        "bottom": 504.078125
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 131.875,
+            "y": 9.5,
+            "width": 242.125,
+            "height": 44,
+            "right": 374,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 187.40625,
+            "y": 108.390625,
+            "width": 92.796875,
+            "height": 44,
+            "right": 280.203125,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 280.203125,
+            "y": 108.390625,
+            "width": 92.796875,
+            "height": 44,
+            "right": 373,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 83.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 88.59375,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 156.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 161.1875,
+            "y": 163.390625,
+            "width": 67.609375,
+            "height": 44,
+            "right": 228.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 233.796875,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 301.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 306.390625,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 373.984375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 217.390625,
+            "width": 174,
+            "height": 63.9375,
+            "right": 190,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 237.328125,
+            "width": 174,
+            "height": 44,
+            "right": 190,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 200,
+            "y": 217.390625,
+            "width": 174,
+            "height": 63.9375,
+            "right": 374,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 200,
+            "y": 237.328125,
+            "width": 174,
+            "height": 44,
+            "right": 374,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 320.640625,
+            "y": 281.328125,
+            "width": 53.359375,
+            "height": 44,
+            "right": 374,
+            "bottom": 325.328125
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 367.078125,
+            "width": 175,
+            "height": 44,
+            "right": 191,
+            "bottom": 411.078125
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 199,
+            "y": 367.078125,
+            "width": 175,
+            "height": 44,
+            "right": 374,
+            "bottom": 411.078125
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 411.078125,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 455.078125
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 460.078125,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 504.078125
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 786,
+            "width": 358,
+            "height": 46,
+            "right": 374,
+            "bottom": 832
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-390x844-1x-custom.png"
+    },
+    {
+      "version": "after",
+      "state": "days",
+      "textScale": 1,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "main": {
+        "scrollHeight": 751,
+        "clientHeight": 751,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 750.609375,
+          "right": 390,
+          "bottom": 750.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 750.609375,
+        "width": 390,
+        "height": 93.390625,
+        "right": 390,
+        "bottom": 844
+      },
+      "primary": {
+        "x": 16,
+        "y": 786,
+        "width": 358,
+        "height": 46,
+        "right": 374,
+        "bottom": 832
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 16,
+        "y": 80,
+        "width": 358,
+        "height": 402.140625,
+        "right": 374,
+        "bottom": 482.140625
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 131.875,
+            "y": 9.5,
+            "width": 242.125,
+            "height": 44,
+            "right": 374,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 187.40625,
+            "y": 108.390625,
+            "width": 92.796875,
+            "height": 44,
+            "right": 280.203125,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 280.203125,
+            "y": 108.390625,
+            "width": 92.796875,
+            "height": 44,
+            "right": 373,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 83.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 88.59375,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 156.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 161.1875,
+            "y": 163.390625,
+            "width": 67.609375,
+            "height": 44,
+            "right": 228.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 233.796875,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 301.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 306.390625,
+            "y": 163.390625,
+            "width": 67.59375,
+            "height": 44,
+            "right": 373.984375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 215.390625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 259.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 50.015625,
+            "y": 215.390625,
+            "width": 71.5,
+            "height": 44,
+            "right": 121.515625,
+            "bottom": 259.390625
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 320.640625,
+            "y": 259.390625,
+            "width": 53.359375,
+            "height": 44,
+            "right": 374,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 345.140625,
+            "width": 175,
+            "height": 44,
+            "right": 191,
+            "bottom": 389.140625
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 199,
+            "y": 345.140625,
+            "width": 175,
+            "height": 44,
+            "right": 374,
+            "bottom": 389.140625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 389.140625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 433.140625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 438.140625,
+            "width": 358,
+            "height": 44,
+            "right": 374,
+            "bottom": 482.140625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 16,
+            "y": 786,
+            "width": 358,
+            "height": 46,
+            "right": 374,
+            "bottom": 832
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-390x844-1x-days.png"
+    },
+    {
+      "version": "after",
+      "state": "configure",
+      "textScale": 1,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 546.609375,
+          "right": 320,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 320,
+        "height": 93.390625,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 296,
+        "height": 46,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 80,
+        "width": 296,
+        "height": 350.140625,
+        "right": 308,
+        "bottom": 430.140625
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 186.125,
+            "height": 44,
+            "right": 308,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 132.609375,
+            "y": 108.390625,
+            "width": 87.1875,
+            "height": 44,
+            "right": 219.796875,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 219.796875,
+            "y": 108.390625,
+            "width": 87.203125,
+            "height": 44,
+            "right": 307,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 163.390625,
+            "width": 55.1875,
+            "height": 44,
+            "right": 67.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 127.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 187.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 247.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 308,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 254.640625,
+            "y": 207.390625,
+            "width": 53.359375,
+            "height": 44,
+            "right": 308,
+            "bottom": 251.390625
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 293.140625,
+            "width": 144,
+            "height": 44,
+            "right": 156,
+            "bottom": 337.140625
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 293.140625,
+            "width": 144,
+            "height": 44,
+            "right": 308,
+            "bottom": 337.140625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 337.140625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 381.140625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 386.140625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 430.140625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 296,
+            "height": 46,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-1x-configure.png"
+    },
+    {
+      "version": "after",
+      "state": "review",
+      "textScale": 1,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 546.609375,
+          "right": 320,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 320,
+        "height": 93.390625,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 296,
+        "height": 46,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": null,
+      "review": {
+        "x": 12,
+        "y": 80,
+        "width": 296,
+        "height": 338.25,
+        "right": 308,
+        "bottom": 418.25
+      },
+      "results": {
+        "x": 12,
+        "y": 216.078125,
+        "width": 296,
+        "height": 202.171875,
+        "right": 308,
+        "bottom": 418.25
+      },
+      "selection": {
+        "x": 12,
+        "y": 132,
+        "width": 296,
+        "height": 66.078125,
+        "right": 308,
+        "bottom": 198.078125
+      },
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 186.125,
+            "height": 44,
+            "right": 308,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "edit-filters-button",
+          "disabled": false,
+          "rect": {
+            "x": 244.421875,
+            "y": 80,
+            "width": 63.578125,
+            "height": 44,
+            "right": 308,
+            "bottom": 124
+          }
+        },
+        {
+          "name": "Review 3 routes⌄",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 370.25,
+            "width": 296,
+            "height": 48,
+            "right": 308,
+            "bottom": 418.25
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 296,
+            "height": 46,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-1x-review.png"
+    },
+    {
+      "version": "after",
+      "state": "custom",
+      "textScale": 1,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 546.609375,
+          "right": 320,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 320,
+        "height": 93.390625,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 296,
+        "height": 46,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 80,
+        "width": 296,
+        "height": 424.078125,
+        "right": 308,
+        "bottom": 504.078125
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 186.125,
+            "height": 44,
+            "right": 308,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 132.609375,
+            "y": 108.390625,
+            "width": 87.1875,
+            "height": 44,
+            "right": 219.796875,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 219.796875,
+            "y": 108.390625,
+            "width": 87.203125,
+            "height": 44,
+            "right": 307,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 163.390625,
+            "width": 55.1875,
+            "height": 44,
+            "right": 67.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 127.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 187.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 247.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 308,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 217.390625,
+            "width": 143,
+            "height": 63.9375,
+            "right": 155,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 237.328125,
+            "width": 143,
+            "height": 44,
+            "right": 155,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 165,
+            "y": 217.390625,
+            "width": 143,
+            "height": 63.9375,
+            "right": 308,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 165,
+            "y": 237.328125,
+            "width": 143,
+            "height": 44,
+            "right": 308,
+            "bottom": 281.328125
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 254.640625,
+            "y": 281.328125,
+            "width": 53.359375,
+            "height": 44,
+            "right": 308,
+            "bottom": 325.328125
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 367.078125,
+            "width": 144,
+            "height": 44,
+            "right": 156,
+            "bottom": 411.078125
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 367.078125,
+            "width": 144,
+            "height": 44,
+            "right": 308,
+            "bottom": 411.078125
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 411.078125,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 455.078125
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 460.078125,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 504.078125
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 296,
+            "height": 46,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-1x-custom.png"
+    },
+    {
+      "version": "after",
+      "state": "days",
+      "textScale": 1,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 547,
+        "clientHeight": 547,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 546.609375,
+          "right": 320,
+          "bottom": 546.609375
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 546.609375,
+        "width": 320,
+        "height": 93.390625,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 582,
+        "width": 296,
+        "height": 46,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 80,
+        "width": 296,
+        "height": 402.140625,
+        "right": 308,
+        "bottom": 482.140625
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 121.875,
+            "y": 9.5,
+            "width": 186.125,
+            "height": 44,
+            "right": 308,
+            "bottom": 53.5
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 132.609375,
+            "y": 108.390625,
+            "width": 87.1875,
+            "height": 44,
+            "right": 219.796875,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 219.796875,
+            "y": 108.390625,
+            "width": 87.203125,
+            "height": 44,
+            "right": 307,
+            "bottom": 152.390625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 163.390625,
+            "width": 55.1875,
+            "height": 44,
+            "right": 67.1875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 72.1875,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 127.390625,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 132.390625,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 187.59375,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 192.59375,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 247.796875,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 252.796875,
+            "y": 163.390625,
+            "width": 55.203125,
+            "height": 44,
+            "right": 308,
+            "bottom": 207.390625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 215.390625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 259.390625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 46.015625,
+            "y": 215.390625,
+            "width": 71.5,
+            "height": 44,
+            "right": 117.515625,
+            "bottom": 259.390625
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 254.640625,
+            "y": 259.390625,
+            "width": 53.359375,
+            "height": 44,
+            "right": 308,
+            "bottom": 303.390625
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 345.140625,
+            "width": 144,
+            "height": 44,
+            "right": 156,
+            "bottom": 389.140625
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 345.140625,
+            "width": 144,
+            "height": 44,
+            "right": 308,
+            "bottom": 389.140625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 389.140625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 433.140625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 438.140625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 482.140625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 582,
+            "width": 296,
+            "height": 46,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-1x-days.png"
+    },
+    {
+      "version": "after",
+      "state": "configure",
+      "textScale": 2,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 812,
+        "clientHeight": 479,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 479.21875,
+          "right": 320,
+          "bottom": 479.21875
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 479.21875,
+        "width": 320,
+        "height": 160.78125,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 566.8125,
+        "width": 296,
+        "height": 61.1875,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 96.796875,
+        "width": 296,
+        "height": 699.453125,
+        "right": 308,
+        "bottom": 796.25
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "0",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 220.875,
+            "y": 15.25,
+            "width": 87.125,
+            "height": 49.296875,
+            "right": 308,
+            "bottom": 64.546875
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 13,
+            "y": 198.09375,
+            "width": 147,
+            "height": 44,
+            "right": 160,
+            "bottom": 242.09375
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 160,
+            "y": 198.09375,
+            "width": 147,
+            "height": 44,
+            "right": 307,
+            "bottom": 242.09375
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 253.09375,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": 299.890625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 162.5,
+            "y": 253.09375,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 308,
+            "bottom": 299.890625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 304.890625,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": 351.6875
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 162.5,
+            "y": 304.890625,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 308,
+            "bottom": 351.6875
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 356.6875,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": 403.484375
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 443.375,
+            "width": 102.71875,
+            "height": 44,
+            "right": 114.71875,
+            "bottom": 487.375
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 550.875,
+            "width": 144,
+            "height": 152.375,
+            "right": 156,
+            "bottom": 703.25
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 550.875,
+            "width": 144,
+            "height": 152.375,
+            "right": 308,
+            "bottom": 703.25
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 703.25,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 747.25
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 752.25,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 796.25
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 566.8125,
+            "width": 296,
+            "height": 61.1875,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-2x-configure.png"
+    },
+    {
+      "version": "after",
+      "state": "review",
+      "textScale": 2,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 904,
+        "clientHeight": 479,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 479.21875,
+          "right": 320,
+          "bottom": 479.21875
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 479.21875,
+        "width": 320,
+        "height": 160.78125,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 566.8125,
+        "width": 296,
+        "height": 61.1875,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Prepare ZIP",
+      "settings": null,
+      "review": {
+        "x": 12,
+        "y": 96.796875,
+        "width": 296,
+        "height": 790.78125,
+        "right": 308,
+        "bottom": 887.578125
+      },
+      "results": {
+        "x": 12,
+        "y": 479.75,
+        "width": 296,
+        "height": 407.828125,
+        "right": 308,
+        "bottom": 887.578125
+      },
+      "selection": {
+        "x": 12,
+        "y": 265.171875,
+        "width": 296,
+        "height": 196.578125,
+        "right": 308,
+        "bottom": 461.75
+      },
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 220.875,
+            "y": 15.25,
+            "width": 87.125,
+            "height": 49.296875,
+            "right": 308,
+            "bottom": 64.546875
+          }
+        },
+        {
+          "name": "edit-filters-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 213.171875,
+            "width": 127.140625,
+            "height": 44,
+            "right": 139.140625,
+            "bottom": 257.171875
+          }
+        },
+        {
+          "name": "Review 3 routes⌄",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 838.28125,
+            "width": 296,
+            "height": 49.296875,
+            "right": 308,
+            "bottom": 887.578125
+          }
+        },
+        {
+          "name": "download-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 566.8125,
+            "width": 296,
+            "height": 61.1875,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-2x-review.png"
+    },
+    {
+      "version": "after",
+      "state": "custom",
+      "textScale": 2,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 1023,
+        "clientHeight": 479,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 0,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 479.21875,
+          "right": 320,
+          "bottom": 479.21875
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 479.21875,
+        "width": 320,
+        "height": 160.78125,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 566.8125,
+        "width": 296,
+        "height": 61.1875,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": 96.796875,
+        "width": 296,
+        "height": 910.609375,
+        "right": 308,
+        "bottom": 1007.40625
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 220.875,
+            "y": 15.25,
+            "width": 87.125,
+            "height": 49.296875,
+            "right": 308,
+            "bottom": 64.546875
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 13,
+            "y": 198.09375,
+            "width": 147,
+            "height": 44,
+            "right": 160,
+            "bottom": 242.09375
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 160,
+            "y": 198.09375,
+            "width": 147,
+            "height": 44,
+            "right": 307,
+            "bottom": 242.09375
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 253.09375,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": 299.890625
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 162.5,
+            "y": 253.09375,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 308,
+            "bottom": 299.890625
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 304.890625,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": 351.6875
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 162.5,
+            "y": 304.890625,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 308,
+            "bottom": 351.6875
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 356.6875,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": 403.484375
+          }
+        },
+        {
+          "name": "From",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 413.484375,
+            "width": 296,
+            "height": 95.578125,
+            "right": 308,
+            "bottom": 509.0625
+          }
+        },
+        {
+          "name": "date-from",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 449.375,
+            "width": 296,
+            "height": 59.6875,
+            "right": 308,
+            "bottom": 509.0625
+          }
+        },
+        {
+          "name": "Through",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 519.0625,
+            "width": 296,
+            "height": 95.578125,
+            "right": 308,
+            "bottom": 614.640625
+          }
+        },
+        {
+          "name": "date-to",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 554.953125,
+            "width": 296,
+            "height": 59.6875,
+            "right": 308,
+            "bottom": 614.640625
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 654.53125,
+            "width": 102.71875,
+            "height": 44,
+            "right": 114.71875,
+            "bottom": 698.53125
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 762.03125,
+            "width": 144,
+            "height": 152.375,
+            "right": 156,
+            "bottom": 914.40625
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 762.03125,
+            "width": 144,
+            "height": 152.375,
+            "right": 308,
+            "bottom": 914.40625
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 914.40625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 958.40625
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 963.40625,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 1007.40625
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 566.8125,
+            "width": 296,
+            "height": 61.1875,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-2x-custom.png"
+    },
+    {
+      "version": "after",
+      "state": "days",
+      "textScale": 2,
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "main": {
+        "scrollHeight": 918,
+        "clientHeight": 479,
+        "scrollWidth": 320,
+        "clientWidth": 320,
+        "scrollTop": 411,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 479.21875,
+          "right": 320,
+          "bottom": 479.21875
+        }
+      },
+      "body": {
+        "scrollHeight": 640,
+        "clientHeight": 640
+      },
+      "horizontalOverflow": false,
+      "footer": {
+        "x": 0,
+        "y": 479.21875,
+        "width": 320,
+        "height": 160.78125,
+        "right": 320,
+        "bottom": 640
+      },
+      "primary": {
+        "x": 12,
+        "y": 566.8125,
+        "width": 296,
+        "height": 61.1875,
+        "right": 308,
+        "bottom": 628
+      },
+      "primaryLabel": "Scan files",
+      "settings": {
+        "x": 12,
+        "y": -314.203125,
+        "width": 296,
+        "height": 805.03125,
+        "right": 308,
+        "bottom": 490.828125
+      },
+      "review": null,
+      "results": null,
+      "selection": null,
+      "routeDisclosureOpen": false,
+      "fileCount": "6",
+      "controls": [
+        {
+          "name": "Synthetic device · Route selection test⌄",
+          "disabled": false,
+          "rect": {
+            "x": 220.875,
+            "y": -395.75,
+            "width": 87.125,
+            "height": 49.296875,
+            "right": 308,
+            "bottom": -346.453125
+          }
+        },
+        {
+          "name": "Recorded",
+          "disabled": false,
+          "rect": {
+            "x": 13,
+            "y": -212.90625,
+            "width": 147,
+            "height": 44,
+            "right": 160,
+            "bottom": -168.90625
+          }
+        },
+        {
+          "name": "Uploaded",
+          "disabled": false,
+          "rect": {
+            "x": 160,
+            "y": -212.90625,
+            "width": 147,
+            "height": 44,
+            "right": 307,
+            "bottom": -168.90625
+          }
+        },
+        {
+          "name": "date-preset-1",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": -157.90625,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": -111.109375
+          }
+        },
+        {
+          "name": "date-preset-7",
+          "disabled": false,
+          "rect": {
+            "x": 162.5,
+            "y": -157.90625,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 308,
+            "bottom": -111.109375
+          }
+        },
+        {
+          "name": "date-preset-30",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": -106.109375,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": -59.3125
+          }
+        },
+        {
+          "name": "date-preset-all",
+          "disabled": false,
+          "rect": {
+            "x": 162.5,
+            "y": -106.109375,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 308,
+            "bottom": -59.3125
+          }
+        },
+        {
+          "name": "date-preset-custom",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": -54.3125,
+            "width": 145.5,
+            "height": 46.796875,
+            "right": 157.5,
+            "bottom": -7.515625
+          }
+        },
+        {
+          "name": "recent-settings",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 0.484375,
+            "width": 296,
+            "height": 97.578125,
+            "right": 308,
+            "bottom": 98.0625
+          }
+        },
+        {
+          "name": "date-days",
+          "disabled": false,
+          "rect": {
+            "x": 72.03125,
+            "y": 0.484375,
+            "width": 143,
+            "height": 57.6875,
+            "right": 215.03125,
+            "bottom": 58.171875
+          }
+        },
+        {
+          "name": "edit-days-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 137.953125,
+            "width": 102.71875,
+            "height": 44,
+            "right": 114.71875,
+            "bottom": 181.953125
+          }
+        },
+        {
+          "name": "Full logsrlog",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 245.453125,
+            "width": 144,
+            "height": 152.375,
+            "right": 156,
+            "bottom": 397.828125
+          }
+        },
+        {
+          "name": "Quick logsqlog",
+          "disabled": false,
+          "rect": {
+            "x": 164,
+            "y": 245.453125,
+            "width": 144,
+            "height": 152.375,
+            "right": 308,
+            "bottom": 397.828125
+          }
+        },
+        {
+          "name": "Camera files Optional",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 397.828125,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 441.828125
+          }
+        },
+        {
+          "name": "Storage & help",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 446.828125,
+            "width": 296,
+            "height": 44,
+            "right": 308,
+            "bottom": 490.828125
+          }
+        },
+        {
+          "name": "scan-button",
+          "disabled": false,
+          "rect": {
+            "x": 12,
+            "y": 566.8125,
+            "width": 296,
+            "height": 61.1875,
+            "right": 308,
+            "bottom": 628
+          }
+        }
+      ],
+      "clippedText": [],
+      "pageErrors": [],
+      "screenshot": "screenshots/after-320x640-2x-days.png"
+    }
+  ]
+}
