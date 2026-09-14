@@ -99,7 +99,7 @@ progress:not([value]) { background: linear-gradient(90deg, #e9ece0 20%, #92ad94 
 .result-summary strong { font-size: 46px; color: var(--green); font-weight: 600; letter-spacing: -2px; line-height: 1; font-variant-numeric: tabular-nums; }
 .result-summary span { font-size: 13px; font-weight: 600; }
 .result-summary .help { margin-top: 3px; }
-.file-preview { list-style: none; padding: 0; margin: 20px 0; max-height: 272px; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid #e7e8dc; }
+.file-preview { list-style: none; padding: 0; margin: 20px 0; max-height: 272px; overflow-y: auto; border-top: 1px solid #e7e8dc; }
 .file-preview li { padding: 10px 0; border-bottom: 1px solid #e7e8dc; }
 .file-name { display: block; font-size: 12px; color: #344536; line-height: 1.5; font-weight: 500; overflow-wrap: anywhere; }
 .file-route { display: block; font-size: 10px; color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
