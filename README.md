@@ -1,7 +1,11 @@
 Unofficial Chrome extension for useradmin.comma.ai that downloads logs in bulk.
 
 A separate [Firefox Android prototype](firefox/README.md) is available in `firefox/`.
-It opens a mobile-friendly tab, collects selected rlogs and qlogs, and prepares a
-bounded ZIP for saving. See that README for development installation, limits,
-and the synthetic Android test workflow. The Firefox package is unsigned until
-submitted to Mozilla for signing.
+It has a compact mobile tab, upload-date filters, all six log/camera choices,
+grouped route results, and ZIP output.
+
+[Download unsigned v0.2.0](docs/downloads/comma-firefox-0.2.0-unsigned.zip) ·
+[Android screenshots and test results](docs/firefox-android-validation.md)
+
+Normal installation requires Mozilla signing. See the Firefox README for
+temporary development installation and the prototype's limits.
