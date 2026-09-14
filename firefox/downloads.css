@@ -82,10 +82,10 @@ input[type="number"] { width: 72px; text-align: center; }
 .file-type input { width: 16px; height: 16px; margin: 0; flex: 0 0 auto; }
 .type-name { overflow-wrap: anywhere; font-size: 13px; font-weight: 600; }
 .type-description { color: var(--muted); font-size: 11px; margin-left: auto; }
-.camera-types > summary, .storage-details > summary { min-height: 44px; display: flex; align-items: center; gap: 6px; font-size: 12px; list-style: none; }
-.camera-types > summary::before, .storage-details > summary::before { content: "+"; width: 13px; color: var(--muted); font-size: 16px; }
-.camera-types[open] > summary::before, .storage-details[open] > summary::before { content: "−"; }
-.camera-types > summary::-webkit-details-marker, .storage-details > summary::-webkit-details-marker { display: none; }
+.camera-types > summary { min-height: 44px; display: flex; align-items: center; gap: 6px; font-size: 12px; list-style: none; }
+.camera-types > summary::before { content: "+"; width: 13px; color: var(--muted); font-size: 16px; }
+.camera-types[open] > summary::before { content: "−"; }
+.camera-types > summary::-webkit-details-marker { display: none; }
 #camera-selection { margin-left: auto; font-size: 11px; }
 .camera-options { padding-bottom: 2px; }
 fieldset:disabled .date-basis, fieldset:disabled .date-presets, fieldset:disabled .file-types, fieldset:disabled .recent-settings, fieldset:disabled .custom-settings { opacity: .6; }
@@ -138,8 +138,7 @@ progress::-webkit-progress-value { background: var(--accent); border-radius: 8px
 progress:not([value]) { background: linear-gradient(90deg, #e7ebf4 20%, #859ee9 50%, #e7ebf4 80%); }
 .notice { margin: 12px 0; padding: 10px 12px; border: 1px solid #e6d9bb; border-radius: 6px; color: #725419; background: #fff9ec; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
 .notice.error { color: #923232; border-color: #edcece; background: #fff3f3; }
-.storage-details { margin-top: 4px; border-top: 1px solid var(--border); color: var(--muted); }
-.storage-details .help { margin-top: 0; margin-bottom: 10px; }
+.help:empty { display: none; }
 .action-bar { flex: 0 0 auto; width: min(100%, 640px); padding: 10px 20px calc(12px + env(safe-area-inset-bottom)); background: #fff; border: 1px solid var(--border); border-bottom: 0; box-shadow: 0 -3px 15px #1b2b4410; }
 .action-summary { color: var(--muted); font-size: 12px; margin-bottom: 7px; min-height: 16px; overflow-wrap: anywhere; }
 .action-buttons { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }

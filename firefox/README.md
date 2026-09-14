@@ -57,7 +57,7 @@ separate from this metadata-reading concurrency.
 
 The compact setup shows common date presets and Full logs / Quick logs first.
 **Set days** opens an arbitrary day count; **Custom** opens the date range. Camera
-choices and help expand when needed. An unavailable This route option is omitted
+choices expand when needed. An unavailable This route option is omitted
 on a device page.
 
 Scanning opens a separate review screen with the exact filter summary and file
@@ -70,6 +70,12 @@ with the selected date and show the route identifier underneath.
 Scan, Prepare ZIP and Save ZIP stay in the bottom action bar. Preparation and
 save status appear above optional route details, without scrolling through the
 settings or a long route list.
+
+Version 0.4.1 removes routine help paragraphs, camera-size advice, repeated save
+instructions, page-read totals, and normal date-filter exclusion counts from the
+interface. It retains concise progress, actual errors, unavailable-date notices,
+and the smaller ZIP limit when memory fallback is in use. **Save requested** means
+the save was handed to Firefox; it does not claim that the download completed.
 
 Keep both the source tab and downloader open while scanning; keep the downloader
 in the foreground while preparing and saving. Preparation progress measures

@@ -376,8 +376,7 @@ test("recording selection displays the actual start date and never substitutes u
   assert.equal(ui.el("file-count").textContent, "1");
   assert.match(ui.el("file-preview").querySelector("summary").textContent, /Recorded 2026-09-14/);
   assert.doesNotMatch(ui.el("file-preview").querySelector("summary").textContent, /Uploaded/);
-  assert.match(ui.el("scan-detail").textContent, /2 routes were excluded/);
-  assert.match(ui.el("scan-detail").textContent, /1 had no readable recording date/);
+  assert.equal(ui.el("scan-detail").textContent, "1 route skipped · recording date unavailable");
 });
 
 test("a second recording scan rereads excluded routes and discovers an upstream corrected date", async () => {
@@ -657,7 +656,7 @@ test("qlog-only route reports no matching rlogs, then prepares selected qlogs", 
   await ui.ready();
   await ui.scan();
   assert.equal(ui.el("file-count").textContent, "0");
-  assert.match(ui.el("scan-detail").textContent, /Choose another file type/);
+  assert.equal(ui.el("scan-detail").textContent, "No matching files. Try another file type.");
   assert.equal(ui.el("download-button").disabled, true);
   assert.equal(ui.el("review-panel").hidden, false);
   assert.equal(ui.el("settings-form").hidden, true);
@@ -694,8 +693,7 @@ test("listed routes follow pagination, deduplicate files, and apply custom dates
   await ui.ready();
   await ui.scan();
   assert.equal(ui.el("file-count").textContent, "1");
-  assert.match(ui.el("scan-detail").textContent, /2 routes were excluded/);
-  assert.match(ui.el("scan-detail").textContent, /1 had no readable upload date/);
+  assert.equal(ui.el("scan-detail").textContent, "1 route skipped · upload date unavailable");
   assert.equal(ui.reads.filter(message => message.url === recent.url).length, 1);
   const scanReads = ui.reads.slice(1);
   assert.ok(scanReads.every(message => message.expectedUrl === SOURCE && message.scanId));
@@ -869,7 +867,7 @@ test("Save ZIP remains reusable until explicit clearing and never claims downloa
   ui.click("save-button");
   assert.equal(ui.el("save-button").href, href);
   assert.equal(ui.revoked.length, 0);
-  assert.match(ui.el("save-note").textContent, /cannot confirm/);
+  assert.equal(ui.el("transfer-status").textContent, "Save requested");
   ui.click("clear-button");
   await until(() => ui.disposed.length === 1 && !ui.el("download-button").disabled, "ZIP cleanup completion");
   assert.deepEqual(ui.revoked, [href]);

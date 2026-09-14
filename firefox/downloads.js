@@ -84,16 +84,16 @@
     el("clear-button").hidden = choosing || !hasArchive;
     el("clear-button").disabled = busy;
     const routes = new Set(state.files.map(file => file.routeFolderName)).size;
-    el("action-summary").textContent = mode === "scan" ? "Scanning · keep the source tab open"
-      : mode === "build" ? "Preparing ZIP · keep this tab open"
-      : choosing && state.source && prefs.selectedTypes.length
-        ? state.reviewAvailable ? "Scan again, or return to your results" : "Choose dates and files, then scan"
+    el("action-summary").textContent = mode === "scan" ? "Scanning…"
+      : mode === "build" ? "Preparing ZIP…"
+      : choosing && state.source && prefs.selectedTypes.length ? ""
       : mode === "idle" && state.lastOutcome ? state.lastOutcome
       : hasArchive ? `${state.archive.count} files · ${formatBytes(state.archive.bytes)} · ready to save`
       : hasFiles ? `${state.files.length} files · ${routes} ${routes === 1 ? "route" : "routes"} · ready to prepare`
       : !state.source ? "Open a device or route page to begin"
       : !prefs.selectedTypes.length ? "Choose at least one file type"
-      : "Choose files, then scan";
+      : "";
+    el("action-summary").hidden = !el("action-summary").textContent;
   }
 
   function setView(view) {
@@ -109,8 +109,8 @@
     const period = range.mode === "all" ? "All dates" : range.mode === "custom" ? "Custom range"
       : Number(prefs.date.days) === 1 ? "Today" : `Last ${Number(prefs.date.days)} days`;
     el("selection-title").textContent = prefs.scope === "current" ? "This route" : `${basis} · ${period}`;
-    el("selection-range").textContent = prefs.scope === "current" ? "All matching uploaded files on this route"
-      : range.mode === "all" ? "Includes routes with unknown dates" : `${range.fromDate} → ${range.toDate}`;
+    el("selection-range").hidden = prefs.scope === "current" || range.mode === "all";
+    el("selection-range").textContent = el("selection-range").hidden ? "" : `${range.fromDate} → ${range.toDate}`;
     el("selection-files").textContent = `${prefs.scope === "listed" ? "Device routes · " : ""}${prefs.selectedTypes.join(" + ")}`;
   }
 
@@ -161,7 +161,6 @@
     el("save-button").hidden = true;
     el("save-button").removeAttribute("href");
     el("clear-button").hidden = true;
-    el("save-note").hidden = true;
     if (previous) await previous.dispose();
   }
 
@@ -254,6 +253,7 @@
     }
     el("route-count").textContent = `${groups.size} ${groups.size === 1 ? "route" : "routes"}`;
     el("scan-detail").textContent = detail;
+    el("scan-detail").hidden = !detail;
     const entries = Array.from(groups);
     let shown = 0;
     el("file-preview").replaceChildren();
@@ -316,7 +316,7 @@
       shown = Math.min(shown + 10, entries.length);
       el("show-more-routes-button").hidden = shown >= entries.length;
       el("show-more-routes-button").textContent = `Show ${Math.min(10, entries.length - shown)} more routes`;
-      el("preview-note").textContent = `${shown} of ${entries.length} routes shown. All matching files are included in the ZIP.`;
+      el("preview-note").textContent = `${shown} of ${entries.length} routes`;
       if (moveFocus) firstSummary?.focus();
     };
     state.renderMore();
@@ -354,7 +354,7 @@
     el("empty-results").hidden = true;
     el("scan-progress").hidden = false;
     el("scan-progress").removeAttribute("value");
-    scanStatus("Reading source page…");
+    scanStatus("Scanning…");
     try {
       const result = await CommaScanner.scan({
         sourceUrl: expectedUrl, deviceUrl: state.source.deviceUrl,
@@ -367,21 +367,20 @@
           scanStatus(`${progress.routesRead} routes checked · ${progress.filesFound} files found…`);
         }
       });
-      const { files, pagesRead, filteredRoutes, undatedRoutes } = result;
-      let detail = files.length ? "Sizes are checked while preparing the ZIP."
-        : prefs.scope === "current" ? "No matching files on this route. Choose another file type or scan Device routes."
-        : "No matching files. Choose another file type, a wider date range, or another device.";
-      if (filteredRoutes) detail += ` ${filteredRoutes} ${filteredRoutes === 1 ? "route was" : "routes were"} excluded by the date filter.`;
-      if (undatedRoutes) detail += ` ${undatedRoutes} had no readable ${prefs.dateBasis === "recording" ? "recording" : "upload"} date.`;
+      const { files, undatedRoutes } = result;
+      let detail = files.length ? ""
+        : prefs.scope === "current" ? "No matching files. Try another file type."
+        : "No matching files. Try other dates or file types.";
+      if (undatedRoutes) detail += `${detail ? " " : ""}${undatedRoutes} ${undatedRoutes === 1 ? "route" : "routes"} skipped · ${prefs.dateBasis === "recording" ? "recording" : "upload"} date unavailable`;
       showResults(files, detail);
-      scanStatus(`Scan complete · ${pagesRead} ${pagesRead === 1 ? "page" : "pages"} checked`);
+      scanStatus("Scan complete");
     } catch (error) {
-      state.lastOutcome = controller.signal.aborted ? "Scan cancelled" : "Scan failed · review the details";
+      state.lastOutcome = controller.signal.aborted ? "Scan cancelled" : "Scan failed";
       state.files = [];
       el("results-content").hidden = true;
       el("scan-status").textContent = controller.signal.aborted
-        ? "Scan cancelled. No partial results were kept."
-        : errorMessage(error, "The scan failed. No partial results were kept.");
+        ? "Scan cancelled"
+        : errorMessage(error, "Scan failed. Please try again.");
       el("scan-status").classList.toggle("error", !controller.signal.aborted);
     } finally {
       if (state.scanController === controller) {
@@ -426,7 +425,7 @@
     el("transfer-progress").hidden = false;
     el("transfer-progress").value = 0;
     el("transfer-progress").max = state.files.length;
-    el("transfer-detail").textContent = "Keep this tab open. The ZIP will be ready to save after every selected file has been fetched.";
+    el("transfer-detail").textContent = "";
     transferStatus("Preparing ZIP…");
     try {
       await discardArchive();
@@ -439,8 +438,7 @@
           el("transfer-progress").max = total;
           el("transfer-progress").value = done;
           transferStatus(`${done} of ${total} files prepared`);
-          const cap = Number(progress.maxBytes) || MAX_BYTES;
-          el("transfer-detail").textContent = `${formatBytes(progress.bytesReceived)} received · ${formatBytes(cap)} ZIP limit. Keep this tab open.`;
+          el("transfer-detail").textContent = `${formatBytes(progress.bytesReceived)} received`;
           el("action-summary").textContent = `${done} / ${total} files · ${formatBytes(progress.bytesReceived)} received`;
           if (progress.storage === "memory") el("storage-fallback").hidden = false;
         }
@@ -455,18 +453,16 @@
       el("save-button").download = archive.filename;
       el("save-button").hidden = false;
       el("clear-button").hidden = false;
-      el("save-note").hidden = false;
       el("storage-fallback").hidden = archive.storage !== "memory";
       el("transfer-progress").value = state.files.length;
       transferStatus("ZIP ready to save");
       el("transfer-detail").textContent = `${archive.count} files · ${formatBytes(archive.bytes)}`;
-      el("save-note").textContent = "Tap Save ZIP, then confirm the save in Firefox Downloads.";
     } catch (error) {
       state.lastOutcome = controller.signal.aborted ? "Preparation cancelled" : "ZIP could not be prepared";
       transferStatus(state.lastOutcome, !controller.signal.aborted);
       el("transfer-detail").textContent = controller.signal.aborted
-        ? "No partial ZIP was kept. You can prepare the selected files again."
-        : `${errorMessage(error, "Please try again.")} No partial ZIP is offered. If this batch is too large, choose fewer dates, a single route, or qlog only.`;
+        ? ""
+        : errorMessage(error, "Please try again.");
       el("transfer-progress").hidden = true;
     } finally {
       if (state.buildController === controller) {
@@ -589,8 +585,7 @@
     });
   });
   el("save-button").addEventListener("click", () => {
-    transferStatus("ZIP sent to Firefox for saving");
-    el("save-note").textContent = "Check Firefox Downloads to confirm the save. This tab cannot confirm completion; you can tap Save ZIP again.";
+    transferStatus("Save requested");
   });
   el("source-link").addEventListener("click", event => {
     if (!state.source || !Number.isSafeInteger(sourceTabId)) return;

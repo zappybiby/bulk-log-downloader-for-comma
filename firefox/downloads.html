@@ -73,11 +73,9 @@
                 <label class="file-type"><input type="checkbox" name="file-type" value="ecamera"><span class="type-name">ecamera</span></label>
                 <label class="file-type"><input type="checkbox" name="file-type" value="dcamera"><span class="type-name">dcamera</span></label>
               </div>
-              <p class="help">Camera files can be large. Use a short date range.</p>
             </details>
           </fieldset>
         </fieldset>
-      <details class="storage-details"><summary>Storage &amp; help</summary><p id="storage-note" class="help">Keep this tab and the source tab open while working. Each ZIP is limited to 256 MiB and needs temporary free storage. For larger collections, use smaller date ranges. Android may interrupt work when Firefox is in the background.</p><p class="help">Only files already uploaded to comma are available. Recorded uses the route’s start date; Uploaded uses the device table’s upload date. Dates follow the calendar shown on the site. Routes without a readable selected date are skipped; All includes them.</p><p class="help">Each scan reads pages afresh, up to four at a time. Recording-date scans check every listed route. No route-date cache is saved.</p><p class="help">An unofficial add-on for useradmin.comma.ai.</p></details>
       </form>
 
       <section id="review-panel" class="review-panel" aria-labelledby="review-title" hidden>
@@ -92,8 +90,7 @@
         <p id="transfer-status" class="transfer-status" role="status"></p>
         <progress id="transfer-progress" value="0" max="1" aria-label="ZIP preparation progress"></progress>
         <p id="transfer-detail" class="help"></p>
-        <p id="storage-fallback" class="notice" hidden>Temporary disk storage is unavailable. This ZIP is limited to 32 MiB. Choose fewer routes if it is too large.</p>
-        <p id="save-note" class="help" hidden>Check Firefox’s Downloads screen to confirm the ZIP was saved. You can tap Save ZIP again while this tab stays open.</p>
+        <p id="storage-fallback" class="notice" hidden>ZIP limit: 32 MiB</p>
       </section>
       <section id="results-section" class="results-section" aria-labelledby="results-title">
         <h2 id="results-title" class="visually-hidden">Matching files</h2><span id="scan-hint" hidden></span>
@@ -114,7 +111,7 @@
       </section>
     </main>
     <footer class="action-bar" aria-label="Download actions">
-      <p id="action-summary" class="action-summary" aria-live="polite">Choose files, then scan</p>
+      <p id="action-summary" class="action-summary" aria-live="polite" hidden></p>
       <div class="action-buttons">
         <button id="scan-button" class="button primary" type="button" disabled>Scan files</button>
         <button id="download-button" class="button primary" type="button" disabled hidden>Prepare ZIP</button>
