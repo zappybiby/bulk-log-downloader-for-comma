@@ -85,6 +85,18 @@ class Harness:
         raise TimeoutError(f'Timed out waiting for {text}')
 
     def dismiss_prompts(self):
+        if self.find(r'^Comma archive synthetic Android test was added$') is not None:
+            self.snapshot('extension-installed-confirmation')
+            self.click(r'^OK$')
+            print('Dismissed Firefox temporary-extension install confirmation', flush=True)
+            return True
+        # Firefox can restore its home screen after the install sheet even
+        # though onInstalled already opened our extension tab (shown under Continue).
+        test_tab = self.find(r'^Archive Android self-test$')
+        if test_tab is not None:
+            self.tap(test_tab)
+            print('Opening the existing synthetic test tab from Firefox home', flush=True)
+            return True
         for pattern in (r'^Not now$', r'^No Thanks$', r'^No$', r'^Skip$', r'^Maybe later$',
                         r'^Start browsing$', r'^Continue browsing$',
                         r'^Continue$', r'^Allow$', r'^Allow connection$', r'^Download$'):
