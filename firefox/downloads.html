@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light">
+    <title>Bulk logs · Firefox</title>
+    <link rel="stylesheet" href="downloads.css">
+    <script src="parser.js" defer></script>
+    <script src="archive.js" defer></script>
+    <script src="downloads.js" defer></script>
+  </head>
+  <body>
+    <main class="app">
+      <header class="page-header">
+        <div class="brand"><span class="brand-mark" aria-hidden="true">↓</span><span>comma log downloader</span></div>
+        <span class="platform">Firefox edition</span>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <h1 id="page-title">Bulk logs</h1>
+        <p class="lede">Collect rlogs and qlogs from your routes into one ZIP.</p>
+      </section>
+
+      <section class="source-card" aria-labelledby="source-heading">
+        <span id="source-indicator" class="source-indicator" aria-hidden="true"></span>
+        <div class="source-details">
+          <h2 id="source-heading">Source page</h2>
+          <p id="source-title">Connecting to your comma page…</p>
+          <p id="source-url" class="source-url"></p>
+        </div>
+        <div class="source-actions">
+          <button id="check-source-button" class="text-link" type="button">Check source</button>
+          <a id="source-link" class="text-link" href="https://useradmin.comma.ai/" target="_blank" rel="noopener noreferrer">Open source <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+      <div id="page-notice" class="notice" role="status" hidden></div>
+
+      <div class="workspace">
+        <section class="card setup-card" aria-labelledby="setup-title">
+          <div class="section-heading"><span class="step">01</span><h2 id="setup-title">Choose your files</h2></div>
+          <form id="settings-form">
+            <fieldset id="settings-fieldset">
+              <fieldset class="control-group">
+                <legend>Routes to include</legend>
+                <div class="segmented scope-options">
+                  <label><input type="radio" name="scope" value="current" checked><span>Current route</span></label>
+                  <label><input type="radio" name="scope" value="listed"><span>Listed routes</span></label>
+                </div>
+                <p id="scope-help" class="help">Use the file list on your open route page.</p>
+              </fieldset>
+
+              <fieldset class="control-group">
+                <legend>File types</legend>
+                <div id="file-types" class="file-types">
+                  <label class="file-type"><input type="checkbox" name="file-type" value="rlog" checked><span><span class="type-name">rlog</span><span class="type-description">Full logs</span></span></label>
+                  <label class="file-type"><input type="checkbox" name="file-type" value="qlog"><span><span class="type-name">qlog</span><span class="type-description">Smaller logs</span></span></label>
+                </div>
+                <p class="help">Only files already uploaded to comma can be collected.</p>
+              </fieldset>
+
+              <fieldset id="date-settings" class="control-group" hidden>
+                <legend>Route upload dates</legend>
+                <div class="segmented date-options">
+                  <label><input type="radio" name="date-mode" value="recent" checked><span>Recent</span></label>
+                  <label><input type="radio" name="date-mode" value="all"><span>All dates</span></label>
+                  <label><input type="radio" name="date-mode" value="custom"><span>Custom</span></label>
+                </div>
+                <label id="recent-settings" class="recent-settings">Past <input id="date-days" type="number" min="1" max="36500" step="1" inputmode="numeric" value="7"> days</label>
+                <div id="custom-settings" class="custom-settings" hidden>
+                  <label>From<input id="date-from" type="date"></label>
+                  <label>Through<input id="date-to" type="date"></label>
+                </div>
+                <p class="help">Uses the upload dates shown on comma. Routes without a date are skipped when a date filter is active.</p>
+              </fieldset>
+            </fieldset>
+          </form>
+
+          <div class="scan-action">
+            <button id="scan-button" class="button primary" type="button" disabled>Scan files <span aria-hidden="true">→</span></button>
+            <button id="cancel-scan-button" class="button secondary" type="button" hidden>Stop scan</button>
+            <p id="scan-hint" class="help">Keep the source tab open while scanning.</p>
+          </div>
+        </section>
+
+        <div class="output-column">
+          <section class="card results-card" aria-labelledby="results-title">
+            <div class="section-heading"><span class="step">02</span><h2 id="results-title">Review files</h2></div>
+            <div id="empty-results" class="empty-results">
+              <span class="empty-mark" aria-hidden="true">↧</span>
+              <h3>No scan yet</h3>
+              <p>Scan to see which files match your choices before preparing the ZIP.</p>
+            </div>
+            <div id="scan-status" class="scan-status" role="status" hidden></div>
+            <progress id="scan-progress" aria-label="File scan progress" hidden></progress>
+            <div id="results-content" hidden>
+              <div class="result-summary"><strong id="file-count">0</strong><div><span id="file-count-label">files ready</span><p id="route-count" class="help"></p></div></div>
+              <p id="scan-detail" class="help"></p>
+              <ul id="file-preview" class="file-preview" aria-label="Discovered files"></ul>
+              <p id="preview-note" class="help" hidden></p>
+              <button id="download-button" class="button primary" type="button" disabled>Prepare ZIP <span aria-hidden="true">↓</span></button>
+            </div>
+          </section>
+
+          <section id="transfer-card" class="card transfer-card" aria-labelledby="transfer-title" hidden>
+            <div class="section-heading"><span class="step">03</span><h2 id="transfer-title">Prepare &amp; save</h2></div>
+            <p id="transfer-status" class="transfer-status" role="status"></p>
+            <progress id="transfer-progress" value="0" max="1" aria-label="ZIP preparation progress"></progress>
+            <p id="transfer-detail" class="help"></p>
+            <p id="storage-fallback" class="notice" hidden>Temporary disk storage is unavailable. This ZIP is limited to 32 MiB. Choose fewer routes if it is too large.</p>
+            <div class="transfer-actions">
+              <button id="stop-button" class="button secondary" type="button" hidden>Cancel preparation</button>
+              <a id="save-button" class="button primary" download hidden>Save ZIP</a>
+              <button id="clear-button" class="button secondary" type="button" hidden>Clear ZIP</button>
+            </div>
+            <p id="save-note" class="help" hidden>Use Firefox’s Downloads screen to confirm the ZIP was saved. You can tap Save ZIP again while this tab stays open.</p>
+          </section>
+
+          <aside class="storage-note"><span aria-hidden="true">ⓘ</span><p id="storage-note">Keep this tab open while preparing. Each ZIP is limited to 256 MiB and needs temporary free storage. For larger collections, use smaller date ranges. Android may interrupt work when Firefox is in the background.</p></aside>
+        </div>
+      </div>
+      <footer>Unofficial add-on for useradmin.comma.ai</footer>
+    </main>
+  </body>
+</html>

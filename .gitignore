@@ -21,3 +21,15 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# Firefox development and explicitly local captures
+node_modules/
+dist-firefox/
+web-ext-artifacts/
+test-artifacts/
+tests/local/
+upload/
+page*.html
+experiments/
+.android-selftest/
+android-results/
