@@ -113,6 +113,12 @@ class Harness:
                 self.device.app_start(PACKAGE)
                 time.sleep(3)
                 continue
+            if self.find(r'^Set Firefox Nightly as your default browser app\?$') is not None:
+                self.snapshot('default-browser-startup-dialog')
+                print('Dismissing Android default-browser setup dialog', flush=True)
+                self.click(r'^Cancel$')
+                time.sleep(1)
+                continue
             if self.find(r'(^Menu$|More options|menuButton|menu_button)') is not None:
                 break
             if not self.dismiss_prompts():
