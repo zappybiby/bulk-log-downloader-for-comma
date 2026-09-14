@@ -1,5 +1,10 @@
 # Recording-date discovery: further investigation
 
+**Implementation update:** [Firefox v0.3](firefox-parallel-reading.md) now uses four
+parallel fresh readers with recording-date filtering and separate scan limits.
+Caching, early-body parsing and a bulk provider remain unshipped experiments.
+The measurements and recommendations below preserve the earlier investigation.
+
 The strongest design is a layered reader: reuse checked metadata, overlap route
 listing and detail requests within one small request budget, and inspect metadata
 before enumerating file links. Reading only the beginning of rejected pages could
