@@ -1,0 +1,1532 @@
+{
+  "status": "passed",
+  "sourceCommit": "5f8aab1407c6a78432317e5093b5cf4488cc8b78",
+  "automatedTests": 87,
+  "lint": {
+    "errors": 0,
+    "warnings": 0,
+    "notices": 0
+  },
+  "layout": {
+    "workflowRun": "https://github.com/zappybiby/bulk-log-downloader-for-comma/actions/runs/34899885821",
+    "artifactId": 10370386103,
+    "artifactSha256": "6ae424f652bdda60d895b337bd1cd1927d08eed23cfdbfaac5d8e6a1de5467e2",
+    "captures": 28,
+    "currentUiStates": 16,
+    "checksPassed": true,
+    "geometry": "firefox-compact-layout.json"
+  },
+  "android": {
+    "workflowRun": "https://github.com/zappybiby/bulk-log-downloader-for-comma/actions/runs/34899885851",
+    "event": "push",
+    "artifactId": 10370850167,
+    "artifactSha256": "61ac203835764e6f6e577e097079322abf27716583bec772563e23e1a23c02d1",
+    "device": {
+      "serial": "emulator-5554",
+      "package": "org.mozilla.fenix",
+      "version": [
+        "versionCode=2016184550 minSdk=26 targetSdk=37",
+        "versionName=158.0a1"
+      ],
+      "android": "15",
+      "abi": "x86_64"
+    },
+    "nightly": {
+      "index": "gecko.v2.mozilla-central.latest.mobile.fenix-nightly",
+      "taskId": "dk13e_IOQWqUfvHO4lIIdQ",
+      "artifact": "public/build/target.x86_64.apk",
+      "url": "https://firefox-ci-tc.services.mozilla.com/api/queue/v1/task/dk13e_IOQWqUfvHO4lIIdQ/artifacts/public/build/target.x86_64.apk",
+      "sha256": "d5f2b2c70eaec151012baff5f6ff6a647200cdd53e86b0b22e6ae435de02c3c0",
+      "bytes": 142422482
+    },
+    "result": {
+      "status": "passed",
+      "archiveRuns": [
+        {
+          "kind": "small",
+          "storage": "opfs"
+        },
+        {
+          "kind": "medium",
+          "storage": "opfs"
+        },
+        {
+          "kind": "large",
+          "storage": "opfs"
+        }
+      ],
+      "largestVerifiedPayloadMiB": 60,
+      "diskAbove32MiB": "passed",
+      "smallZipFiles": 120,
+      "mediumZipFiles": 120,
+      "smallPayloadMiB": 7.5,
+      "mediumPayloadMiB": 30,
+      "cancellation": "passed",
+      "httpFailure": "passed",
+      "productionUi": "synthetic API adapter; production HTML/CSS/handlers",
+      "dateSelection": {
+        "preset": "Last 7 days",
+        "fromDate": "2026-09-08",
+        "toDate": "2026-09-14",
+        "matchedRoutes": 3,
+        "savedFiles": 6,
+        "todayMatchedRoutes": 1,
+        "recordingSelection": {
+          "status": "passed",
+          "kind": "ui-recording",
+          "files": 6,
+          "routes": 3,
+          "includedRouteIndices": [
+            1,
+            3,
+            4
+          ],
+          "dateBasis": "route metadata start_time calendar date",
+          "payloadBytes": 24576,
+          "zipBytes": 26254,
+          "sha256": "483e70ca74f64e8d7dae86b60af621357a8c68efec574c58105f0133b540f514",
+          "includedRecordingDaysAgo": [
+            1,
+            0,
+            6
+          ],
+          "excludedRecordingDaysAgo": [
+            20,
+            8
+          ],
+          "excludedRouteIndices": [
+            0,
+            2
+          ]
+        },
+        "uploadSelection": {
+          "status": "passed",
+          "kind": "ui-selection",
+          "files": 6,
+          "routes": 3,
+          "includedRouteIndices": [
+            0,
+            1,
+            2
+          ],
+          "dateBasis": "device table upload date",
+          "payloadBytes": 24576,
+          "zipBytes": 26254,
+          "sha256": "137876f3b3a13fe2a8b7e9fd86982ef712c40f65341d8c0c78163c1b24e4924d",
+          "includedUploadDaysAgo": [
+            0,
+            2,
+            6
+          ],
+          "excludedUploadDaysAgo": [
+            8,
+            31
+          ],
+          "excludedRouteIndices": [
+            3,
+            4
+          ]
+        },
+        "freshRecordingRescan": {
+          "matchedRoutes": 4,
+          "files": 8,
+          "includedRouteIndices": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "fixtureChange": "route index 2 recording date deliberately changed from 8 to 2 days ago between scans",
+          "validation": "production UI count after a fresh synthetic page read; live HTTP caching not tested"
+        },
+        "customDateControls": "visible; numerical ranges verified by local UI tests",
+        "arbitraryDays": "Set days reveals the numerical input; preset hides it again",
+        "compactUi": "default controls and collapsed review controls visible together without helper scrolling; bounds in compact-ui-checks.json",
+        "editFilters": "returning without changes preserves both file results and prepared ZIP",
+        "fileTypes": "rlog/qlog and four camera options displayed; rlog selection saved",
+        "selectionDownload": "saved through native Firefox prompt; every path, byte and CRC verified"
+      },
+      "liveAuthentication": "not tested",
+      "backgroundDownloads": "not tested"
+    },
+    "compactUiChecks": [
+      {
+        "screen": "production-ui-source",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^Recorded$",
+            "bounds": [
+              551,
+              578,
+              794,
+              693
+            ]
+          },
+          {
+            "pattern": "^Uploaded$",
+            "bounds": [
+              794,
+              578,
+              1036,
+              693
+            ]
+          },
+          {
+            "pattern": "^date-preset-1$",
+            "bounds": [
+              42,
+              721,
+              231,
+              836
+            ]
+          },
+          {
+            "pattern": "^date-preset-7$",
+            "bounds": [
+              244,
+              721,
+              433,
+              836
+            ]
+          },
+          {
+            "pattern": "^date-preset-30$",
+            "bounds": [
+              446,
+              721,
+              634,
+              836
+            ]
+          },
+          {
+            "pattern": "^date-preset-all$",
+            "bounds": [
+              647,
+              721,
+              836,
+              836
+            ]
+          },
+          {
+            "pattern": "^date-preset-custom$",
+            "bounds": [
+              849,
+              721,
+              1038,
+              836
+            ]
+          },
+          {
+            "pattern": "^file-types$",
+            "bounds": [
+              42,
+              1060,
+              1038,
+              1174
+            ]
+          },
+          {
+            "pattern": "^camera-types$",
+            "bounds": [
+              42,
+              1174,
+              1038,
+              1289
+            ]
+          },
+          {
+            "pattern": "^scan-button$",
+            "bounds": [
+              42,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^review-panel$",
+          "^empty-results$",
+          "^file-preview$",
+          "^date-days$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-today",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              978,
+              120,
+              1064
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              904,
+              1012,
+              1002,
+              1057
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1259,
+              1038,
+              1387
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^download-button$",
+            "bounds": [
+              42,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-edit-filters",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^date-preset-7$",
+            "bounds": [
+              244,
+              721,
+              433,
+              836
+            ]
+          },
+          {
+            "pattern": "^file-types$",
+            "bounds": [
+              42,
+              1060,
+              1038,
+              1174
+            ]
+          },
+          {
+            "pattern": "^scan-button$",
+            "bounds": [
+              42,
+              2123,
+              721,
+              2243
+            ]
+          },
+          {
+            "pattern": "^review-button$",
+            "bounds": [
+              742,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^review-panel$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-populated",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              978,
+              120,
+              1064
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              888,
+              1012,
+              1002,
+              1057
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1259,
+              1038,
+              1387
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^download-button$",
+            "bounds": [
+              42,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-edit-filters",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^date-preset-7$",
+            "bounds": [
+              244,
+              721,
+              433,
+              836
+            ]
+          },
+          {
+            "pattern": "^file-types$",
+            "bounds": [
+              42,
+              1060,
+              1038,
+              1174
+            ]
+          },
+          {
+            "pattern": "^scan-button$",
+            "bounds": [
+              42,
+              2123,
+              721,
+              2243
+            ]
+          },
+          {
+            "pattern": "^review-button$",
+            "bounds": [
+              742,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^review-panel$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-results-preserved",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              978,
+              120,
+              1064
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              888,
+              1012,
+              1002,
+              1057
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1259,
+              1038,
+              1387
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^download-button$",
+            "bounds": [
+              42,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-zip-ready",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              1291,
+              120,
+              1377
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              888,
+              1325,
+              1002,
+              1370
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1572,
+              1038,
+              1699
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^save-button$",
+            "bounds": [
+              42,
+              2123,
+              801,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-edit-filters",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^date-preset-7$",
+            "bounds": [
+              244,
+              721,
+              433,
+              836
+            ]
+          },
+          {
+            "pattern": "^file-types$",
+            "bounds": [
+              42,
+              1060,
+              1038,
+              1174
+            ]
+          },
+          {
+            "pattern": "^scan-button$",
+            "bounds": [
+              42,
+              2123,
+              721,
+              2243
+            ]
+          },
+          {
+            "pattern": "^review-button$",
+            "bounds": [
+              742,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^review-panel$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-archive-preserved",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              1291,
+              120,
+              1377
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              888,
+              1325,
+              1002,
+              1370
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1572,
+              1038,
+              1699
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^save-button$",
+            "bounds": [
+              42,
+              2123,
+              801,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-edit-filters",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^date-preset-7$",
+            "bounds": [
+              244,
+              721,
+              433,
+              836
+            ]
+          },
+          {
+            "pattern": "^file-types$",
+            "bounds": [
+              42,
+              1060,
+              1038,
+              1174
+            ]
+          },
+          {
+            "pattern": "^scan-button$",
+            "bounds": [
+              42,
+              2123,
+              721,
+              2243
+            ]
+          },
+          {
+            "pattern": "^review-button$",
+            "bounds": [
+              742,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^review-panel$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-upload-today",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              978,
+              120,
+              1064
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              904,
+              1012,
+              1002,
+              1057
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1259,
+              1038,
+              1387
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^download-button$",
+            "bounds": [
+              42,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-edit-filters",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^date-preset-7$",
+            "bounds": [
+              244,
+              721,
+              433,
+              836
+            ]
+          },
+          {
+            "pattern": "^file-types$",
+            "bounds": [
+              42,
+              1060,
+              1038,
+              1174
+            ]
+          },
+          {
+            "pattern": "^scan-button$",
+            "bounds": [
+              42,
+              2123,
+              721,
+              2243
+            ]
+          },
+          {
+            "pattern": "^review-button$",
+            "bounds": [
+              742,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^review-panel$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-upload-populated",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              978,
+              120,
+              1064
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              888,
+              1012,
+              1002,
+              1057
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1259,
+              1038,
+              1387
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^download-button$",
+            "bounds": [
+              42,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-edit-filters",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^date-preset-7$",
+            "bounds": [
+              244,
+              721,
+              433,
+              836
+            ]
+          },
+          {
+            "pattern": "^file-types$",
+            "bounds": [
+              42,
+              1060,
+              1038,
+              1174
+            ]
+          },
+          {
+            "pattern": "^scan-button$",
+            "bounds": [
+              42,
+              2123,
+              721,
+              2243
+            ]
+          },
+          {
+            "pattern": "^review-button$",
+            "bounds": [
+              742,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^review-panel$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      },
+      {
+        "screen": "production-ui-recording-rescan",
+        "webViewBounds": [
+          0,
+          296,
+          1080,
+          2337
+        ],
+        "actionBarBounds": [
+          0,
+          2031,
+          1080,
+          2337
+        ],
+        "visibleTogether": [
+          {
+            "pattern": "^page-title$",
+            "bounds": [
+              42,
+              337,
+              272,
+              420
+            ]
+          },
+          {
+            "pattern": "^source-title$",
+            "bounds": [
+              369,
+              356,
+              997,
+              401
+            ]
+          },
+          {
+            "pattern": "^edit-filters-button$",
+            "bounds": [
+              883,
+              505,
+              1038,
+              619
+            ]
+          },
+          {
+            "pattern": "^file-count$",
+            "bounds": [
+              78,
+              978,
+              120,
+              1064
+            ]
+          },
+          {
+            "pattern": "^route-count$",
+            "bounds": [
+              888,
+              1012,
+              1002,
+              1057
+            ]
+          },
+          {
+            "pattern": "^routes-disclosure$",
+            "bounds": [
+              42,
+              1259,
+              1038,
+              1387
+            ]
+          },
+          {
+            "pattern": "^action-summary$",
+            "bounds": [
+              42,
+              2059,
+              1038,
+              2104
+            ]
+          },
+          {
+            "pattern": "^download-button$",
+            "bounds": [
+              42,
+              2123,
+              1038,
+              2243
+            ]
+          }
+        ],
+        "absent": [
+          "^settings-form$",
+          "^file-preview$"
+        ],
+        "helperScrolling": false
+      }
+    ],
+    "archiveVerifications": [
+      {
+        "status": "passed",
+        "kind": "large",
+        "files": 120,
+        "payloadBytes": 62914560,
+        "zipBytes": 62933062,
+        "sha256": "4c6ad7b7f3f7078449c180df7bcb81f530d4ef618a2faecaaf89e9426fd30049"
+      },
+      {
+        "status": "passed",
+        "kind": "medium",
+        "files": 120,
+        "payloadBytes": 31457280,
+        "zipBytes": 31475782,
+        "sha256": "872a2360f61fcdf41a108d46abd6e8bc7e627d7c3206c907e289e6c5ae4f960e"
+      },
+      {
+        "status": "passed",
+        "kind": "small",
+        "files": 120,
+        "payloadBytes": 7864320,
+        "zipBytes": 7882822,
+        "sha256": "75e538464c77951d3a040d70267dd1ff8b99621aa733001a5626d9c23df6951f"
+      },
+      {
+        "status": "passed",
+        "kind": "ui-recording",
+        "files": 6,
+        "routes": 3,
+        "includedRouteIndices": [
+          1,
+          3,
+          4
+        ],
+        "dateBasis": "route metadata start_time calendar date",
+        "payloadBytes": 24576,
+        "zipBytes": 26254,
+        "sha256": "483e70ca74f64e8d7dae86b60af621357a8c68efec574c58105f0133b540f514",
+        "includedRecordingDaysAgo": [
+          1,
+          0,
+          6
+        ],
+        "excludedRecordingDaysAgo": [
+          20,
+          8
+        ],
+        "excludedRouteIndices": [
+          0,
+          2
+        ]
+      },
+      {
+        "status": "passed",
+        "kind": "ui-selection",
+        "files": 6,
+        "routes": 3,
+        "includedRouteIndices": [
+          0,
+          1,
+          2
+        ],
+        "dateBasis": "device table upload date",
+        "payloadBytes": 24576,
+        "zipBytes": 26254,
+        "sha256": "137876f3b3a13fe2a8b7e9fd86982ef712c40f65341d8c0c78163c1b24e4924d",
+        "includedUploadDaysAgo": [
+          0,
+          2,
+          6
+        ],
+        "excludedUploadDaysAgo": [
+          8,
+          31
+        ],
+        "excludedRouteIndices": [
+          3,
+          4
+        ]
+      }
+    ]
+  },
+  "package": {
+    "path": "downloads/comma-firefox-0.4.0-unsigned.zip",
+    "signed": false,
+    "bytes": 37288,
+    "sha256": "5f1bca3d0ba6b1902d2fb454b9052ae515c87dd663881fc0121b37d43dd29893",
+    "sourceMatchingFiles": 13,
+    "zipIntegrity": "passed"
+  },
+  "privacy": "Remote workflows, fixtures, and screenshots use invented data; private page captures were excluded."
+}

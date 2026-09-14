@@ -1,12 +1,13 @@
 Unofficial Chrome extension for useradmin.comma.ai that downloads logs in bulk.
 
 A separate [Firefox Android prototype](firefox/README.md) is available in `firefox/`.
-Version 0.3 adds recording-date filtering and four parallel page readers, with
-fresh dates on every scan and no metadata cache. It also supports upload-date
-filters, all six log/camera choices, grouped route results and ZIP output.
+Version 0.4 adds a compact choose → review → save flow, with expandable options
+and route details. It retains recording/upload date filters, four fresh parallel
+page readers without a metadata cache, all six log/camera choices, and ZIP output.
 
-[Download unsigned v0.3.0](docs/downloads/comma-firefox-0.3.0-unsigned.zip) ·
-[Parallel reading and Android verification](docs/firefox-parallel-reading.md)
+[Download unsigned v0.4.0](docs/downloads/comma-firefox-0.4.0-unsigned.zip) ·
+[Compact UI and verification](docs/firefox-compact-ui.md) ·
+[Parallel reading](docs/firefox-parallel-reading.md)
 
 Normal installation requires Mozilla signing. See the Firefox README for
 temporary development installation and the prototype's limits.
