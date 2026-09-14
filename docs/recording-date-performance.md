@@ -1,5 +1,8 @@
 # Recording-date discovery: speed experiments
 
+[Further investigation](recording-date-investigation.md) adds actual Firefox
+Android measurements, early-response cancellation, pipelining and API contract checks.
+
 **Recommendation:** use a small parallel request pool and a recording-date cache
 for the existing useradmin workflow. Investigate bulk API metadata as a separate
 way to make the first scan faster, after verifying authentication, date semantics

@@ -12,3 +12,6 @@ temporary development installation and the prototype's limits.
 
 [Recording-date performance experiments](docs/recording-date-performance.md) compare
 parallel discovery, caching and a possible bulk metadata source for larger collections.
+
+[Further recording-date investigation](docs/recording-date-investigation.md) includes
+real Firefox Android parsing measurements and additional discovery prototypes.
