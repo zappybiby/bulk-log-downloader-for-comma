@@ -6,7 +6,7 @@ await mkdir(out, {recursive:true});
 for (const name of await readdir(`${root}/tests/selftest`)) {
   await copyFile(`${root}/tests/selftest/${name}`, `${out}/${name}`);
 }
-for (const name of ['archive.js', 'parser.js', 'downloads.css']) {
+for (const name of ['archive.js', 'parser.js', 'scanner.js', 'downloads.css']) {
   await copyFile(`${root}/firefox/${name}`, `${out}/${name}`);
 }
 // Use production HTML/CSS/handlers with a synthetic adapter only at the API boundary.

@@ -6,7 +6,7 @@ import zipfile
 root = Path(__file__).resolve().parents[1]
 source = root / 'firefox'
 manifest = json.loads((source / 'manifest.json').read_text())
-files = ['manifest.json', 'background.js', 'parser.js', 'bridge.js', 'archive.js',
+files = ['manifest.json', 'background.js', 'parser.js', 'bridge.js', 'scanner.js', 'archive.js',
          'downloads.html', 'downloads.css', 'downloads.js', 'README.md', 'PRIVACY.md',
          'icons/icon48.png', 'icons/icon128.png']
 for name in files:

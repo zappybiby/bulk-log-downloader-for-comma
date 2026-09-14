@@ -10,7 +10,8 @@ archive server or other third party. It does not add telemetry, advertising or
 tracking. Requests to useradmin and its blob storage are necessary to retrieve
 the selected files.
 
-File-type and date preferences are stored in local extension storage. Route
+File-type and date preferences are stored in local extension storage. Recording
+dates are not cached between scans; page requests bypass the browser HTTP cache. Route
 selection and download URLs are held in memory. Temporary ZIP bytes may be kept
 in the extension's browser-private disk storage; clearing the prepared archive
 removes that temporary copy. Closing or crashing the browser can leave temporary

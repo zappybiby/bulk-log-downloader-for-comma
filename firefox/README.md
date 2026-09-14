@@ -8,7 +8,7 @@ independent of this Firefox build.
 
 1. Sign in to useradmin normally and open a device page or route page.
 2. Open Firefox's extension menu and choose **Comma Bulk Logs for Firefox**.
-3. Choose **This route** or **Device routes**, file types and upload dates.
+3. Choose **This route** or **Device routes**, file types, and recording or upload dates.
 4. Scan, review the file count, and prepare the ZIP.
 5. Choose **Save ZIP**, then check Firefox Downloads before closing this tab.
 
@@ -18,14 +18,17 @@ can read that device's route list to apply a date filter.
 
 ## Date and file selection
 
-Date filtering uses the **upload time** column in the device's route table,
-matching the original extension's date source. Recording `start_time` and
-`end_time`, `create_time`, firmware dates and timestamps embedded in route IDs
-do not determine which routes match.
+Choose **Recorded** to filter by the `start_time` in each route's metadata table,
+or **Uploaded** to use the upload time in the device's route list. Recording dates
+never fall back to upload dates, `create_time`, `end_time`, or timestamps in route IDs.
+Recorded is the default for new installations. Existing saved v0.2 date choices
+retain their upload-date meaning until you change the selector.
 
-The filter compares calendar dates **as shown on the device page**. The site
-captures do not declare a timezone, so displayed timestamps are not converted
-to UTC or interpreted as a recording time. Today follows your phone's calendar.
+Both filters compare calendar dates **as displayed on the site**. The route
+metadata does not declare a timezone, so the extension does not invent one or
+convert those dates. Today follows your phone's calendar. Recorded means the
+calendar date when a drive started; a drive spanning midnight is selected by its
+start date.
 
 - **Today**, **Last 7 days**, **Last 30 days**, **All**, and **Custom** are quick choices.
 - An arbitrary number of days is also available, like the original extension.
@@ -34,7 +37,7 @@ to UTC or interpreted as a recording time. Today follows your phone's calendar.
   behavior, where its past-7 calculation covered eight calendar dates.
 - Custom ranges include both the From and Through dates. Editing a date selects
   Custom; editing the day count selects the recent range.
-- Routes with no readable upload date are excluded from date-filtered scans.
+- Routes with no readable selected date are excluded from date-filtered scans.
   **All** includes them. Dates apply to **Device routes**; **This route** collects
   the files on the open route page.
 
@@ -43,6 +46,14 @@ All six original file types are available: **rlog**, **qlog**, **qcamera**,
 disclosure. Only files already uploaded to comma can be collected. All matched
 files of the selected types are included; individual route/segment picking is
 not part of the original workflow or this version.
+
+Each scan fetches current pages with browser HTTP caching disabled. Up to four
+reads run at once, shared between route listings and detail pages; later listing
+pages can load while routes are being checked. No route-date cache is stored or
+reused between scans. Recording-date scans inspect every unique listed route,
+including routes uploaded outside the selected range, before selecting files.
+Rejected recording dates skip file-link enumeration. ZIP payload fetching remains
+separate from this metadata-reading concurrency.
 
 The compact page groups results by route and keeps Scan, Prepare ZIP and Save
 ZIP in the bottom action bar. File names and supplementary help can be expanded
@@ -56,6 +67,12 @@ store passwords or request a separate API token.
 
 ## Limits of this prototype
 
+- At most 100 listing pages, 5,000 unique routes, and 10,000 selected files per scan.
+  Listing pages and route detail pages have separate limits. Reaching a limit or
+  failing any page stops the scan and discards partial results. A narrower
+  recording-date range still needs all listed dates; for a listing/route limit,
+  open a single route. No completeness guarantee is possible if the site's route
+  list changes during pagination or omits records.
 - Up to 256 MiB per archive by default, including ZIP headers. Choose fewer
   routes, a narrower date range or fewer log types if the limit is reached.
 - Uses temporary browser disk storage when available; otherwise a memory

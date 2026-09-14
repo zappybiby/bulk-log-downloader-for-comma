@@ -3,8 +3,6 @@
   "use strict";
 
   const FILE_TYPES = ["rlog", "qlog", "qcamera", "fcamera", "ecamera", "dcamera"];
-  const MAX_PAGES = 100;
-  const MAX_FILES = 10000;
   const MAX_BYTES = 256 * 1024 * 1024;
   const PREF_KEY = "firefoxPreferences";
   const elements = Object.fromEntries(Array.from(document.querySelectorAll("[id]"), element => [element.id, element]));
@@ -23,6 +21,7 @@
   function settings() {
     return {
       scope: selectedValue("scope") || "current",
+      dateBasis: selectedValue("date-basis") || "recording",
       selectedTypes: Array.from(document.querySelectorAll('input[name="file-type"]:checked'), input => input.value),
       date: {
         mode: selectedValue("date-mode") || "recent", days: el("date-days").value,
@@ -89,7 +88,8 @@
   }
 
   function showDateRange(range) {
-    el("date-summary").textContent = range.mode === "all" ? "All upload dates" : `${range.fromDate} → ${range.toDate}`;
+    const basis = settings().dateBasis === "recording" ? "recording" : "upload";
+    el("date-summary").textContent = range.mode === "all" ? `All ${basis} dates` : `${range.fromDate} → ${range.toDate}`;
     el("date-summary").classList.remove("error");
   }
 
@@ -100,7 +100,11 @@
     el("custom-settings").hidden = prefs.date.mode !== "custom";
     el("scope-help").textContent = prefs.scope === "current"
       ? "Include matching uploaded files from this route."
+      : prefs.dateBasis === "recording" ? "Check each route’s recording start date."
       : "Filter this device’s routes by the upload dates shown in its table.";
+    el("date-explanation").textContent = prefs.dateBasis === "recording"
+      ? "Recording start date as shown on each route page."
+      : "Upload date as shown on the device page.";
     for (const preset of ["1", "7", "30", "all", "custom"]) {
       const pressed = preset === "all" || preset === "custom" ? prefs.date.mode === preset
         : prefs.date.mode === "recent" && Number(prefs.date.days) === Number(preset);
@@ -195,10 +199,6 @@
     }
   }
 
-  function throwIfAborted(signal) {
-    if (signal.aborted) throw new DOMException("Scan cancelled.", "AbortError");
-  }
-
   function scanStatus(message) {
     el("scan-status").textContent = message;
     el("scan-status").hidden = false;
@@ -231,8 +231,11 @@
       name.textContent = routeName;
       const date = document.createElement("span");
       date.className = "route-date";
-      date.textContent = routeFiles[0].uploadDate ? `Uploaded ${routeFiles[0].uploadDate}`
-        : settings().scope === "current" ? "Current route" : "Upload date unavailable";
+      const recorded = settings().dateBasis === "recording";
+      const routeDate = recorded ? routeFiles[0].recordingDate : routeFiles[0].uploadDate;
+      date.textContent = routeDate ? `${recorded ? "Recorded" : "Uploaded"} ${routeDate}`
+        : settings().scope === "current" ? "Current route"
+        : `${recorded ? "Recording" : "Upload"} date unavailable`;
       heading.append(name, date);
       const counts = document.createElement("span");
       counts.className = "route-counts";
@@ -297,74 +300,24 @@
     el("scan-progress").hidden = false;
     el("scan-progress").removeAttribute("value");
     scanStatus("Reading source page…");
-    let pagesRead = 0;
-    const seenPages = new Map();
-    const found = new Map();
-    const seenRoutes = new Set();
-    let filteredRoutes = 0;
-    let undatedRoutes = 0;
-    let matchedRoutes = 0;
-
-    async function getPage(url) {
-      throwIfAborted(controller.signal);
-      const key = url || expectedUrl;
-      if (seenPages.has(key)) return seenPages.get(key);
-      if (pagesRead >= MAX_PAGES) throw new Error("This scan reached the 100-page limit. No partial ZIP was prepared. Choose a smaller date range or open a single route.");
-      pagesRead += 1;
-      const page = await readPage({ selectedTypes: prefs.selectedTypes, expectedUrl, scanId, ...(url ? { url } : {}) });
-      throwIfAborted(controller.signal);
-      seenPages.set(key, page);
-      return page;
-    }
-
-    function addFiles(files, uploadDate = null) {
-      for (const file of files) {
-        if (!prefs.selectedTypes.includes(file.typeKey)) continue;
-        if (!CommaParser.isAllowedDownloadUrl(file.url)) throw new Error("A file address could not be verified. Reload the source page and scan again.");
-        const previous = found.get(file.targetPath);
-        if (previous) continue;
-        if (found.size >= MAX_FILES) throw new Error("This scan reached the 10,000-file limit. No partial ZIP was prepared. Choose fewer dates or one log type.");
-        found.set(file.targetPath, { ...file, uploadDate });
-      }
-    }
-
     try {
-      const initial = await getPage();
-      if (prefs.scope === "current") {
-        addFiles(initial.files);
-      } else {
-        let page = initial.pageKind === "device" ? initial : await getPage(initial.deviceUrl || state.source.deviceUrl);
-        if (page.pageKind !== "device") throw new Error("The device route list could not be read. Open the device page, then launch Bulk Logs again.");
-        const listingPages = new Set();
-        while (page) {
-          throwIfAborted(controller.signal);
-          if (listingPages.has(page.url)) throw new Error("The route pages repeat a page. No partial ZIP was prepared. Reload the source page and scan again.");
-          listingPages.add(page.url);
-          for (const route of page.routes) {
-            if (seenRoutes.has(route.key)) continue;
-            seenRoutes.add(route.key);
-            if (!CommaParser.routeMatches(route, filter)) {
-              filteredRoutes += 1;
-              if (!/^\d{4}-\d{2}-\d{2}$/.test(route.uploadDate || "")) undatedRoutes += 1;
-              continue;
-            }
-            matchedRoutes += 1;
-            scanStatus(`Reading route ${matchedRoutes} · ${found.size} files found…`);
-            const routePage = await getPage(route.url);
-            addFiles(routePage.files, route.uploadDate);
-          }
-          if (!page.nextPageUrl) break;
-          scanStatus(`Checking more listed routes · ${found.size} files found…`);
-          page = await getPage(page.nextPageUrl);
+      const result = await CommaScanner.scan({
+        sourceUrl: expectedUrl, deviceUrl: state.source.deviceUrl,
+        scope: prefs.scope, selectedTypes: prefs.selectedTypes,
+        filter, dateBasis: prefs.dateBasis, signal: controller.signal,
+        readPage: options => readPage({ ...options, expectedUrl, scanId }),
+        cancelReads: () => cancelReadGroup(scanId),
+        onProgress(progress) {
+          if (controller.signal.aborted || state.scanController !== controller) return;
+          scanStatus(`${progress.routesRead} routes checked · ${progress.filesFound} files found…`);
         }
-      }
-      throwIfAborted(controller.signal);
-      const files = Array.from(found.values()).sort((a, b) => a.targetPath.localeCompare(b.targetPath, undefined, { numeric: true }));
+      });
+      const { files, pagesRead, filteredRoutes, undatedRoutes } = result;
       let detail = files.length ? "Sizes are checked while preparing the ZIP."
         : prefs.scope === "current" ? "No matching files on this route. Choose another file type or scan Device routes."
         : "No matching files. Choose another file type, a wider date range, or another device.";
       if (filteredRoutes) detail += ` ${filteredRoutes} ${filteredRoutes === 1 ? "route was" : "routes were"} excluded by the date filter.`;
-      if (undatedRoutes) detail += ` ${undatedRoutes} had no readable upload date.`;
+      if (undatedRoutes) detail += ` ${undatedRoutes} had no readable ${prefs.dateBasis === "recording" ? "recording" : "upload"} date.`;
       showResults(files, detail);
       scanStatus(`Scan complete · ${pagesRead} ${pagesRead === 1 ? "page" : "pages"} checked`);
     } catch (error) {
@@ -385,14 +338,18 @@
     }
   }
 
+  async function cancelReadGroup(scanId) {
+    if (scanId && Number.isSafeInteger(sourceTabId)) {
+      await browser.tabs.sendMessage(sourceTabId, { type: "comma:cancel-read", scanId }).catch(() => {});
+    }
+  }
+
   function cancelScan() {
     const scanId = state.scanId;
     state.scanController?.abort();
     el("cancel-scan-button").disabled = true;
     scanStatus("Stopping scan…");
-    if (scanId && Number.isSafeInteger(sourceTabId)) {
-      void browser.tabs.sendMessage(sourceTabId, { type: "comma:cancel-read", scanId }).catch(() => {});
-    }
+    void cancelReadGroup(scanId);
   }
 
   function transferStatus(message, isError = false) {
@@ -465,6 +422,8 @@
     try {
       const saved = (await browser.storage.local.get(PREF_KEY))[PREF_KEY];
       if (!saved || typeof saved !== "object") return;
+      // Preserve the meaning of ranges saved by the upload-only v0.2 release.
+      setRadio("date-basis", ["upload", "recording"].includes(saved.dateBasis) ? saved.dateBasis : "upload");
       if (["current", "listed"].includes(saved.scope)) {
         setRadio("scope", saved.scope);
         state.scopeChosen = true;

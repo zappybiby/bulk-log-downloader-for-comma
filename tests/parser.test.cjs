@@ -17,6 +17,7 @@ const row = (name = ROUTE, date = "2026-04-15 12:30:00", extra = "") => `<tr><td
 const device = (rows = row(), extra = "") => documentFor(`<details><summary>routes (3)</summary><table id="table_routes"><tbody>${rows}</tbody></table>${extra}</details>`);
 const blob = (segment = "0", name = "qlog.zst", query = "?sig=INVENTED_TEST_SIGNATURE") => `${P.DOWNLOAD_ORIGIN}/test-container/demo-device/11111111--aabbcc/${segment}/${name}${query}`;
 const link = (url = blob(), label = "qlog.zst") => `<a href="${url.replaceAll("&", "&amp;")}">${label}</a>`;
+const metadata = (start = "2026-04-15T12:30:00", extra = "") => `<table id="table_route5_route"><tbody><tr><td>create_time</td><td>1999-01-01T00:00:00</td></tr><tr><td>end_time</td><td>2026-04-16T00:10:00</td></tr><tr><td>start_time</td><td>${start}</td></tr>${extra}</tbody></table>`;
 
 test("device route discovery excludes incident links and deduplicates its route table", () => {
   const doc = device(row() + row() + row(OTHER_ROUTE, "2026-04-16"), `<table>${row("incident-device/33333333--aaff")}</table>`);
@@ -77,8 +78,68 @@ test("device URLs derive from the current route or a unique matching device link
 test("qlog-only routes remain recognized when rlogs were selected", () => {
   const result = P.snapshot(documentFor(link()), ROUTE_URL, ["rlog"]);
   assert.equal(result.pageKind, "route");
-  assert.deepEqual(result.availableTypes, ["qlog"]);
+  // availableTypes reports inspected selected files, not an all-types catalog.
+  assert.deepEqual(result.availableTypes, []);
   assert.deepEqual(result.files, []);
+});
+
+test("recording dates use only the route details start_time and preserve inclusive displayed days", () => {
+  const misleading = '<table><tr><td>start_time</td><td>2026-04-16T00:05:00</td></tr></table>';
+  const legacyUrl = `${P.PAGE_ORIGIN}/?onebox=${encodeURIComponent("demo-device|2020-01-02--03-04-05")}`;
+  const doc = documentFor(misleading + metadata("2026-04-15T23:59:59.123456") + link());
+  const onStartDay = P.dateFilter({ mode: "custom", from: "2026-04-15", to: "2026-04-15" });
+  const onEndDay = P.dateFilter({ mode: "custom", from: "2026-04-16", to: "2026-04-16" });
+  const result = P.snapshot(doc, legacyUrl, ["qlog"], { recordingFilter: onStartDay });
+  assert.equal(result.recordingDate, "2026-04-15");
+  assert.equal(result.recordingMatch, true);
+  assert.equal(result.files.length, 1);
+  assert.deepEqual(result.availableTypes, ["qlog"]);
+  assert.equal(P.snapshot(doc, legacyUrl, ["qlog"], { recordingFilter: onEndDay }).recordingMatch, false);
+  assert.equal(P.snapshot(device(row()), BASE, ["qlog"], { recordingFilter: onStartDay }).recordingDate, null);
+});
+
+test("missing, malformed, or ambiguous recording metadata stays unknown without substituting another timestamp", () => {
+  const duplicateStart = '<tr><td>start_time</td><td>2026-04-15T12:30:00</td></tr>';
+  const nestedStart = '<table><tr><td>start_time</td><td>2026-04-15T12:30:00</td></tr></table>';
+  const cases = [
+    "", '<table><tr><td>start_time</td><td>2026-04-15T12:30:00</td></tr></table>',
+    metadata().replace("start_time", "upload time"), metadata() + metadata(),
+    metadata("2026-04-15T12:30:00", duplicateStart),
+    `<table id="table_route5_route"><tr><td>other</td><td>${nestedStart}</td></tr></table>`,
+    `<table id="table_route5_route"><tr><td>start_time</td><td>${nestedStart}</td></tr></table>`,
+    '<table id="table_route5_route"><tr><td>start_time</td><td>2026-04-15T12:30:00</td><td>2026-04-16T12:30:00</td></tr></table>',
+    ...["unknown", "1710000000", "2026-04-15", "2026-04-15T12:00:00Z", "2026-04-15T12:00:00+02:00", "2026-02-29T12:00:00", "0000-01-01T12:00:00", "2026-04-15T24:00:00", "2026-04-15T12:60:00", "2026-04-15T12:00:60"].map(value => metadata(value))
+  ];
+  const filter = P.dateFilter({ mode: "custom", from: "2026-04-15", to: "2026-04-16" });
+  for (const html of cases) {
+    const doc = documentFor(html + link());
+    const result = P.snapshot(doc, ROUTE_URL, ["qlog"], { recordingFilter: filter });
+    assert.equal(result.recordingDate, null, html);
+    assert.equal(result.recordingMatch, false, html);
+    assert.deepEqual(result.files, [], html);
+    const all = P.snapshot(doc, ROUTE_URL, ["qlog"], { recordingFilter: P.dateFilter({ mode: "all" }) });
+    assert.equal(all.recordingMatch, true, html);
+    assert.equal(all.files.length, 1, html);
+  }
+});
+
+test("recording-date rejection skips file enumeration and accepted routes inspect only requested types", () => {
+  const filter = P.dateFilter({ mode: "custom", from: "2026-04-16", to: "2026-04-16" });
+  for (const start of ["2026-04-15T12:30:00", "unknown"]) {
+    const doc = documentFor(metadata(start) + link() + link(blob("0", "rlog.zst"), "rlog.zst"));
+    const querySelectorAll = doc.querySelectorAll.bind(doc);
+    doc.querySelectorAll = selector => {
+      assert.notEqual(selector, "a[href]", "Rejected route must not enumerate its file links");
+      return querySelectorAll(selector);
+    };
+    const rejected = P.snapshot(doc, ROUTE_URL, ["rlog"], { recordingFilter: filter });
+    assert.equal(rejected.recordingMatch, false);
+    assert.deepEqual(rejected.files, []);
+  }
+  const accepted = P.snapshot(documentFor(metadata("2026-04-16T00:00:00") + link() + link(blob("0", "rlog.zst"), "rlog.zst")), ROUTE_URL, ["rlog"], { recordingFilter: filter });
+  assert.equal(accepted.files.length, 1);
+  assert.equal(accepted.files[0].typeKey, "rlog");
+  assert.deepEqual(accepted.availableTypes, ["rlog"]);
 });
 
 test("selected logs preserve query credentials, canonical names, segment order, and folders", () => {
@@ -176,18 +237,20 @@ test("recent windows contain exactly N calendar dates including today across mon
   assert.throws(() => P.dateFilter({ mode: "recent" }, new Date(NaN)), /Invalid current date/);
 });
 
-test("displayed upload dates survive DST gaps and calendar filtering does not reinterpret their timezone", () => {
+test("displayed upload and recording dates survive DST gaps without reinterpreting their timezone", () => {
   const script = `const P = require(${JSON.stringify(require.resolve("../firefox/parser.js"))});
     console.log(JSON.stringify({
       gap: P.parseRouteUploadDate("2026-03-08 02:30:00"),
       skippedLocalDate: P.parseRouteUploadDate("2011-12-30 12:00:00"),
+      recordingGap: P.parseRouteRecordingDate("2026-03-08T02:30:00"),
+      recordingSkippedDate: P.parseRouteRecordingDate("2011-12-30T12:00:00"),
       recent: P.dateFilter({mode:"recent",days:7}, new Date(2026,2,9,12)),
       matches: P.routeMatches({uploadDate:"2026-03-08"},P.dateFilter({mode:"custom",from:"2026-03-08",to:"2026-03-08"}))
     }));`;
   for (const TZ of ["UTC", "America/New_York", "Pacific/Auckland", "Pacific/Apia"]) {
     const result = JSON.parse(execFileSync(process.execPath, ["-e", script], { env: { ...process.env, TZ }, encoding: "utf8" }));
     assert.deepEqual(result, {
-      gap: "2026-03-08", skippedLocalDate: "2011-12-30", matches: true,
+      gap: "2026-03-08", skippedLocalDate: "2011-12-30", recordingGap: "2026-03-08", recordingSkippedDate: "2011-12-30", matches: true,
       recent: { mode: "recent", fromDate: "2026-03-03", toDate: "2026-03-09" }
     }, TZ);
   }
@@ -231,6 +294,7 @@ test("bridge fetches only useradmin HTML with the existing tab's credentials and
     fetched += 1;
     assert.equal(url, ROUTE_URL);
     assert.equal(options.credentials, "include");
+    assert.equal(options.cache, "no-store");
     assert.equal(options.redirect, "error");
     assert.ok(options.signal);
     return { ok: true, url, headers: { get: () => "text/html; charset=utf-8" }, text: async () => documentFor(link()).toString() };
@@ -239,6 +303,32 @@ test("bridge fetches only useradmin HTML with the existing tab's credentials and
   assert.equal(result.files.length, 1);
   assert.match((await harness.read({ type: "comma:read", url: "https://untrusted.example/" })).error, /Only https/);
   assert.equal(fetched, 1);
+});
+
+test("bridge forwards recording filters and reads corrected dates afresh on each explicit scan", async () => {
+  let fetched = 0;
+  const harness = bridgeHarness(async (url, options) => {
+    assert.equal(options.cache, "no-store");
+    const start = ++fetched === 1 ? "2026-04-14T12:30:00" : "2026-04-15T12:30:00";
+    return { ok: true, url, headers: { get: () => "text/html" }, text: async () => documentFor(metadata(start) + link()).toString() };
+  });
+  const recordingFilter = P.dateFilter({ mode: "custom", from: "2026-04-15", to: "2026-04-15" });
+  const message = { type: "comma:read", url: ROUTE_URL, expectedUrl: BASE, selectedTypes: ["qlog"], recordingFilter };
+  const before = await harness.read({ ...message, scanId: "fresh-1" });
+  const after = await harness.read({ ...message, scanId: "fresh-2" });
+  assert.equal(fetched, 2);
+  assert.equal(before.recordingDate, "2026-04-14");
+  assert.equal(before.recordingMatch, false);
+  assert.equal(before.files.length, 0);
+  assert.equal(after.recordingDate, "2026-04-15");
+  assert.equal(after.recordingMatch, true);
+  assert.equal(after.files.length, 1);
+  harness.context.location.href = ROUTE_URL;
+  harness.context.document = documentFor(metadata("2026-04-14T12:30:00") + link());
+  const source = await harness.read({ type: "comma:read", selectedTypes: ["qlog"], recordingFilter });
+  assert.equal(source.recordingMatch, false);
+  assert.equal(source.files.length, 0);
+  assert.equal(fetched, 2);
 });
 
 test("bridge cancellation aborts concurrent page reads and prevents queued reads restarting that scan", async () => {

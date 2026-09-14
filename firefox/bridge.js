@@ -62,7 +62,7 @@
       throw new Error("The source tab has navigated. Choose it again before continuing.");
     }
     if (message.url === undefined) {
-      return CommaParser.snapshot(document, initialUrl, message.selectedTypes);
+      return CommaParser.snapshot(document, initialUrl, message.selectedTypes, { recordingFilter: message.recordingFilter });
     }
 
     const url = CommaParser.requirePageUrl(message.url);
@@ -79,6 +79,7 @@
         // Firefox MV2 content-script fetch uses the extension context. Include
         // the user's site cookies explicitly, only for the exact allowed origin.
         credentials: "include",
+        cache: "no-store",
         redirect: "error",
         signal: controller.signal
       });
@@ -93,7 +94,7 @@
       if (active.timedOut) throw new Error("Page read timed out. Keep the source tab open and try again.");
       if (location.href !== initialUrl) throw new Error("The source tab has navigated. Choose it again before continuing.");
       const doc = new DOMParser().parseFromString(html, "text/html");
-      return CommaParser.snapshot(doc, url, message.selectedTypes);
+      return CommaParser.snapshot(doc, url, message.selectedTypes, { recordingFilter: message.recordingFilter });
     } catch (error) {
       if (active.cancelled) throw new Error("Scan cancelled.");
       if (active.timedOut || error?.name === "AbortError") {

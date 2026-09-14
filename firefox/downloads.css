@@ -55,6 +55,7 @@ legend { font-size: 12px; font-weight: 650; margin-bottom: 8px; padding: 0; }
 .segmented input:checked + span { background: #fff; color: var(--accent); box-shadow: 0 1px 3px #14294916; }
 .segmented input:focus-visible + span { outline: 3px solid #8ba5ff; }
 .segmented input:disabled + span { opacity: .45; cursor: default; }
+.date-basis { margin-bottom: 8px; }
 .date-presets { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
 .date-presets button { min-height: 44px; padding: 5px 2px; border: 1px solid var(--border); border-radius: 6px; background: #fff; color: #465166; font-size: 12px; font-weight: 600; }
 .date-presets button[aria-pressed="true"] { background: #edf1ff; color: var(--accent-dark); border-color: #94a8eb; }

@@ -27,6 +27,7 @@ class Harness:
         self.webext = None
         self.log = None
         self.archive_results = []
+        self.pulled_ui_paths = set()
         self.waiting_for_test_tab = False
 
     def adb(self, *args, check=True, **kwargs):
@@ -216,21 +217,31 @@ class Harness:
         print('Synthetic extension installed and open in Firefox Nightly', flush=True)
 
     def pull_zip(self, kind):
-        pattern = 'comma-logs-*.zip' if kind == 'ui-selection' else f'comma-selftest-{kind}*.zip'
+        is_ui = kind in ('ui-selection', 'ui-recording')
+        pattern = 'comma-logs-*.zip' if is_ui else f'comma-selftest-{kind}*.zip'
         until = time.monotonic() + 120
         while time.monotonic() < until:
             self.dismiss_prompts()
             listing = self.adb('shell', 'find', '/sdcard/Download', '-maxdepth', '1', '-type',
                                'f', '-name', pattern, check=False, text=True).stdout
             paths = [line.strip() for line in listing.splitlines() if line.startswith('/sdcard/')]
-            if paths:
+            for path in paths:
+                if is_ui and path in self.pulled_ui_paths:
+                    continue
                 destination = self.output / f'comma-selftest-{kind}.zip'
-                self.adb('pull', paths[0], str(destination))
+                self.adb('pull', path, str(destination))
                 try:
-                    report = verify_ui_selection(destination) if kind == 'ui-selection' else verify(destination, kind)
+                    if kind == 'ui-recording':
+                        report = verify_ui_selection(destination, 'recording')
+                    elif kind == 'ui-selection':
+                        report = verify_ui_selection(destination)
+                    else:
+                        report = verify(destination, kind)
                     (self.output / f'{kind}-verified.json').write_text(json.dumps(report, indent=2))
                     print(json.dumps(report), flush=True)
-                    return
+                    if is_ui:
+                        self.pulled_ui_paths.add(path)
+                    return report
                 except (AssertionError, OSError, ValueError, zipfile.BadZipFile):
                     # A download may exist on disk before Firefox has finished writing.
                     pass
@@ -255,6 +266,9 @@ class Harness:
     def exercise_selection(self):
         self.click('^Open downloader UI$')
         self.await_text('Synthetic device', timeout=30)
+        # A new profile defaults to recording dates. Explicitly exercise its
+        # visible control as well; the local UI tests cover preference migration.
+        self.click('^Recorded$', timeout=20, scroll=True)
         self.click('^Last 7$', timeout=20, scroll=True)
         today = datetime.date.fromisoformat(self.adb('shell', 'date', '+%Y-%m-%d', text=True).stdout.strip())
         first = today - datetime.timedelta(days=6)
@@ -274,23 +288,58 @@ class Harness:
         self.page_top()
         self.click('^Today$', scroll=True)
         self.click('Scan files', timeout=20, scroll=True)
-        self.await_text('1 route', timeout=30, scroll=True)
+        self.await_text('Scan complete', timeout=30, scroll=True)
+        self.await_text('2 files · 1 route', timeout=30, scroll=True)
         self.snapshot('production-ui-today')
         self.page_top()
         self.click('^Last 7$', scroll=True)
         self.click('Scan files', timeout=20, scroll=True)
-        self.await_text('3 routes', timeout=30, scroll=True)
+        self.await_text('Scan complete', timeout=30, scroll=True)
+        self.await_text('6 files · 3 routes', timeout=30, scroll=True)
         self.page_top()
         self.snapshot('production-ui-populated')
         self.click('Prepare ZIP', timeout=30, scroll=True)
         self.await_text('Save ZIP', timeout=30, scroll=True)
         self.snapshot('production-ui-zip-ready')
         self.click('^Save ZIP$', timeout=20)
-        self.pull_zip('ui-selection')
+        recording = self.pull_zip('ui-recording')
+        self.page_top()
+        self.snapshot('production-ui-recording-saved')
+        self.click('^Uploaded$', timeout=20, scroll=True)
+        self.click('^Today$', scroll=True)
+        self.click('Scan files', timeout=20, scroll=True)
+        self.await_text('Scan complete', timeout=30, scroll=True)
+        self.await_text('2 files · 1 route', timeout=30, scroll=True)
+        self.snapshot('production-ui-upload-today')
+        self.page_top()
+        self.click('^Last 7$', scroll=True)
+        self.click('Scan files', timeout=20, scroll=True)
+        self.await_text('Scan complete', timeout=30, scroll=True)
+        self.await_text('6 files · 3 routes', timeout=30, scroll=True)
+        self.page_top()
+        self.snapshot('production-ui-upload-populated')
+        self.click('Prepare ZIP', timeout=30, scroll=True)
+        self.await_text('Save ZIP', timeout=30, scroll=True)
+        self.click('^Save ZIP$', timeout=20)
+        uploaded = self.pull_zip('ui-selection')
         self.page_top()
         self.snapshot('production-ui-saved')
+        # The adapter deliberately corrects one upstream recording date between
+        # distinct scan IDs. A fresh scan must discover that formerly excluded
+        # route; no fixture data is persisted through extension preferences.
+        self.click('^Recorded$', timeout=20, scroll=True)
+        self.click('Scan files', timeout=20, scroll=True)
+        self.await_text('Scan complete', timeout=30, scroll=True)
+        self.await_text('8 files · 4 routes', timeout=30, scroll=True)
+        self.page_top()
+        self.snapshot('production-ui-recording-rescan')
         return {'preset':'Last 7 days', 'fromDate':first.isoformat(), 'toDate':today.isoformat(),
                 'matchedRoutes':3, 'savedFiles':6, 'todayMatchedRoutes':1,
+                'recordingSelection':recording, 'uploadSelection':uploaded,
+                'freshRecordingRescan':{'matchedRoutes':4, 'files':8,
+                    'includedRouteIndices':[1,2,3,4],
+                    'fixtureChange':'route index 2 recording date deliberately changed from 8 to 2 days ago between scans',
+                    'validation':'production UI count after a fresh synthetic page read; live HTTP caching not tested'},
                 'customDateControls':'visible; numerical ranges verified by local UI tests',
                 'fileTypes':'rlog/qlog and four camera options displayed; rlog selection saved',
                 'selectionDownload':'saved through native Firefox prompt; every path, byte and CRC verified'}

@@ -72,6 +72,32 @@
     return calendarDate(`${match[1]}-${match[2]}-${match[3]}`);
   }
 
+  function parseRouteRecordingDate(text) {
+    // start_time is a naive ISO timestamp on the route details page. Keep its
+    // displayed day; do not infer a timezone from the phone, upload, or route ID.
+    const match = typeof text === "string"
+      ? text.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,9})?$/) : null;
+    if (!match || Number(match[2]) > 23 || Number(match[3]) > 59 || Number(match[4]) > 59) return null;
+    return calendarDate(match[1]);
+  }
+
+  function collectRecordingDate(doc) {
+    const tables = doc.querySelectorAll("table#table_route5_route");
+    if (tables.length !== 1) return null;
+    const table = tables[0];
+    const starts = [];
+    for (const row of table.querySelectorAll("tr")) {
+      if (row.closest("table") !== table) continue;
+      const cells = Array.from(row.children).filter(cell => /^(?:TD|TH)$/.test(cell.tagName));
+      if ((cells[0]?.textContent || "").trim() !== "start_time") continue;
+      // Multiple start fields or extra/nested value cells are ambiguous even
+      // when their displayed dates happen to agree.
+      starts.push(cells.length === 2 && !cells[1].querySelector("table")
+        ? parseRouteRecordingDate((cells[1].textContent || "").trim()) : null);
+    }
+    return starts.length === 1 ? starts[0] : null;
+  }
+
   function uploadColumn(table) {
     if (!table) return 0;
     for (const row of table.querySelectorAll("tr")) {
@@ -233,8 +259,12 @@
   }
 
   function routeMatches(route, filter) {
+    return recordingMatches(route?.uploadDate, filter);
+  }
+
+  function recordingMatches(recordingDate, filter) {
     if (filter.mode === "all") return true;
-    const date = calendarDate(route?.uploadDate);
+    const date = calendarDate(recordingDate);
     return date !== null
       && (filter.fromDate === null || date >= filter.fromDate)
       && (filter.toDate === null || date <= filter.toDate);
@@ -258,41 +288,57 @@
     return devices.size === 1 ? deviceUrl(devices.values().next().value) : "";
   }
 
-  function snapshot(doc, baseUrl, selectedTypes) {
+  function snapshot(doc, baseUrl, selectedTypes, options = {}) {
     const url = requirePageUrl(baseUrl);
     const title = String(doc.title || "comma useradmin").trim().slice(0, 200);
     if (doc.querySelector('input[type="password"]') || /^(?:sign in|log ?in)(?:\b|$)/i.test(title)) {
       throw new Error("Sign in to useradmin in the source tab, then choose it again.");
     }
     const routes = collectRouteLinks(doc, url);
-    const allFiles = collectLogFiles(doc, LOG_TYPES.map(type => type.key), url);
-    const availableTypes = LOG_TYPES.filter(type => allFiles.some(file => file.typeKey === type.key)).map(type => type.key);
     const isDevice = Boolean(doc.querySelector("#table_routes"));
     const hasRouteQuery = isRouteName(new URL(url).searchParams.get("onebox") || "");
-    const isRoute = Boolean(allFiles.length || (hasRouteQuery && doc.querySelector("table")));
+    let isRoute = Boolean(hasRouteQuery && doc.querySelector("table"));
+    if (!isDevice && !isRoute) {
+      // Recognize sparse routes whose only uploaded type is not selected. Stop
+      // at the first valid link; don't build or sort a catalog of every type.
+      const allTypes = new Set(LOG_TYPES.map(type => type.key));
+      for (const link of doc.querySelectorAll("a[href]")) {
+        if (fileFromLink(link, url, allTypes)) { isRoute = true; break; }
+      }
+    }
     if (!isDevice && !isRoute && !routes.length) {
       if (doc.querySelector("pre") && doc.querySelector("select")) {
         throw new Error("This is a log viewer. Open its route or device page in useradmin, then choose that tab.");
       }
       throw new Error("Open a device page with a route list, or a route page with log files, in useradmin.");
     }
-    const selected = new Set(Array.isArray(selectedTypes) ? selectedTypes : ["rlog"]);
+    const recordingDate = !isDevice && isRoute ? collectRecordingDate(doc) : null;
+    const recordingMatch = !isDevice && isRoute
+      ? !options.recordingFilter || recordingMatches(recordingDate, options.recordingFilter) : null;
+    // Date rejection happens before inspecting file links. No recording dates
+    // or signed file links are retained across scans.
+    const files = recordingMatch === false ? [] : collectLogFiles(doc, selectedTypes, url);
+    // These are the selected types actually inspected, not a full type catalog.
+    const availableTypes = LOG_TYPES.filter(type => files.some(file => file.typeKey === type.key)).map(type => type.key);
     return {
       url,
       title,
       deviceUrl: getDeviceUrl(doc, url),
       pageKind: isDevice ? "device" : isRoute ? "route" : "route-list",
+      recordingDate,
+      recordingMatch,
       availableTypes,
       routes,
-      files: allFiles.filter(file => selected.has(file.typeKey)),
+      files,
       nextPageUrl: getNextPageUrl(doc, url)
     };
   }
 
   const api = Object.freeze({
-    PAGE_ORIGIN, DOWNLOAD_ORIGIN, LOG_TYPES, snapshot, dateFilter, routeMatches,
+    PAGE_ORIGIN, DOWNLOAD_ORIGIN, LOG_TYPES, snapshot, dateFilter, routeMatches, recordingMatches,
     isAllowedPageUrl, isAllowedDownloadUrl, requirePageUrl, sanitizeFileName,
-    collectRouteLinks, collectLogFiles, getNextPageUrl, parseRouteUploadDate, getDeviceUrl
+    collectRouteLinks, collectLogFiles, getNextPageUrl, parseRouteUploadDate, parseRouteRecordingDate,
+    collectRecordingDate, getDeviceUrl
   });
   root.CommaParser = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;

@@ -7,6 +7,7 @@
     <title>Bulk logs · Firefox</title>
     <link rel="stylesheet" href="downloads.css">
     <script src="parser.js" defer></script>
+    <script src="scanner.js" defer></script>
     <script src="archive.js" defer></script>
     <script src="downloads.js" defer></script>
   </head>
@@ -31,8 +32,12 @@
           </fieldset>
 
           <fieldset id="date-settings" class="control-group" hidden>
-            <legend>Upload date</legend>
-            <div class="date-presets" aria-label="Upload date range">
+            <legend>Date range</legend>
+            <div class="segmented date-basis" role="group" aria-label="Filter dates by">
+              <label><input type="radio" name="date-basis" value="recording" checked><span>Recorded</span></label>
+              <label><input type="radio" name="date-basis" value="upload"><span>Uploaded</span></label>
+            </div>
+            <div class="date-presets" aria-label="Date range">
               <button id="date-preset-1" type="button" aria-pressed="false">Today</button>
               <button id="date-preset-7" type="button" aria-pressed="true">Last 7</button>
               <button id="date-preset-30" type="button" aria-pressed="false">Last 30</button>
@@ -46,7 +51,7 @@
               <label>Through<input id="date-to" type="date"></label>
             </div>
             <p id="date-summary" class="date-summary" aria-live="polite"></p>
-            <p class="help date-explanation">Upload dates as shown on the device page.</p>
+            <p id="date-explanation" class="help date-explanation">Recording start date as shown on each route page.</p>
           </fieldset>
 
           <fieldset class="control-group types-group">
@@ -91,7 +96,7 @@
         <p id="save-note" class="help" hidden>Check Firefox’s Downloads screen to confirm the ZIP was saved. You can tap Save ZIP again while this tab stays open.</p>
       </section>
 
-      <details class="storage-details"><summary>Storage &amp; help</summary><p id="storage-note" class="help">Keep this tab and the source tab open while working. Each ZIP is limited to 256 MiB and needs temporary free storage. For larger collections, use smaller date ranges. Android may interrupt work when Firefox is in the background.</p><p class="help">Only files already uploaded to comma are available. Date filters use the device table’s upload date; routes without a readable date are skipped. All dates includes those routes.</p><p class="help">An unofficial add-on for useradmin.comma.ai.</p></details>
+      <details class="storage-details"><summary>Storage &amp; help</summary><p id="storage-note" class="help">Keep this tab and the source tab open while working. Each ZIP is limited to 256 MiB and needs temporary free storage. For larger collections, use smaller date ranges. Android may interrupt work when Firefox is in the background.</p><p class="help">Only files already uploaded to comma are available. Recorded uses the route’s start date; Uploaded uses the device table’s upload date. Dates follow the calendar shown on the site. Routes without a readable selected date are skipped; All includes them.</p><p class="help">Each scan reads pages afresh, up to four at a time. Recording-date scans check every listed route. No route-date cache is saved.</p><p class="help">An unofficial add-on for useradmin.comma.ai.</p></details>
     </main>
     <footer class="action-bar" aria-label="Download actions">
       <p id="action-summary" class="action-summary" aria-live="polite">Choose files, then scan</p>
