@@ -97,10 +97,22 @@ class Harness:
 
     def prepare(self):
         self.adb('logcat', '-c')
+        print('Launching installed Firefox Nightly', flush=True)
         self.device.app_start(PACKAGE)
         time.sleep(3)
         # Use UI controls first. Bounds always come from the accessibility tree.
-        for _ in range(20):
+        for _ in range(30):
+            # Cold-boot Android images sometimes leave the launcher ANR dialog
+            # above the newly opened app. Only recover that setup-only failure.
+            # A Firefox ANR/crash during the actual test remains a test failure.
+            launcher_anr = self.find(r"^Pixel Launcher isn.t responding$")
+            if launcher_anr is not None:
+                self.snapshot('launcher-startup-anr')
+                print('Dismissing cold-boot Pixel Launcher ANR; restarting Nightly', flush=True)
+                self.click(r'^Close app$')
+                self.device.app_start(PACKAGE)
+                time.sleep(3)
+                continue
             if self.find(r'(^Menu$|More options|menuButton|menu_button)') is not None:
                 break
             if not self.dismiss_prompts():
@@ -110,6 +122,7 @@ class Harness:
         self.click(r'^Settings$', scroll=True)
         self.click(r'Remote debugging via USB', timeout=25, scroll=True)
         self.snapshot('remote-debugging-enabled')
+        print('Firefox remote debugging enabled through Settings', flush=True)
         self.device.press('back')
         self.device.press('back')
         self.adb('shell', 'dumpsys', 'package', PACKAGE, text=True)
@@ -131,6 +144,7 @@ class Harness:
         ], cwd=ROOT, stdout=self.log, stderr=subprocess.STDOUT)
         self.await_text('SELFTEST READY', timeout=210)
         self.snapshot('selftest-ready')
+        print('Synthetic extension installed and open in Firefox Nightly', flush=True)
 
     def pull_zip(self, kind):
         until = time.monotonic() + 120
