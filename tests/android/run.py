@@ -263,6 +263,49 @@ class Harness:
         self.snapshot('page-top-not-found')
         raise RuntimeError('Could not reveal the downloader heading without reloading')
 
+    @staticmethod
+    def native_download_overlay(nodes):
+        # These IDs and bounds come from actual Nightly accessibility captures.
+        # Native download snackbars sit above the page's visible footer buttons.
+        for node in nodes:
+            if node.get('package') != PACKAGE or node.get('visible-to-user') == 'false':
+                continue
+            if node.get('resource-id') not in ('org.mozilla.fenix:id/dynamicSnackbarContainer', 'snackbar'):
+                continue
+            bounds = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
+            if len(bounds) == 4 and bounds[2] > bounds[0] and bounds[3] > bounds[1]:
+                return True
+        return False
+
+    def wait_for_native_download_ui(self, timeout=30):
+        # Require a short, observed clear interval: a completed notification can
+        # replace the in-progress snackbar just after the file verifies on disk.
+        until, clear_since = time.monotonic() + timeout, None
+        while time.monotonic() < until:
+            if self.native_download_overlay(self.nodes()) or self.dismiss_prompts():
+                clear_since = None
+            else:
+                clear_since = clear_since or time.monotonic()
+                if time.monotonic() - clear_since >= 1:
+                    return
+            time.sleep(0.25)
+        self.snapshot('native-download-overlay-stuck')
+        raise TimeoutError('Firefox native download UI still covers the page controls')
+
+    def start_ui_scan(self):
+        self.wait_for_native_download_ui()
+        self.click('^Scan files$', timeout=20, scroll=True)
+        # A tap alone does not prove delivery: verify a state transition before
+        # asserting results. Never retap while a scan may already be running.
+        until = time.monotonic() + 10
+        while time.monotonic() < until:
+            nodes = self.nodes()
+            if self.find(r'^(cancel-scan-button|download-button|Scan complete.*)$', nodes) is not None:
+                return
+            time.sleep(0.25)
+        self.snapshot('scan-did-not-start')
+        raise AssertionError('Scan tap did not produce an active or completed scan')
+
     def exercise_selection(self):
         self.click('^Open downloader UI$')
         self.await_text('Synthetic device', timeout=30)
@@ -287,13 +330,13 @@ class Harness:
         self.click('^Camera files', scroll=True)
         self.page_top()
         self.click('^Today$', scroll=True)
-        self.click('Scan files', timeout=20, scroll=True)
+        self.start_ui_scan()
         self.await_text('Scan complete', timeout=30, scroll=True)
         self.await_text('2 files · 1 route', timeout=30, scroll=True)
         self.snapshot('production-ui-today')
         self.page_top()
         self.click('^Last 7$', scroll=True)
-        self.click('Scan files', timeout=20, scroll=True)
+        self.start_ui_scan()
         self.await_text('Scan complete', timeout=30, scroll=True)
         self.await_text('6 files · 3 routes', timeout=30, scroll=True)
         self.page_top()
@@ -303,17 +346,18 @@ class Harness:
         self.snapshot('production-ui-zip-ready')
         self.click('^Save ZIP$', timeout=20)
         recording = self.pull_zip('ui-recording')
+        self.wait_for_native_download_ui()
         self.page_top()
         self.snapshot('production-ui-recording-saved')
         self.click('^Uploaded$', timeout=20, scroll=True)
         self.click('^Today$', scroll=True)
-        self.click('Scan files', timeout=20, scroll=True)
+        self.start_ui_scan()
         self.await_text('Scan complete', timeout=30, scroll=True)
         self.await_text('2 files · 1 route', timeout=30, scroll=True)
         self.snapshot('production-ui-upload-today')
         self.page_top()
         self.click('^Last 7$', scroll=True)
-        self.click('Scan files', timeout=20, scroll=True)
+        self.start_ui_scan()
         self.await_text('Scan complete', timeout=30, scroll=True)
         self.await_text('6 files · 3 routes', timeout=30, scroll=True)
         self.page_top()
@@ -322,13 +366,14 @@ class Harness:
         self.await_text('Save ZIP', timeout=30, scroll=True)
         self.click('^Save ZIP$', timeout=20)
         uploaded = self.pull_zip('ui-selection')
+        self.wait_for_native_download_ui()
         self.page_top()
         self.snapshot('production-ui-saved')
         # The adapter deliberately corrects one upstream recording date between
         # distinct scan IDs. A fresh scan must discover that formerly excluded
         # route; no fixture data is persisted through extension preferences.
         self.click('^Recorded$', timeout=20, scroll=True)
-        self.click('Scan files', timeout=20, scroll=True)
+        self.start_ui_scan()
         self.await_text('Scan complete', timeout=30, scroll=True)
         self.await_text('8 files · 4 routes', timeout=30, scroll=True)
         self.page_top()
