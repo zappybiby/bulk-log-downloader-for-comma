@@ -9,3 +9,6 @@ grouped route results, and ZIP output.
 
 Normal installation requires Mozilla signing. See the Firefox README for
 temporary development installation and the prototype's limits.
+
+[Recording-date performance experiments](docs/recording-date-performance.md) compare
+parallel discovery, caching and a possible bulk metadata source for larger collections.
