@@ -9,7 +9,7 @@ independent of this Firefox build.
 1. Sign in to useradmin normally and open a device page or route page.
 2. Open Firefox's extension menu and choose **Comma Bulk Logs for Firefox**.
 3. Choose **This route** or **Device routes**, file types, and recording or upload dates.
-4. Scan, review the file count, and prepare the ZIP.
+4. Scan to open the review screen, check the file count, and prepare the ZIP.
 5. Choose **Save ZIP**, then check Firefox Downloads before closing this tab.
 
 Some routes expose only qlogs. A log viewer page is not a route download page;
@@ -55,9 +55,21 @@ including routes uploaded outside the selected range, before selecting files.
 Rejected recording dates skip file-link enumeration. ZIP payload fetching remains
 separate from this metadata-reading concurrency.
 
-The compact page groups results by route and keeps Scan, Prepare ZIP and Save
-ZIP in the bottom action bar. File names and supplementary help can be expanded
-when needed.
+The compact setup shows common date presets and Full logs / Quick logs first.
+**Set days** opens an arbitrary day count; **Custom** opens the date range. Camera
+choices and help expand when needed. An unavailable This route option is omitted
+on a device page.
+
+Scanning opens a separate review screen with the exact filter summary and file
+count. **Edit filters** returns to setup; **Back to results** retains the current
+selection and prepared ZIP until a setting actually changes. Scanning again
+always reads fresh pages. **Review routes** shows details ten routes at a time;
+this display limit never limits the files included in the ZIP. Route rows lead
+with the selected date and show the route identifier underneath.
+
+Scan, Prepare ZIP and Save ZIP stay in the bottom action bar. Preparation and
+save status appear above optional route details, without scrolling through the
+settings or a long route list.
 
 Keep both the source tab and downloader open while scanning; keep the downloader
 in the foreground while preparing and saving. Preparation progress measures

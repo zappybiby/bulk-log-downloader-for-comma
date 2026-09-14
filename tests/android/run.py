@@ -29,6 +29,7 @@ class Harness:
         self.archive_results = []
         self.pulled_ui_paths = set()
         self.waiting_for_test_tab = False
+        self.compact_ui_checks = []
 
     def adb(self, *args, check=True, **kwargs):
         return subprocess.run(['adb', '-s', self.serial, *args], check=check,
@@ -294,7 +295,7 @@ class Harness:
 
     def start_ui_scan(self):
         self.wait_for_native_download_ui()
-        self.click('^Scan files$', timeout=20, scroll=True)
+        self.click('^Scan files$', timeout=20)
         # A tap alone does not prove delivery: verify a state transition before
         # asserting results. Never retap while a scan may already be running.
         until = time.monotonic() + 10
@@ -306,19 +307,102 @@ class Harness:
         self.snapshot('scan-did-not-start')
         raise AssertionError('Scan tap did not produce an active or completed scan')
 
+    @staticmethod
+    def node_bounds(node):
+        values = list(map(int, re.findall(r'-?\d+', node.get('bounds', ''))))
+        if len(values) != 4:
+            raise AssertionError('Accessibility node has no usable bounds')
+        return values
+
+    def assert_compact_view(self, name, controls, absent=()):
+        # These controls must all fit at once. This helper never scrolls or taps;
+        # it records the exact hierarchy used for assertions and a settled frame.
+        nodes = list(ET.fromstring(self.snapshot(name)).iter('node'))
+        webview = next((node for node in nodes if node.get('class') == 'android.webkit.WebView'
+                        and 'Bulk logs' in node.get('text', '')), None)
+        if webview is None:
+            raise AssertionError(f'{name}: downloader WebView is missing')
+        viewport = self.node_bounds(webview)
+        footer_node = self.find(r'^Download actions$', nodes)
+        if footer_node is None:
+            raise AssertionError(f'{name}: download action bar is missing')
+        footer = self.node_bounds(footer_node)
+        if self.native_download_overlay(nodes):
+            raise AssertionError(f'{name}: native download UI covers the page')
+        observed = []
+        for pattern in controls:
+            node = self.find(pattern, nodes)
+            if node is None or node.get('visible-to-user') == 'false':
+                raise AssertionError(f'{name}: required control is not visible: {pattern}')
+            bounds = self.node_bounds(node)
+            x1, y1, x2, y2 = bounds
+            if not (viewport[0] <= x1 < x2 <= viewport[2]
+                    and viewport[1] <= y1 < y2 <= viewport[3]):
+                raise AssertionError(f'{name}: control does not fit in WebView: {pattern} {bounds}')
+            # All requested elements outside the footer must be above it.
+            # Gecko sometimes exposes nodes under a footer in the UI tree;
+            # simple presence would miss that obstruction.
+            in_footer = footer[0] <= x1 and x2 <= footer[2] and footer[1] <= y1 and y2 <= footer[3]
+            footer_ids = {'action-summary', 'scan-button', 'download-button', 'save-button',
+                          'review-button', 'clear-button', 'cancel-scan-button', 'stop-button'}
+            if node.get('resource-id') in footer_ids:
+                if not in_footer:
+                    raise AssertionError(f'{name}: action lies outside its bar: {pattern}')
+            elif y2 > footer[1]:
+                raise AssertionError(f'{name}: content lies below the action bar: {pattern}')
+            observed.append({'pattern':pattern, 'bounds':bounds})
+        for pattern in absent:
+            if self.find(pattern, nodes) is not None:
+                raise AssertionError(f'{name}: collapsed or inactive content is exposed: {pattern}')
+        self.compact_ui_checks.append({'screen':name, 'webViewBounds':viewport,
+                                       'actionBarBounds':footer, 'visibleTogether':observed,
+                                       'absent':list(absent), 'helperScrolling':False})
+        (self.output / 'compact-ui-checks.json').write_text(json.dumps(self.compact_ui_checks, indent=2))
+
+    def edit_filters(self):
+        self.wait_for_native_download_ui()
+        self.click('^Edit filters$', timeout=20)
+        self.await_text('date-preset-7', timeout=10)
+        self.assert_compact_view('production-ui-edit-filters', [
+            '^page-title$', '^date-preset-7$', '^file-types$', '^scan-button$', '^review-button$'
+        ], ['^review-panel$', '^file-preview$'])
+
+    def review_selection(self, name, files, routes, archive=False):
+        self.await_text('Scan complete', timeout=30)
+        if not archive:
+            self.await_text(f'{files} files · {routes} ' + ('route' if routes == 1 else 'routes'), timeout=30)
+        self.assert_compact_view(name, [
+            '^page-title$', '^source-title$', '^edit-filters-button$', '^file-count$',
+            '^route-count$', '^routes-disclosure$', '^action-summary$',
+            '^save-button$' if archive else '^download-button$'
+        ], ['^settings-form$', '^file-preview$'])
+
     def exercise_selection(self):
         self.click('^Open downloader UI$')
         self.await_text('Synthetic device', timeout=30)
-        # A new profile defaults to recording dates. Explicitly exercise its
-        # visible control as well; the local UI tests cover preference migration.
-        self.click('^Recorded$', timeout=20, scroll=True)
-        self.click('^Last 7$', timeout=20, scroll=True)
+        # The normal configuration and review actions deliberately do not use
+        # automatic scrolling. Optional date/camera details are tested separately.
+        self.click('^Recorded$', timeout=20)
+        self.click('^Last 7$', timeout=20)
         today = datetime.date.fromisoformat(self.adb('shell', 'date', '+%Y-%m-%d', text=True).stdout.strip())
         first = today - datetime.timedelta(days=6)
         self.await_text(first.isoformat(), timeout=10)
         self.await_text(today.isoformat(), timeout=10)
-        self.snapshot('production-ui-source')
-        self.click('^Custom$', scroll=True)
+        self.assert_compact_view('production-ui-source', [
+            '^page-title$', '^source-title$', '^Recorded$', '^Uploaded$', '^date-preset-1$',
+            '^date-preset-7$', '^date-preset-30$', '^date-preset-all$', '^date-preset-custom$',
+            '^file-types$', '^camera-types$', '^scan-button$'
+        ], ['^review-panel$', '^empty-results$', '^file-preview$', '^date-days$'])
+        self.click('^Set days$', timeout=15)
+        self.await_text('date-days', timeout=10)
+        self.snapshot('production-ui-arbitrary-days')
+        # Set days focuses a real numeric input. Dismiss an observed IME only;
+        # blindly pressing Back could leave the extension if no keyboard opened.
+        keyboard = self.adb('shell', 'dumpsys', 'input_method', text=True).stdout
+        if re.search(r'(?:mInputShown|mIsInputViewShown)=true', keyboard):
+            self.device.press('back')
+        self.click('^Last 7$', timeout=15)
+        self.click('^Custom$')
         self.await_text('From', timeout=10)
         self.await_text('Through', timeout=10)
         self.snapshot('production-ui-custom-dates')
@@ -329,55 +413,51 @@ class Harness:
         self.page_top()
         self.click('^Camera files', scroll=True)
         self.page_top()
-        self.click('^Today$', scroll=True)
+        self.click('^Today$')
         self.start_ui_scan()
-        self.await_text('Scan complete', timeout=30, scroll=True)
-        self.await_text('2 files · 1 route', timeout=30, scroll=True)
-        self.snapshot('production-ui-today')
-        self.page_top()
-        self.click('^Last 7$', scroll=True)
+        self.review_selection('production-ui-today', 2, 1)
+        self.edit_filters()
+        self.click('^Last 7$')
         self.start_ui_scan()
-        self.await_text('Scan complete', timeout=30, scroll=True)
-        self.await_text('6 files · 3 routes', timeout=30, scroll=True)
-        self.page_top()
-        self.snapshot('production-ui-populated')
-        self.click('Prepare ZIP', timeout=30, scroll=True)
-        self.await_text('Save ZIP', timeout=30, scroll=True)
-        self.snapshot('production-ui-zip-ready')
+        self.review_selection('production-ui-populated', 6, 3)
+        # Merely inspecting filters must preserve discovered files. Returning to
+        # review must not issue another scan (which would alter this fixture).
+        self.edit_filters()
+        self.click('^Back to results$')
+        self.review_selection('production-ui-results-preserved', 6, 3)
+        self.click('^Prepare ZIP$', timeout=30)
+        self.await_text('Save ZIP', timeout=30)
+        self.review_selection('production-ui-zip-ready', 6, 3, archive=True)
+        # The same round trip must retain an already prepared archive.
+        self.edit_filters()
+        self.click('^Back to results$')
+        self.review_selection('production-ui-archive-preserved', 6, 3, archive=True)
         self.click('^Save ZIP$', timeout=20)
         recording = self.pull_zip('ui-recording')
         self.wait_for_native_download_ui()
-        self.page_top()
         self.snapshot('production-ui-recording-saved')
-        self.click('^Uploaded$', timeout=20, scroll=True)
-        self.click('^Today$', scroll=True)
+        self.edit_filters()
+        self.click('^Uploaded$', timeout=20)
+        self.click('^Today$')
         self.start_ui_scan()
-        self.await_text('Scan complete', timeout=30, scroll=True)
-        self.await_text('2 files · 1 route', timeout=30, scroll=True)
-        self.snapshot('production-ui-upload-today')
-        self.page_top()
-        self.click('^Last 7$', scroll=True)
+        self.review_selection('production-ui-upload-today', 2, 1)
+        self.edit_filters()
+        self.click('^Last 7$')
         self.start_ui_scan()
-        self.await_text('Scan complete', timeout=30, scroll=True)
-        self.await_text('6 files · 3 routes', timeout=30, scroll=True)
-        self.page_top()
-        self.snapshot('production-ui-upload-populated')
-        self.click('Prepare ZIP', timeout=30, scroll=True)
-        self.await_text('Save ZIP', timeout=30, scroll=True)
+        self.review_selection('production-ui-upload-populated', 6, 3)
+        self.click('^Prepare ZIP$', timeout=30)
+        self.await_text('Save ZIP', timeout=30)
         self.click('^Save ZIP$', timeout=20)
         uploaded = self.pull_zip('ui-selection')
         self.wait_for_native_download_ui()
-        self.page_top()
         self.snapshot('production-ui-saved')
         # The adapter deliberately corrects one upstream recording date between
         # distinct scan IDs. A fresh scan must discover that formerly excluded
         # route; no fixture data is persisted through extension preferences.
-        self.click('^Recorded$', timeout=20, scroll=True)
+        self.edit_filters()
+        self.click('^Recorded$', timeout=20)
         self.start_ui_scan()
-        self.await_text('Scan complete', timeout=30, scroll=True)
-        self.await_text('8 files · 4 routes', timeout=30, scroll=True)
-        self.page_top()
-        self.snapshot('production-ui-recording-rescan')
+        self.review_selection('production-ui-recording-rescan', 8, 4)
         return {'preset':'Last 7 days', 'fromDate':first.isoformat(), 'toDate':today.isoformat(),
                 'matchedRoutes':3, 'savedFiles':6, 'todayMatchedRoutes':1,
                 'recordingSelection':recording, 'uploadSelection':uploaded,
@@ -386,6 +466,9 @@ class Harness:
                     'fixtureChange':'route index 2 recording date deliberately changed from 8 to 2 days ago between scans',
                     'validation':'production UI count after a fresh synthetic page read; live HTTP caching not tested'},
                 'customDateControls':'visible; numerical ranges verified by local UI tests',
+                'arbitraryDays':'Set days reveals the numerical input; preset hides it again',
+                'compactUi':'default controls and collapsed review controls visible together without helper scrolling; bounds in compact-ui-checks.json',
+                'editFilters':'returning without changes preserves both file results and prepared ZIP',
                 'fileTypes':'rlog/qlog and four camera options displayed; rlog selection saved',
                 'selectionDownload':'saved through native Firefox prompt; every path, byte and CRC verified'}
 

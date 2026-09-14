@@ -11,7 +11,8 @@
   const sourceTabId = sourceParam && /^\d+$/.test(sourceParam) ? Number(sourceParam) : null;
   const state = {
     mode: "idle", source: null, files: [], scanController: null, scanId: null,
-    buildController: null, archive: null, objectUrl: null, scopeChosen: false, lastOutcome: ""
+    buildController: null, archive: null, objectUrl: null, scopeChosen: false, lastOutcome: "",
+    view: "choose", reviewAvailable: false, daysEditor: false, renderMore: null, scannedSettings: ""
   };
 
   function selectedValue(name) {
@@ -62,29 +63,55 @@
     const hasArchive = Boolean(state.archive);
     const hasFiles = Boolean(state.files.length);
     const prefs = settings();
+    const choosing = state.view === "choose";
+    el("settings-form").hidden = !choosing;
+    el("review-panel").hidden = choosing;
+    el("edit-filters-button").disabled = busy;
+    el("review-button").hidden = !choosing || !state.reviewAvailable;
+    el("review-button").disabled = busy;
     el("settings-fieldset").disabled = busy;
     el("check-source-button").disabled = busy || !Number.isSafeInteger(sourceTabId);
     for (const input of document.querySelectorAll('input[name="scope"]')) input.disabled = !scopeAvailable(input.value);
-    el("scan-button").hidden = hasFiles || hasArchive;
+    el("scan-button").hidden = !choosing && (hasFiles || hasArchive);
     el("scan-button").disabled = busy || !scopeAvailable(prefs.scope) || !prefs.selectedTypes.length;
     el("scan-button").textContent = mode === "scan" ? "Scanning…" : mode === "check" ? "Checking source…" : "Scan files";
     el("cancel-scan-button").hidden = mode !== "scan";
-    el("download-button").hidden = !hasFiles || hasArchive;
+    el("download-button").hidden = choosing || !hasFiles || hasArchive;
     el("download-button").disabled = busy || !hasFiles || hasArchive;
     el("download-button").textContent = mode === "build" ? "Preparing…" : "Prepare ZIP";
-    el("save-button").hidden = !hasArchive;
+    el("save-button").hidden = choosing || !hasArchive;
     el("stop-button").hidden = mode !== "build";
-    el("clear-button").hidden = !hasArchive;
+    el("clear-button").hidden = choosing || !hasArchive;
     el("clear-button").disabled = busy;
     const routes = new Set(state.files.map(file => file.routeFolderName)).size;
     el("action-summary").textContent = mode === "scan" ? "Scanning · keep the source tab open"
       : mode === "build" ? "Preparing ZIP · keep this tab open"
+      : choosing && state.source && prefs.selectedTypes.length
+        ? state.reviewAvailable ? "Scan again, or return to your results" : "Choose dates and files, then scan"
       : mode === "idle" && state.lastOutcome ? state.lastOutcome
       : hasArchive ? `${state.archive.count} files · ${formatBytes(state.archive.bytes)} · ready to save`
       : hasFiles ? `${state.files.length} files · ${routes} ${routes === 1 ? "route" : "routes"} · ready to prepare`
       : !state.source ? "Open a device or route page to begin"
       : !prefs.selectedTypes.length ? "Choose at least one file type"
       : "Choose files, then scan";
+  }
+
+  function setView(view) {
+    if (view === "review" && !state.reviewAvailable) return;
+    state.view = view;
+    setMode(state.mode);
+    el("app").scrollTop = 0;
+    el(view === "choose" ? "choose-title" : "review-title").focus?.({ preventScroll: true });
+  }
+
+  function summarizeSelection(prefs, range) {
+    const basis = prefs.dateBasis === "recording" ? "Recorded" : "Uploaded";
+    const period = range.mode === "all" ? "All dates" : range.mode === "custom" ? "Custom range"
+      : Number(prefs.date.days) === 1 ? "Today" : `Last ${Number(prefs.date.days)} days`;
+    el("selection-title").textContent = prefs.scope === "current" ? "This route" : `${basis} · ${period}`;
+    el("selection-range").textContent = prefs.scope === "current" ? "All matching uploaded files on this route"
+      : range.mode === "all" ? "Includes routes with unknown dates" : `${range.fromDate} → ${range.toDate}`;
+    el("selection-files").textContent = `${prefs.scope === "listed" ? "Device routes · " : ""}${prefs.selectedTypes.join(" + ")}`;
   }
 
   function showDateRange(range) {
@@ -96,7 +123,12 @@
   function updateControls() {
     const prefs = settings();
     el("date-settings").hidden = prefs.scope !== "listed";
-    el("recent-settings").hidden = prefs.date.mode !== "recent";
+    const hasPresetDays = [1, 7, 30].includes(Number(prefs.date.days));
+    const daysVisible = prefs.date.mode === "recent" && (state.daysEditor || !hasPresetDays);
+    el("recent-settings").hidden = !daysVisible;
+    el("edit-days-button").setAttribute("aria-expanded", String(daysVisible));
+    el("scope-settings").hidden = !scopeAvailable("current") && scopeAvailable("listed");
+    el("scope-summary").hidden = !el("scope-settings").hidden;
     el("custom-settings").hidden = prefs.date.mode !== "custom";
     el("scope-help").textContent = prefs.scope === "current"
       ? "Include matching uploaded files from this route."
@@ -136,6 +168,10 @@
   function invalidateResults() {
     state.lastOutcome = "";
     state.files = [];
+    state.reviewAvailable = false;
+    state.renderMore = null;
+    state.view = "choose";
+    el("routes-disclosure").open = false;
     el("results-content").hidden = true;
     el("empty-results").hidden = false;
     el("scan-status").hidden = true;
@@ -218,58 +254,70 @@
     }
     el("route-count").textContent = `${groups.size} ${groups.size === 1 ? "route" : "routes"}`;
     el("scan-detail").textContent = detail;
-    const preview = document.createDocumentFragment();
-    for (const [routeName, routeFiles] of groups) {
-      const item = document.createElement("li");
-      const group = document.createElement("details");
-      group.className = "route-group";
-      const summary = document.createElement("summary");
-      const heading = document.createElement("span");
-      heading.className = "route-heading";
-      const name = document.createElement("span");
-      name.className = "route-name";
-      name.textContent = routeName;
-      const date = document.createElement("span");
-      date.className = "route-date";
-      const recorded = settings().dateBasis === "recording";
-      const routeDate = recorded ? routeFiles[0].recordingDate : routeFiles[0].uploadDate;
-      date.textContent = routeDate ? `${recorded ? "Recorded" : "Uploaded"} ${routeDate}`
-        : settings().scope === "current" ? "Current route"
-        : `${recorded ? "Recording" : "Upload"} date unavailable`;
-      heading.append(name, date);
-      const counts = document.createElement("span");
-      counts.className = "route-counts";
-      const typeCounts = FILE_TYPES.map(type => {
-        const count = routeFiles.filter(file => file.typeKey === type).length;
-        return count ? `${count} ${type}` : null;
-      }).filter(Boolean);
-      counts.textContent = typeCounts.length === 1 ? typeCounts[0] : `${routeFiles.length} files`;
-      summary.append(heading, counts);
-      group.append(summary);
-      // Only populate filenames when a route is expanded; every matched file is still archived.
-      let expanded = false;
-      group.addEventListener("toggle", () => {
-        if (!group.open || expanded) return;
-        expanded = true;
-        const types = document.createElement("p");
-        types.className = "route-types help";
-        types.textContent = typeCounts.join(" · ");
-        group.append(types);
-        const filenames = document.createElement("ul");
-        filenames.className = "route-files";
-        for (const file of routeFiles) {
-          const filename = document.createElement("li");
-          filename.textContent = `${file.typeFolderName} / ${file.name}`;
-          filenames.append(filename);
-        }
-        group.append(filenames);
-      });
-      item.append(group);
-      preview.append(item);
-    }
-    el("file-preview").replaceChildren(preview);
+    const entries = Array.from(groups);
+    let shown = 0;
+    el("file-preview").replaceChildren();
+    el("routes-label").textContent = `Review ${groups.size} ${groups.size === 1 ? "route" : "routes"}`;
+    el("routes-disclosure").hidden = !files.length;
+    el("routes-disclosure").open = false;
+    state.renderMore = () => {
+      const preview = document.createDocumentFragment();
+      for (const [routeName, routeFiles] of entries.slice(shown, shown + 10)) {
+        const item = document.createElement("li");
+        const group = document.createElement("details");
+        group.className = "route-group";
+        const summary = document.createElement("summary");
+        const heading = document.createElement("span");
+        heading.className = "route-heading";
+        const name = document.createElement("span");
+        name.className = "route-name";
+        name.textContent = routeName;
+        const date = document.createElement("span");
+        date.className = "route-date";
+        const recorded = settings().dateBasis === "recording";
+        const routeDate = recorded ? routeFiles[0].recordingDate : routeFiles[0].uploadDate;
+        date.textContent = routeDate ? `${recorded ? "Recorded" : "Uploaded"} ${routeDate}`
+          : settings().scope === "current" ? "Current route"
+          : `${recorded ? "Recording" : "Upload"} date unavailable`;
+        heading.append(date, name);
+        const counts = document.createElement("span");
+        counts.className = "route-counts";
+        const typeCounts = FILE_TYPES.map(type => {
+          const count = routeFiles.filter(file => file.typeKey === type).length;
+          return count ? `${count} ${type}` : null;
+        }).filter(Boolean);
+        counts.textContent = typeCounts.length === 1 ? typeCounts[0] : `${routeFiles.length} files`;
+        summary.append(heading, counts);
+        group.append(summary);
+        // Only populate filenames when a route is expanded; every matched file is still archived.
+        let expanded = false;
+        group.addEventListener("toggle", () => {
+          if (!group.open || expanded) return;
+          expanded = true;
+          const types = document.createElement("p");
+          types.className = "route-types help";
+          types.textContent = typeCounts.join(" · ");
+          group.append(types);
+          const filenames = document.createElement("ul");
+          filenames.className = "route-files";
+          for (const file of routeFiles) {
+            const filename = document.createElement("li");
+            filename.textContent = `${file.typeFolderName} / ${file.name}`;
+            filenames.append(filename);
+          }
+          group.append(filenames);
+        });
+        item.append(group);
+        preview.append(item);
+      }
+      el("file-preview").append(preview);
+      shown = Math.min(shown + 10, entries.length);
+      el("show-more-routes-button").hidden = shown >= entries.length;
+      el("show-more-routes-button").textContent = `Show ${Math.min(10, entries.length - shown)} more routes`;
+      el("preview-note").textContent = `${shown} of ${entries.length} routes shown. All matching files are included in the ZIP.`;
+    };
+    state.renderMore();
     el("file-preview").hidden = !files.length;
-    el("preview-note").textContent = "Expand a route to see its filenames. All matching files are included.";
     el("preview-note").hidden = !files.length;
     el("scan-hint").textContent = files.length ? "Grouped by route" : "No matches";
   }
@@ -295,7 +343,11 @@
     state.scanController = controller;
     state.scanId = scanId;
     const expectedUrl = state.source.url;
+    summarizeSelection(prefs, filter);
+    state.scannedSettings = JSON.stringify(prefs);
+    state.reviewAvailable = true;
     setMode("scan");
+    setView("review");
     el("empty-results").hidden = true;
     el("scan-progress").hidden = false;
     el("scan-progress").removeAttribute("value");
@@ -364,6 +416,8 @@
     const controller = new AbortController();
     state.buildController = controller;
     setMode("build");
+    setView("review");
+    el("routes-disclosure").open = false;
     el("transfer-card").hidden = false;
     el("storage-fallback").hidden = true;
     el("transfer-progress").hidden = false;
@@ -402,7 +456,8 @@
       el("storage-fallback").hidden = archive.storage !== "memory";
       el("transfer-progress").value = state.files.length;
       transferStatus("ZIP ready to save");
-      el("transfer-detail").textContent = `${archive.count} files · ${formatBytes(archive.bytes)}. Tap Save ZIP, then confirm it in Firefox’s Downloads screen.`;
+      el("transfer-detail").textContent = `${archive.count} files · ${formatBytes(archive.bytes)}`;
+      el("save-note").textContent = "Tap Save ZIP, then confirm the save in Firefox Downloads.";
     } catch (error) {
       state.lastOutcome = controller.signal.aborted ? "Preparation cancelled" : "ZIP could not be prepared";
       transferStatus(state.lastOutcome, !controller.signal.aborted);
@@ -441,6 +496,11 @@
   }
 
   function settingsChanged() {
+    // Tapping an already-selected preset must not destroy a prepared archive.
+    if (state.reviewAvailable && JSON.stringify(settings()) === state.scannedSettings) {
+      updateControls();
+      return;
+    }
     invalidateResults();
     updateControls();
     void browser.storage.local.set({ [PREF_KEY]: settings() }).catch(() => showNotice("Your choices could not be saved. This scan can still continue."));
@@ -450,13 +510,19 @@
   el("settings-form").addEventListener("change", event => {
     if (state.mode !== "idle") return;
     if (event.target.name === "scope") state.scopeChosen = true;
-    if (event.target.id === "date-days") setRadio("date-mode", "recent");
+    if (event.target.id === "date-days") {
+      state.daysEditor = true;
+      setRadio("date-mode", "recent");
+    }
     if (["date-from", "date-to"].includes(event.target.id)) setRadio("date-mode", "custom");
     settingsChanged();
   });
   el("settings-form").addEventListener("input", event => {
     if (state.mode !== "idle") return;
-    if (event.target.id === "date-days") setRadio("date-mode", "recent");
+    if (event.target.id === "date-days") {
+      state.daysEditor = true;
+      setRadio("date-mode", "recent");
+    }
     else if (["date-from", "date-to"].includes(event.target.id)) setRadio("date-mode", "custom");
     else return;
     settingsChanged();
@@ -464,6 +530,7 @@
   for (const preset of ["1", "7", "30", "all", "custom"]) {
     el(`date-preset-${preset}`).addEventListener("click", () => {
       if (state.mode !== "idle") return;
+      state.daysEditor = false;
       if (preset === "all" || preset === "custom") {
         setRadio("date-mode", preset);
         if (preset === "custom" && (!el("date-from").value || !el("date-to").value)) {
@@ -478,6 +545,23 @@
       settingsChanged();
     });
   }
+  el("edit-days-button").addEventListener("click", () => {
+    if (state.mode !== "idle") return;
+    state.daysEditor = true;
+    const wasRecent = settings().date.mode === "recent";
+    setRadio("date-mode", "recent");
+    // Merely revealing the existing day count does not change the selection.
+    if (wasRecent) updateControls();
+    else settingsChanged();
+    el("date-days").focus?.();
+  });
+  el("edit-filters-button").addEventListener("click", () => {
+    if (state.mode === "idle") setView("choose");
+  });
+  el("review-button").addEventListener("click", () => {
+    if (state.mode === "idle") setView("review");
+  });
+  el("show-more-routes-button").addEventListener("click", () => state.renderMore?.());
   el("check-source-button").addEventListener("click", () => void checkSource());
   el("scan-button").addEventListener("click", () => {
     el("cancel-scan-button").disabled = false;
@@ -503,7 +587,7 @@
   });
   el("save-button").addEventListener("click", () => {
     transferStatus("ZIP sent to Firefox for saving");
-    el("save-note").textContent = "Check Firefox’s Downloads screen to confirm the ZIP was saved. If nothing appeared, tap Save ZIP again. This tab cannot confirm that the download finished.";
+    el("save-note").textContent = "Check Firefox Downloads to confirm the save. This tab cannot confirm completion; you can tap Save ZIP again.";
   });
   el("source-link").addEventListener("click", event => {
     if (!state.source || !Number.isSafeInteger(sourceTabId)) return;

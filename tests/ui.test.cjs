@@ -117,18 +117,33 @@ function harness({ source = snapshot({ files: [file()] }), sourceTab = "42", rea
   });
   vm.runInContext(script, context, { filename: "downloads.js" });
   const el = id => document.getElementById(id);
-  const click = id => el(id).dispatchEvent(new window.Event("click", { bubbles: true, cancelable: true }));
+  const dispatchClick = id => el(id).dispatchEvent(new window.Event("click", { bubbles: true, cancelable: true }));
+  function openSettings() {
+    if (el("settings-form").hidden) dispatchClick("edit-filters-button");
+    assert.equal(el("settings-form").hidden, false, "settings interactions require the choose screen");
+  }
+  function click(id) {
+    if (id.startsWith("date-preset-") || id === "edit-days-button") openSettings();
+    return dispatchClick(id);
+  }
   function choose(name, value, checked = true) {
+    openSettings();
     const input = document.querySelector(`input[name="${name}"][value="${value}"]`);
+    const disclosure = input.closest("details");
+    if (disclosure) disclosure.open = true;
     input.checked = checked;
     input.dispatchEvent(new window.Event("change", { bubbles: true }));
   }
   function input(id, value) {
+    openSettings();
+    if (id === "date-days" && el("recent-settings").hidden) dispatchClick("edit-days-button");
+    if ((id === "date-from" || id === "date-to") && el("custom-settings").hidden) dispatchClick("date-preset-custom");
     el(id).value = value;
     el(id).dispatchEvent(new window.Event("input", { bubbles: true }));
   }
   async function ready() { await until(() => el("source-indicator").classList.contains("connected") || el("source-title").textContent === "Source page unavailable", "initial source check"); }
   async function scan() {
+    if (el("scan-button").hidden) openSettings();
     click("scan-button");
     await until(() => el("cancel-scan-button").hidden, "scan completion");
   }
@@ -174,6 +189,126 @@ test("missing source tab shows recovery instructions and prevents scanning", asy
   assert.match(ui.el("page-notice").textContent, /Open a device or route page/);
   assert.equal(ui.el("scan-button").disabled, true);
   assert.equal(ui.reads.length, 0);
+});
+
+test("choose screen hides the empty review and scanning opens review with a frozen selection summary", async () => {
+  const pending = deferred();
+  const item = route("11111111--aaa", TODAY);
+  let routeReadStarted = false;
+  const ui = harness({ read(message) {
+    if (!message.url || message.url === SOURCE) return snapshot({ routes: [item], pageKind: "device" });
+    routeReadStarted = true;
+    return pending.promise;
+  } });
+  await ui.ready();
+  assert.equal(ui.el("settings-form").hidden, false);
+  assert.equal(ui.el("review-panel").hidden, true);
+  assert.equal(ui.el("review-button").hidden, true);
+  assert.equal(ui.el("recent-settings").hidden, true, "a standard preset does not need a second days input");
+  ui.document.querySelector("main").scrollTop = 160;
+  ui.click("scan-button");
+  assert.equal(ui.el("settings-form").hidden, true);
+  assert.equal(ui.el("review-panel").hidden, false);
+  assert.equal(ui.document.querySelector("main").scrollTop, 0);
+  assert.equal(ui.el("edit-filters-button").disabled, true, "an active scan must not be edited");
+  assert.match(ui.el("selection-summary").textContent, /Device routes/i);
+  assert.match(ui.el("selection-summary").textContent, /Uploaded/i);
+  assert.match(ui.el("selection-summary").textContent, /2026-09-08/);
+  assert.match(ui.el("selection-summary").textContent, /2026-09-14/);
+  assert.match(ui.el("selection-summary").textContent, /rlog/);
+  await until(() => routeReadStarted);
+  ui.setNow(new Date(2026, 8, 15, 0, 0, 1));
+  pending.resolve(snapshot({ url: item.url, files: [file("0", "rlog", item.key)] }));
+  await until(() => ui.el("cancel-scan-button").hidden);
+  assert.equal(ui.el("edit-filters-button").disabled, false);
+  assert.match(ui.el("selection-summary").textContent, /2026-09-08/);
+  assert.match(ui.el("selection-summary").textContent, /2026-09-14/);
+  assert.doesNotMatch(ui.el("selection-summary").textContent, /2026-09-15/, "review must describe the scan's exact dates after midnight");
+});
+
+test("Edit and Back to results preserve files and a prepared ZIP until a setting changes", async () => {
+  const ui = listedHarness([route("11111111--aaa", TODAY)]);
+  await ui.ready();
+  await ui.scan();
+  ui.click("download-button");
+  await until(() => !ui.el("save-button").hidden);
+  const href = ui.el("save-button").href;
+  const previousReads = ui.reads.length;
+  ui.document.querySelector("main").scrollTop = 240;
+  ui.click("edit-filters-button");
+  assert.equal(ui.el("settings-form").hidden, false);
+  assert.equal(ui.el("review-panel").hidden, true);
+  assert.equal(ui.document.querySelector("main").scrollTop, 0);
+  assert.equal(ui.el("scan-button").hidden, false, "choose screen can start a fresh scan without changing a setting");
+  assert.equal(ui.el("scan-button").disabled, false);
+  assert.equal(ui.el("review-button").hidden, false);
+  assert.equal(ui.el("save-button").hidden, true);
+  assert.equal(ui.el("save-button").href, href);
+  assert.equal(ui.revoked.length, 0);
+  assert.equal(ui.disposed.length, 0);
+  assert.equal(ui.el("date-preset-7").getAttribute("aria-pressed"), "true");
+  ui.click("date-preset-7");
+  assert.equal(ui.el("save-button").href, href, "reselecting the current preset preserves the prepared ZIP");
+  assert.equal(ui.el("review-button").hidden, false);
+  assert.equal(ui.revoked.length, 0);
+  assert.equal(ui.disposed.length, 0);
+  ui.click("review-button");
+  assert.equal(ui.el("settings-form").hidden, true);
+  assert.equal(ui.el("review-panel").hidden, false);
+  assert.equal(ui.el("save-button").hidden, false);
+  assert.equal(ui.el("save-button").href, href);
+  assert.equal(ui.reads.length, previousReads, "returning to review does not reread routes");
+  assert.equal(ui.builds.length, 1, "returning to review does not rebuild the ZIP");
+  ui.click("edit-filters-button");
+  ui.choose("file-type", "qlog");
+  await until(() => ui.disposed.length === 1);
+  assert.deepEqual(ui.revoked, [href]);
+  assert.equal(ui.el("save-button").hasAttribute("href"), false);
+  assert.equal(ui.el("download-button").disabled, true);
+  assert.equal(ui.el("review-button").hidden, true, "changed settings cannot return to stale results");
+});
+
+test("preset days stay compact and the explicit days editor supports arbitrary ranges", async () => {
+  const ui = listedHarness([route("11111111--aaa", TODAY)]);
+  await ui.ready();
+  for (const days of [1, 7, 30]) {
+    ui.click(`date-preset-${days}`);
+    assert.equal(ui.el("recent-settings").hidden, true);
+    assert.equal(ui.el("custom-settings").hidden, true);
+    assert.equal(ui.el(`date-preset-${days}`).getAttribute("aria-pressed"), "true");
+  }
+  ui.click("date-preset-custom");
+  assert.equal(ui.el("custom-settings").hidden, false);
+  ui.click("edit-days-button");
+  assert.equal(selectedMode(ui), "recent");
+  assert.equal(ui.el("recent-settings").hidden, false);
+  assert.equal(ui.el("custom-settings").hidden, true);
+  ui.input("date-days", "9");
+  assert.match(ui.el("date-summary").textContent, /2026-09-06/);
+  assert.match(ui.el("date-summary").textContent, /2026-09-14/);
+  ui.click("date-preset-7");
+  assert.equal(ui.el("recent-settings").hidden, true, "choosing a preset closes the optional editor again");
+});
+
+test("saved arbitrary days reopen their editor and saved custom dates reopen only their fields", async () => {
+  const recent = listedHarness([route("11111111--aaa", TODAY)], {
+    preferences: { dateBasis: "upload", date: { mode: "recent", days: "19" } }
+  });
+  await recent.ready();
+  assert.equal(selectedMode(recent), "recent");
+  assert.equal(recent.el("date-days").value, "19");
+  assert.equal(recent.el("recent-settings").hidden, false);
+  assert.equal(recent.el("custom-settings").hidden, true);
+  assert.match(recent.el("date-summary").textContent, /2026-08-27/);
+  const custom = listedHarness([route("11111111--aaa", TODAY)], {
+    preferences: { dateBasis: "upload", date: { mode: "custom", from: "2026-09-10", to: "2026-09-12" } }
+  });
+  await custom.ready();
+  assert.equal(selectedMode(custom), "custom");
+  assert.equal(custom.el("recent-settings").hidden, true);
+  assert.equal(custom.el("custom-settings").hidden, false);
+  assert.equal(custom.el("date-from").value, "2026-09-10");
+  assert.equal(custom.el("date-to").value, "2026-09-12");
 });
 
 test("Last 7 uses seven inclusive upload dates, shows the exact range, and selects the preset", async () => {
@@ -467,6 +602,7 @@ test("results group files by route and the sticky bar exposes only the next prim
   await ui.scan();
   assert.deepEqual(primary(), ["download-button"]);
   assert.equal(ui.el("file-count").textContent, "4");
+  assert.equal(ui.el("routes-disclosure").hasAttribute("open"), false, "route details should not consume review space until requested");
   const groups = ui.el("file-preview").querySelectorAll("details.route-group");
   assert.equal(groups.length, 2);
   for (const [index, group] of Array.from(groups).entries()) {
@@ -480,6 +616,38 @@ test("results group files by route and the sticky bar exposes only the next prim
   assert.deepEqual(primary(), ["save-button"]);
 });
 
+test("route details reveal ten at a time while the ZIP still includes every selected route", async () => {
+  const routes = Array.from({ length: 25 }, (_, index) => route(`${String(index + 1).padStart(8, "0")}--abc`, TODAY));
+  const ui = listedHarness(routes);
+  await ui.ready();
+  await ui.scan();
+  assert.equal(ui.el("file-count").textContent, "25");
+  assert.equal(ui.el("route-count").textContent, "25 routes");
+  const disclosure = ui.el("routes-disclosure");
+  assert.equal(disclosure.hidden, false);
+  assert.equal(disclosure.hasAttribute("open"), false);
+  disclosure.open = true;
+  disclosure.dispatchEvent(new ui.window.Event("toggle"));
+  const visibleGroups = () => Array.from(ui.el("file-preview").querySelectorAll("details.route-group"))
+    .filter(group => !group.hidden && !group.closest("li").hidden);
+  assert.equal(visibleGroups().length, 10);
+  assert.equal(ui.el("show-more-routes-button").hidden, false);
+  for (const group of visibleGroups()) {
+    const heading = group.querySelector(".route-heading");
+    assert.equal(heading.firstElementChild.className, "route-date", "the useful date precedes the route identifier");
+    assert.match(heading.firstElementChild.textContent, /2026-09-14/);
+  }
+  ui.click("show-more-routes-button");
+  assert.equal(visibleGroups().length, 20);
+  ui.click("show-more-routes-button");
+  assert.equal(visibleGroups().length, 25);
+  assert.equal(ui.el("show-more-routes-button").hidden, true);
+  ui.click("download-button");
+  await until(() => !ui.el("save-button").hidden);
+  assert.equal(ui.builds[0].files.length, 25, "progressive disclosure must never truncate archive contents");
+  assert.equal(new Set(ui.builds[0].files.map(item => item.routeFolderName)).size, 25);
+});
+
 test("qlog-only route reports no matching rlogs, then prepares selected qlogs", async () => {
   const ui = harness({ source: snapshot({ files: [file("0", "qlog"), file("1", "qlog")] }) });
   await ui.ready();
@@ -487,6 +655,12 @@ test("qlog-only route reports no matching rlogs, then prepares selected qlogs", 
   assert.equal(ui.el("file-count").textContent, "0");
   assert.match(ui.el("scan-detail").textContent, /Choose another file type/);
   assert.equal(ui.el("download-button").disabled, true);
+  assert.equal(ui.el("review-panel").hidden, false);
+  assert.equal(ui.el("settings-form").hidden, true);
+  assert.equal(ui.el("edit-filters-button").disabled, false);
+  assert.equal(ui.el("scan-button").hidden, false, "an empty result can be retried directly");
+  ui.click("edit-filters-button");
+  assert.equal(ui.el("settings-form").hidden, false);
   ui.choose("file-type", "rlog", false);
   ui.choose("file-type", "qlog");
   await ui.scan();
@@ -538,6 +712,10 @@ test("a failed route read discards earlier files and prevents partial preparatio
   await ui.ready();
   await ui.scan();
   assert.match(ui.el("scan-status").textContent, /503/);
+  assert.equal(ui.el("review-panel").hidden, false, "a failed scan stays on its visible status screen");
+  assert.equal(ui.el("settings-form").hidden, true);
+  assert.equal(ui.el("edit-filters-button").disabled, false);
+  assert.equal(ui.el("scan-button").hidden, false, "the review screen exposes a fresh retry after failure");
   assert.match(ui.el("action-summary").textContent, /scan failed/i);
   assert.doesNotMatch(ui.el("action-summary").textContent, /ready to prepare/i);
   assert.equal(ui.el("results-content").hidden, true);
@@ -574,6 +752,15 @@ test("scan cancellation ignores late files and a fresh scan can succeed", async 
   assert.doesNotMatch(ui.el("action-summary").textContent, /ready to prepare/i);
   assert.equal(ui.el("download-button").disabled, true);
   assert.ok(ui.reads.some(message => message.type === "comma:cancel-read"));
+  assert.equal(ui.el("review-panel").hidden, false);
+  assert.equal(ui.el("edit-filters-button").disabled, false);
+  assert.equal(ui.el("scan-button").hidden, false);
+  ui.click("edit-filters-button");
+  assert.equal(ui.el("settings-form").hidden, false);
+  assert.equal(ui.el("review-button").hidden, false, "a cancelled scan can still be reviewed without rerunning it");
+  ui.click("review-button");
+  assert.equal(ui.el("review-panel").hidden, false);
+  assert.match(ui.el("scan-status").textContent, /cancelled/);
   await ui.scan();
   assert.equal(ui.el("file-count").textContent, "1");
   assert.equal(ui.el("download-button").disabled, false);
@@ -680,10 +867,14 @@ test("Save ZIP remains reusable until explicit clearing and never claims downloa
   assert.equal(ui.revoked.length, 0);
   assert.match(ui.el("save-note").textContent, /cannot confirm/);
   ui.click("clear-button");
-  await until(() => ui.disposed.length === 1);
+  await until(() => ui.disposed.length === 1 && !ui.el("download-button").disabled, "ZIP cleanup completion");
   assert.deepEqual(ui.revoked, [href]);
   assert.equal(ui.el("save-button").hidden, true);
   assert.equal(ui.el("save-button").hasAttribute("href"), false);
+  assert.equal(ui.el("review-panel").hidden, false, "clearing a ZIP keeps the selected files in review");
+  assert.equal(ui.el("file-count").textContent, "1");
+  assert.equal(ui.el("download-button").hidden, false);
+  assert.equal(ui.el("download-button").disabled, false);
 });
 
 test("clearing temporary storage keeps scanning and preparation disabled until cleanup finishes", async () => {
