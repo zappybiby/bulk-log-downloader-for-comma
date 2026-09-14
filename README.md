@@ -1,16 +1,16 @@
 Unofficial Chrome extension for useradmin.comma.ai that downloads logs in bulk.
 
 A separate [Firefox Android prototype](firefox/README.md) is available in `firefox/`.
-Version 0.4 adds a compact choose → review → save flow, with expandable options
-and route details. It retains recording/upload date filters, four fresh parallel
+Version 0.4.1 removes repetitive helper text from the compact choose → review →
+save flow, with expandable options and route details. It retains recording/upload date filters, four fresh parallel
 page readers without a metadata cache, all six log/camera choices, and ZIP output.
 
-[Download unsigned v0.4.0 XPI](docs/downloads/comma-firefox-0.4.0-unsigned.xpi) ·
-[ZIP package](docs/downloads/comma-firefox-0.4.0-unsigned.zip) ·
+[Download unsigned v0.4.1 XPI](https://github.com/zappybiby/bulk-log-downloader-for-comma/releases/download/firefox-v0.4.1/comma-firefox-0.4.1-unsigned.xpi) ·
+[Release notes](https://github.com/zappybiby/bulk-log-downloader-for-comma/releases/tag/firefox-v0.4.1) ·
 [Compact UI and verification](docs/firefox-compact-ui.md) ·
 [Parallel reading](docs/firefox-parallel-reading.md)
 
-The XPI contains exactly the same tested files as the ZIP and is still unsigned.
+The XPI contains the tested Firefox extension files and is still unsigned.
 For local testing in Android Nightly, set `xpinstall.signatures.required` to
 `false` in `about:config`. In Settings → About Firefox Nightly, tap the logo five
 times, then return to Settings → Install Extension from File and select the XPI.
