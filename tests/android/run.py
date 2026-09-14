@@ -41,9 +41,9 @@ class Harness:
     def nodes(self):
         return list(ET.fromstring(self.device.dump_hierarchy()).iter('node'))
 
-    def find(self, pattern):
+    def find(self, pattern, nodes=None):
         regex = re.compile(pattern, re.I)
-        return next((node for node in self.nodes() if any(regex.search(node.get(key, ''))
+        return next((node for node in (self.nodes() if nodes is None else nodes) if any(regex.search(node.get(key, ''))
                      for key in ('text', 'content-desc', 'resource-id'))
                      and node.get('enabled') != 'false'), None)
 
@@ -56,11 +56,14 @@ class Harness:
 
     def click(self, pattern, timeout=15, scroll=False):
         until = time.monotonic() + timeout
-        while time.monotonic() < until:
+        while True:
             node = self.find(pattern)
             if node is not None:
                 self.tap(node)
                 return
+            # Inspect the result of the final swipe before declaring timeout.
+            if time.monotonic() >= until:
+                break
             # Android may show notification permission immediately after a ZIP
             # finishes, after pull_zip has already verified the saved file.
             if self.dismiss_prompts():
@@ -90,8 +93,11 @@ class Harness:
         raise TimeoutError(f'Timed out waiting for {text}')
 
     def dismiss_prompts(self):
-        if self.find(r'^Comma archive synthetic Android test was added$') is not None:
-            confirm = self.find(r'^OK$')
+        # One accessibility snapshot per pass: separate RPCs for every label
+        # made setup scrolls consume their deadline before the final lookup.
+        nodes = self.nodes()
+        if self.find(r'^Comma archive synthetic Android test was added$', nodes) is not None:
+            confirm = self.find(r'^OK$', nodes)
             if confirm is None:
                 return False
             self.snapshot('extension-installed-confirmation')
@@ -100,7 +106,7 @@ class Harness:
             return True
         # Firefox can restore its home screen after the install sheet even
         # though onInstalled already opened our extension tab (shown under Continue).
-        test_tab = self.find(r'^Archive Android self-test$') if self.waiting_for_test_tab else None
+        test_tab = self.find(r'^Archive Android self-test$', nodes) if self.waiting_for_test_tab else None
         if test_tab is not None:
             self.tap(test_tab)
             print('Opening the existing synthetic test tab from Firefox home', flush=True)
@@ -108,7 +114,7 @@ class Harness:
         for pattern in (r'^Not now$', r'^No Thanks$', r'^No$', r'^Skip$', r'^Maybe later$',
                         r'^Start browsing$', r'^Continue browsing$',
                         r'^Continue$', r'^Allow$', r'^Allow connection$', r'^Download$'):
-            node = self.find(pattern)
+            node = self.find(pattern, nodes)
             if node is not None:
                 self.tap(node)
                 time.sleep(0.3)
