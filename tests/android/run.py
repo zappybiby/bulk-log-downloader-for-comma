@@ -85,7 +85,8 @@ class Harness:
         raise TimeoutError(f'Timed out waiting for {text}')
 
     def dismiss_prompts(self):
-        for pattern in (r'^Not now$', r'^Skip$', r'^Maybe later$', r'^Start browsing$',
+        for pattern in (r'^Not now$', r'^No Thanks$', r'^No$', r'^Skip$', r'^Maybe later$',
+                        r'^Start browsing$', r'^Continue browsing$',
                         r'^Continue$', r'^Allow$', r'^Allow connection$', r'^Download$'):
             node = self.find(pattern)
             if node is not None:
