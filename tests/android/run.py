@@ -112,6 +112,16 @@ class Harness:
             self.tap(test_tab)
             print('Opening the existing synthetic test tab from Firefox home', flush=True)
             return True
+        # Firefox can place its save dialog above Android's delayed notification
+        # permission sheet while both remain in the accessibility tree. Confirm
+        # the visible save dialog first; tapping the occluded Allow button would
+        # repeatedly hit the filename field instead and never start the download.
+        if self.find(r'^Download file\?', nodes) is not None:
+            download = self.find(r'^Download$', nodes)
+            if download is not None:
+                self.tap(download)
+                time.sleep(0.3)
+                return True
         for pattern in (r'^Not now$', r'^No Thanks$', r'^No$', r'^Skip$', r'^Maybe later$',
                         r'^Start browsing$', r'^Continue browsing$',
                         r'^Continue$', r'^Allow$', r'^Allow connection$', r'^Download$'):
@@ -152,8 +162,27 @@ class Harness:
                 time.sleep(1)
         self.snapshot('nightly-first-launch')
         self.click(r'(^Menu$|More options|menuButton|menu_button)')
-        self.click(r'^Settings$', scroll=True)
-        self.click(r'Remote debugging via USB', timeout=25, scroll=True)
+        # The opening menu animates after its nodes first appear. A tap using
+        # those early bounds can miss Settings; confirm the screen transition
+        # before scrolling for a setting that is absent from the main menu.
+        until = time.monotonic() + 20
+        settings_open = False
+        while time.monotonic() < until:
+            nodes = self.nodes()
+            settings = self.find(r'^Settings$', nodes)
+            menu = self.find(r'^Close menu$', nodes)
+            if settings is not None and menu is None:
+                settings_open = True
+                break
+            if settings is not None:
+                self.tap(settings)
+            elif menu is not None:
+                self.device.swipe_ext('up', scale=0.5)
+            time.sleep(0.7)
+        if not settings_open:
+            self.snapshot('settings-navigation-failed')
+            raise RuntimeError('Firefox did not navigate from its menu to Settings')
+        self.click(r'Remote debugging via USB', timeout=45, scroll=True)
         self.snapshot('remote-debugging-enabled')
         print('Firefox remote debugging enabled through Settings', flush=True)
         self.device.press('back')

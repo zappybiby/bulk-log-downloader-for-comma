@@ -13,7 +13,7 @@
   const sourceTabId = sourceParam && /^\d+$/.test(sourceParam) ? Number(sourceParam) : null;
   const state = {
     mode: "idle", source: null, files: [], scanController: null, scanId: null,
-    buildController: null, archive: null, objectUrl: null, scopeChosen: false
+    buildController: null, archive: null, objectUrl: null, scopeChosen: false, lastOutcome: ""
   };
 
   function selectedValue(name) {
@@ -80,6 +80,7 @@
     const routes = new Set(state.files.map(file => file.routeFolderName)).size;
     el("action-summary").textContent = mode === "scan" ? "Scanning · keep the source tab open"
       : mode === "build" ? "Preparing ZIP · keep this tab open"
+      : mode === "idle" && state.lastOutcome ? state.lastOutcome
       : hasArchive ? `${state.archive.count} files · ${formatBytes(state.archive.bytes)} · ready to save`
       : hasFiles ? `${state.files.length} files · ${routes} ${routes === 1 ? "route" : "routes"} · ready to prepare`
       : !state.source ? "Open a device or route page to begin"
@@ -126,6 +127,7 @@
   }
 
   function invalidateResults() {
+    state.lastOutcome = "";
     state.files = [];
     el("results-content").hidden = true;
     el("empty-results").hidden = false;
@@ -360,6 +362,7 @@
       showResults(files, detail);
       scanStatus(`Scan complete · ${pagesRead} ${pagesRead === 1 ? "page" : "pages"} checked`);
     } catch (error) {
+      state.lastOutcome = controller.signal.aborted ? "Scan cancelled" : "Scan failed · review the details";
       state.files = [];
       el("results-content").hidden = true;
       el("scan-status").textContent = controller.signal.aborted
@@ -393,6 +396,7 @@
 
   async function prepareZip() {
     if (state.mode !== "idle" || !state.files.length || state.archive) return;
+    state.lastOutcome = "";
     showNotice("");
     const controller = new AbortController();
     state.buildController = controller;
@@ -437,7 +441,8 @@
       transferStatus("ZIP ready to save");
       el("transfer-detail").textContent = `${archive.count} files · ${formatBytes(archive.bytes)}. Tap Save ZIP, then confirm it in Firefox’s Downloads screen.`;
     } catch (error) {
-      transferStatus(controller.signal.aborted ? "Preparation cancelled" : "ZIP could not be prepared", !controller.signal.aborted);
+      state.lastOutcome = controller.signal.aborted ? "Preparation cancelled" : "ZIP could not be prepared";
+      transferStatus(state.lastOutcome, !controller.signal.aborted);
       el("transfer-detail").textContent = controller.signal.aborted
         ? "No partial ZIP was kept. You can prepare the selected files again."
         : `${errorMessage(error, "Please try again.")} No partial ZIP is offered. If this batch is too large, choose fewer dates, a single route, or qlog only.`;

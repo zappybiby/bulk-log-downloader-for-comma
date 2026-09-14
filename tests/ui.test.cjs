@@ -416,21 +416,32 @@ test("listed routes follow pagination, deduplicate files, and apply custom dates
 
 test("a failed route read discards earlier files and prevents partial preparation", async () => {
   const one = route("11111111--aaa"), two = route("22222222--bbb");
+  let failRouteRead = true;
   const ui = harness({
     preferences: { scope: "listed", date: { mode: "all" } },
     read(message) {
       if (!message.url) return snapshot({ routes: [one, two], pageKind: "device" });
       if (message.url === one.url) return snapshot({ url: one.url, files: [file()] });
-      return { error: "Page read failed (HTTP 503)." };
+      return failRouteRead ? { error: "Page read failed (HTTP 503)." }
+        : snapshot({ url: two.url, files: [file("0", "rlog", two.key)] });
     }
   });
   await ui.ready();
   await ui.scan();
   assert.match(ui.el("scan-status").textContent, /503/);
+  assert.match(ui.el("action-summary").textContent, /scan failed/i);
+  assert.doesNotMatch(ui.el("action-summary").textContent, /ready to prepare/i);
   assert.equal(ui.el("results-content").hidden, true);
   assert.equal(ui.el("download-button").disabled, true);
   ui.click("download-button");
   assert.equal(ui.builds.length, 0);
+  failRouteRead = false;
+  ui.click("scan-button");
+  assert.match(ui.el("action-summary").textContent, /scanning/i);
+  assert.doesNotMatch(ui.el("action-summary").textContent, /failed/i);
+  await until(() => ui.el("cancel-scan-button").hidden);
+  assert.equal(ui.el("file-count").textContent, "2");
+  assert.match(ui.el("action-summary").textContent, /ready to prepare/i);
 });
 
 test("scan cancellation ignores late files and a fresh scan can succeed", async () => {
@@ -450,11 +461,96 @@ test("scan cancellation ignores late files and a fresh scan can succeed", async 
   pending.resolve(snapshot({ files: [file()] }));
   await until(() => ui.el("cancel-scan-button").hidden);
   assert.match(ui.el("scan-status").textContent, /cancelled/);
+  assert.match(ui.el("action-summary").textContent, /scan cancelled/i);
+  assert.doesNotMatch(ui.el("action-summary").textContent, /ready to prepare/i);
   assert.equal(ui.el("download-button").disabled, true);
   assert.ok(ui.reads.some(message => message.type === "comma:cancel-read"));
   await ui.scan();
   assert.equal(ui.el("file-count").textContent, "1");
   assert.equal(ui.el("download-button").disabled, false);
+  assert.match(ui.el("action-summary").textContent, /ready to prepare/i);
+  assert.doesNotMatch(ui.el("action-summary").textContent, /cancelled/i);
+});
+
+for (const failure of [
+  { label: "HTTP 503", error: new Error("File request failed (HTTP 503)."), detail: /503/ },
+  { label: "storage quota", error: new DOMException("Temporary storage quota exceeded.", "QuotaExceededError"), detail: /quota/i }
+]) {
+  test(`${failure.label} preparation failure stays visible in the footer until a new build starts`, async () => {
+    const retriedArchive = deferred();
+    let attempts = 0;
+    const ui = harness({ build: async () => {
+      attempts += 1;
+      if (attempts === 1) throw failure.error;
+      return retriedArchive.promise;
+    } });
+    await ui.ready();
+    await ui.scan();
+    ui.click("download-button");
+    await until(() => ui.builds.length === 1 && !ui.el("download-button").disabled, "failed ZIP preparation");
+    assert.match(ui.el("transfer-detail").textContent, failure.detail);
+    assert.match(ui.el("action-summary").textContent, /ZIP could not be prepared/);
+    assert.doesNotMatch(ui.el("action-summary").textContent, /ready to prepare/i);
+    assert.equal(ui.el("save-button").hidden, true);
+    assert.equal(ui.el("save-button").hasAttribute("href"), false);
+    await new Promise(resolve => setImmediate(resolve));
+    assert.match(ui.el("action-summary").textContent, /ZIP could not be prepared/, "idle updates must retain the failure");
+    ui.click("download-button");
+    await until(() => ui.builds.length === 2, "retry starts");
+    assert.match(ui.el("action-summary").textContent, /preparing ZIP/i);
+    assert.doesNotMatch(ui.el("action-summary").textContent, /could not|failed/i);
+    retriedArchive.resolve({
+      blob: new Blob(["retry archive"]), count: 1, filename: "retry.zip", bytes: 13,
+      storage: "opfs", async dispose() {}
+    });
+    await until(() => !ui.el("save-button").hidden, "retry creates an archive");
+    assert.match(ui.el("action-summary").textContent, /ready to save/i);
+    assert.doesNotMatch(ui.el("action-summary").textContent, /could not|failed/i);
+  });
+}
+
+test("changing file choices clears a quota failure before rescanning the new selection", async () => {
+  const ui = harness({
+    source: snapshot({ files: [file("0", "rlog"), file("0", "qlog")] }),
+    build: async () => { throw new DOMException("Temporary storage quota exceeded.", "QuotaExceededError"); }
+  });
+  await ui.ready();
+  await ui.scan();
+  ui.click("download-button");
+  await until(() => ui.builds.length === 1 && !ui.el("download-button").disabled);
+  assert.match(ui.el("action-summary").textContent, /could not be prepared/);
+  ui.choose("file-type", "qlog");
+  ui.choose("file-type", "rlog", false);
+  assert.doesNotMatch(ui.el("action-summary").textContent, /could not|failed|quota/i);
+  assert.equal(ui.el("transfer-card").hidden, true);
+  assert.equal(ui.el("download-button").disabled, true);
+  await ui.scan();
+  assert.equal(ui.el("file-count").textContent, "1");
+  assert.match(ui.el("action-summary").textContent, /ready to prepare/i);
+  assert.deepEqual(Array.from(ui.reads.at(-1).selectedTypes), ["qlog"]);
+});
+
+test("cancelled preparation remains visible in the footer until the source is refreshed", async () => {
+  const ui = harness({ build: async (files, options) => new Promise((resolve, reject) => {
+    options.signal.addEventListener("abort", () => reject(new DOMException("Preparation cancelled.", "AbortError")), { once: true });
+  }) });
+  await ui.ready();
+  await ui.scan();
+  ui.click("download-button");
+  await until(() => ui.builds.length === 1, "preparation begins");
+  ui.click("stop-button");
+  await until(() => !ui.el("download-button").disabled, "preparation cancellation");
+  assert.equal(ui.builds[0].options.signal.aborted, true);
+  assert.match(ui.el("action-summary").textContent, /preparation cancelled/i);
+  assert.doesNotMatch(ui.el("action-summary").textContent, /ready to prepare/i);
+  assert.equal(ui.el("save-button").hidden, true);
+  assert.equal(ui.el("save-button").hasAttribute("href"), false);
+  const previousReads = ui.reads.length;
+  ui.click("check-source-button");
+  await until(() => ui.reads.length > previousReads && !ui.el("scan-button").disabled, "source refresh");
+  assert.doesNotMatch(ui.el("action-summary").textContent, /cancelled/i);
+  assert.equal(ui.el("transfer-card").hidden, true);
+  assert.equal(ui.el("download-button").disabled, true);
 });
 
 test("Save ZIP remains reusable until explicit clearing and never claims download completion", async () => {
