@@ -260,13 +260,15 @@
     el("routes-label").textContent = `Review ${groups.size} ${groups.size === 1 ? "route" : "routes"}`;
     el("routes-disclosure").hidden = !files.length;
     el("routes-disclosure").open = false;
-    state.renderMore = () => {
+    state.renderMore = (moveFocus = false) => {
       const preview = document.createDocumentFragment();
+      let firstSummary;
       for (const [routeName, routeFiles] of entries.slice(shown, shown + 10)) {
         const item = document.createElement("li");
         const group = document.createElement("details");
         group.className = "route-group";
         const summary = document.createElement("summary");
+        firstSummary ||= summary;
         const heading = document.createElement("span");
         heading.className = "route-heading";
         const name = document.createElement("span");
@@ -315,6 +317,7 @@
       el("show-more-routes-button").hidden = shown >= entries.length;
       el("show-more-routes-button").textContent = `Show ${Math.min(10, entries.length - shown)} more routes`;
       el("preview-note").textContent = `${shown} of ${entries.length} routes shown. All matching files are included in the ZIP.`;
+      if (moveFocus) firstSummary?.focus();
     };
     state.renderMore();
     el("file-preview").hidden = !files.length;
@@ -561,7 +564,7 @@
   el("review-button").addEventListener("click", () => {
     if (state.mode === "idle") setView("review");
   });
-  el("show-more-routes-button").addEventListener("click", () => state.renderMore?.());
+  el("show-more-routes-button").addEventListener("click", () => state.renderMore?.(true));
   el("check-source-button").addEventListener("click", () => void checkSource());
   el("scan-button").addEventListener("click", () => {
     el("cancel-scan-button").disabled = false;

@@ -616,7 +616,7 @@ test("results group files by route and the sticky bar exposes only the next prim
   assert.deepEqual(primary(), ["save-button"]);
 });
 
-test("route details reveal ten at a time while the ZIP still includes every selected route", async () => {
+test("route details reveal ten at a time while the ZIP still includes every selected route", async t => {
   const routes = Array.from({ length: 25 }, (_, index) => route(`${String(index + 1).padStart(8, "0")}--abc`, TODAY));
   const ui = listedHarness(routes);
   await ui.ready();
@@ -637,10 +637,14 @@ test("route details reveal ten at a time while the ZIP still includes every sele
     assert.equal(heading.firstElementChild.className, "route-date", "the useful date precedes the route identifier");
     assert.match(heading.firstElementChild.textContent, /2026-09-14/);
   }
+  const focused = [];
+  t.mock.method(ui.window.HTMLElement.prototype, "focus", function () { focused.push(this); });
   ui.click("show-more-routes-button");
   assert.equal(visibleGroups().length, 20);
+  assert.equal(focused.at(-1), visibleGroups()[10].querySelector("summary"), "focus continues at the first newly revealed route");
   ui.click("show-more-routes-button");
   assert.equal(visibleGroups().length, 25);
+  assert.equal(focused.at(-1), visibleGroups()[20].querySelector("summary"), "the final batch retains focus when Show more disappears");
   assert.equal(ui.el("show-more-routes-button").hidden, true);
   ui.click("download-button");
   await until(() => !ui.el("save-button").hidden);

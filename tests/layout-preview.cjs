@@ -40,8 +40,18 @@ function recordCheck(condition, description, row) {
 async function geometry(page) {
   return page.evaluate(() => {
     const app = document.querySelector('.app');
-    const visible = n => n && getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden'
-      && n.getClientRects().length > 0 && !n.closest('[hidden]') && !n.classList.contains('visually-hidden');
+    const visible = n => {
+      if (!n || getComputedStyle(n).display === 'none' || getComputedStyle(n).visibility === 'hidden'
+        || !n.getClientRects().length || n.closest('[hidden]') || n.classList.contains('visually-hidden')) return false;
+      // Chromium may retain boxes for unpainted descendants of closed details.
+      // Only the direct summary and its descendants are exposed in that state.
+      for (let ancestor = n.parentElement; ancestor; ancestor = ancestor.parentElement) {
+        if (ancestor.tagName !== 'DETAILS' || ancestor.open) continue;
+        const summary = [...ancestor.children].find(child => child.tagName === 'SUMMARY');
+        if (!summary?.contains(n)) return false;
+      }
+      return true;
+    };
     const rect = n => {
       if (!visible(n)) return null;
       const r = n.getBoundingClientRect();
