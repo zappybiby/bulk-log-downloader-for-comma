@@ -61,6 +61,10 @@ class Harness:
             if node is not None:
                 self.tap(node)
                 return
+            # Android may show notification permission immediately after a ZIP
+            # finishes, after pull_zip has already verified the saved file.
+            if self.dismiss_prompts():
+                continue
             if scroll:
                 self.device.swipe_ext('up', scale=0.65)
             time.sleep(0.5)
@@ -87,8 +91,11 @@ class Harness:
 
     def dismiss_prompts(self):
         if self.find(r'^Comma archive synthetic Android test was added$') is not None:
+            confirm = self.find(r'^OK$')
+            if confirm is None:
+                return False
             self.snapshot('extension-installed-confirmation')
-            self.click(r'^OK$')
+            self.tap(confirm)
             print('Dismissed Firefox temporary-extension install confirmation', flush=True)
             return True
         # Firefox can restore its home screen after the install sheet even
