@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "Comma Bulk Logs for Firefox",
+  "version": "0.4.1",
+  "description": "Filter comma logs by recording or upload date, scan routes in parallel, and save selected files together in a ZIP.",
+  "permissions": ["storage", "https://useradmin.comma.ai/*", "https://commadata2.blob.core.windows.net/*"],
+  "background": { "scripts": ["background.js"], "persistent": false },
+  "browser_action": { "default_title": "Open Bulk Logs", "default_icon": "icons/icon48.png" },
+  "icons": { "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "content_scripts": [{ "matches": ["https://useradmin.comma.ai/*"], "js": ["parser.js", "bridge.js"], "run_at": "document_idle" }],
+  "options_ui": { "page": "downloads.html", "open_in_tab": true },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "comma-bulk-logs-android@zappybiby",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": { "required": ["none"] }
+    },
+    "gecko_android": { "strict_min_version": "142.0" }
+  }
+}
