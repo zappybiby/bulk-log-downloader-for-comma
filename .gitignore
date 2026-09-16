@@ -1,7 +1,7 @@
 # Build output
 dist/
 *.zip
-!docs/downloads/comma-firefox-0.2.0-unsigned.zip
+*.xpi
 
 # Local captures and debugging exports
 page_*_html.txt
