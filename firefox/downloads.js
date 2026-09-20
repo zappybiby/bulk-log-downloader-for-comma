@@ -3,7 +3,6 @@
   "use strict";
 
   const FILE_TYPES = ["rlog", "qlog", "qcamera", "fcamera", "ecamera", "dcamera"];
-  const MAX_BYTES = 256 * 1024 * 1024;
   const PREF_KEY = "firefoxPreferences";
   const elements = Object.fromEntries(Array.from(document.querySelectorAll("[id]"), element => [element.id, element]));
   const el = id => elements[id];
@@ -12,6 +11,7 @@
   const state = {
     mode: "idle", source: null, files: [], scanController: null, scanId: null,
     buildController: null, archive: null, objectUrl: null, scopeChosen: false, lastOutcome: "",
+    filesDone: 0, part: 1, archiveName: "", saveRequested: false,
     view: "choose", reviewAvailable: false, daysEditor: false, renderMore: null, scannedSettings: ""
   };
 
@@ -78,11 +78,20 @@
     el("cancel-scan-button").hidden = mode !== "scan";
     el("download-button").hidden = choosing || !hasFiles || hasArchive;
     el("download-button").disabled = busy || !hasFiles || hasArchive;
-    el("download-button").textContent = mode === "build" ? "Preparing…" : "Prepare ZIP";
+    el("download-button").textContent = mode === "build" ? "Preparing…"
+      : state.part > 1 ? `Retry ZIP part ${state.part}` : "Prepare ZIP";
     el("save-button").hidden = choosing || !hasArchive;
+    el("save-button").textContent = hasArchive && (state.part > 1 || state.archive.count < state.files.length)
+      ? `Save ZIP part ${state.part}` : "Save ZIP";
+    el("next-button").hidden = choosing || !hasArchive || !state.saveRequested
+      || state.filesDone + state.archive.count >= state.files.length;
+    el("next-button").disabled = busy;
+    el("next-button").textContent = `Saved — prepare part ${state.part + 1}`;
     el("stop-button").hidden = mode !== "build";
     el("clear-button").hidden = choosing || !hasArchive;
     el("clear-button").disabled = busy;
+    el("clear-button").textContent = state.part > 1 || (hasArchive && state.archive.count < state.files.length)
+      ? "Start over" : "Clear ZIP";
     const routes = new Set(state.files.map(file => file.routeFolderName)).size;
     el("action-summary").textContent = mode === "scan" ? "Scanning…"
       : mode === "build" ? "Preparing ZIP…"
@@ -158,14 +167,23 @@
     state.archive = null;
     if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
     state.objectUrl = null;
+    state.saveRequested = false;
     el("save-button").hidden = true;
     el("save-button").removeAttribute("href");
     el("clear-button").hidden = true;
+    el("next-button").hidden = true;
     if (previous) await previous.dispose();
   }
 
-  function invalidateResults() {
+  function resetParts() {
+    state.filesDone = 0;
+    state.part = 1;
+    state.archiveName = "";
     state.lastOutcome = "";
+  }
+
+  function invalidateResults() {
+    resetParts();
     state.files = [];
     state.reviewAvailable = false;
     state.renderMore = null;
@@ -368,7 +386,7 @@
         }
       });
       const { files, undatedRoutes } = result;
-      let detail = files.length ? ""
+      let detail = files.length ? "Large downloads are split into ZIPs when needed. Save each part before preparing the next."
         : prefs.scope === "current" ? "No matching files. Try another file type."
         : "No matching files. Try other dates or file types.";
       if (undatedRoutes) detail += `${detail ? " " : ""}${undatedRoutes} ${undatedRoutes === 1 ? "route" : "routes"} skipped · ${prefs.dateBasis === "recording" ? "recording" : "upload"} date unavailable`;
@@ -423,18 +441,19 @@
     el("transfer-card").hidden = false;
     el("storage-fallback").hidden = true;
     el("transfer-progress").hidden = false;
-    el("transfer-progress").value = 0;
+    el("transfer-progress").value = state.filesDone;
     el("transfer-progress").max = state.files.length;
     el("transfer-detail").textContent = "";
-    transferStatus("Preparing ZIP…");
+    transferStatus(state.part > 1 ? `Preparing ZIP part ${state.part}…` : "Preparing ZIP…");
     try {
       await discardArchive();
-      const archive = await CommaArchive.build(state.files, {
-        signal: controller.signal, maxBytes: MAX_BYTES,
+      if (!state.archiveName) state.archiveName = `comma-logs-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+      const archive = await CommaArchive.build(state.files.slice(state.filesDone), {
+        signal: controller.signal,
         onProgress(progress) {
           if (controller.signal.aborted || state.buildController !== controller) return;
-          const done = Number(progress.filesDone) || 0;
-          const total = Number(progress.filesTotal) || state.files.length;
+          const done = state.filesDone + (Number(progress.filesDone) || 0);
+          const total = state.files.length;
           el("transfer-progress").max = total;
           el("transfer-progress").value = done;
           transferStatus(`${done} of ${total} files prepared`);
@@ -448,21 +467,28 @@
         throw new DOMException("Preparation cancelled.", "AbortError");
       }
       state.archive = archive;
+      const prepared = state.filesDone + archive.count;
+      const multipart = state.part > 1 || prepared < state.files.length;
+      archive.filename = `${state.archiveName}${multipart ? `-part-${String(state.part).padStart(3, "0")}` : ""}.zip`;
       state.objectUrl = URL.createObjectURL(archive.blob);
       el("save-button").href = state.objectUrl;
       el("save-button").download = archive.filename;
       el("save-button").hidden = false;
       el("clear-button").hidden = false;
       el("storage-fallback").hidden = archive.storage !== "memory";
-      el("transfer-progress").value = state.files.length;
-      transferStatus("ZIP ready to save");
-      el("transfer-detail").textContent = `${archive.count} files · ${formatBytes(archive.bytes)}`;
+      el("transfer-progress").value = prepared;
+      transferStatus(multipart ? `ZIP part ${state.part} ready to save` : "ZIP ready to save");
+      el("transfer-detail").textContent = `${archive.count} files · ${formatBytes(archive.bytes)}`
+        + (prepared < state.files.length ? ` · ${state.files.length - prepared} files remain. Save this ZIP to continue.`
+          : multipart ? " · Final part. All files have been prepared." : "");
     } catch (error) {
+      await discardArchive().catch(() => {});
       state.lastOutcome = controller.signal.aborted ? "Preparation cancelled" : "ZIP could not be prepared";
       transferStatus(state.lastOutcome, !controller.signal.aborted);
       el("transfer-detail").textContent = controller.signal.aborted
         ? ""
         : errorMessage(error, "Please try again.");
+      if (state.part > 1) el("transfer-detail").textContent += ` Retry to continue at part ${state.part}; earlier parts do not need to be prepared again.`;
       el("transfer-progress").hidden = true;
     } finally {
       if (state.buildController === controller) {
@@ -470,6 +496,24 @@
         setMode("idle");
       }
     }
+  }
+
+  async function prepareNextZip() {
+    if (state.mode !== "idle" || !state.archive || !state.saveRequested
+        || state.filesDone + state.archive.count >= state.files.length) return;
+    const count = state.archive.count;
+    setMode("clear");
+    try {
+      await discardArchive();
+    } catch {
+      setMode("idle");
+      showNotice("The ZIP could not be cleared from temporary storage. Close this tab before trying again.", true);
+      return;
+    }
+    state.filesDone += count;
+    state.part++;
+    setMode("idle");
+    await prepareZip();
   }
 
   async function restorePreferences() {
@@ -568,6 +612,7 @@
   });
   el("cancel-scan-button").addEventListener("click", cancelScan);
   el("download-button").addEventListener("click", () => void prepareZip());
+  el("next-button").addEventListener("click", () => void prepareNextZip());
   el("stop-button").addEventListener("click", () => {
     state.buildController?.abort();
     transferStatus("Cancelling preparation…");
@@ -578,6 +623,7 @@
     setMode("clear");
     el("transfer-card").hidden = true;
     void discardArchive().then(() => {
+      resetParts();
       setMode("idle");
     }).catch(() => {
       setMode("idle");
@@ -585,7 +631,14 @@
     });
   });
   el("save-button").addEventListener("click", () => {
-    transferStatus("Save requested");
+    if (!state.archive) return;
+    state.saveRequested = true;
+    transferStatus(state.part > 1 || state.archive.count < state.files.length
+      ? `Save requested for ZIP part ${state.part}` : "Save requested");
+    if (state.filesDone + state.archive.count < state.files.length) {
+      el("transfer-detail").textContent = "Wait for Firefox to finish saving, then prepare the next part. You can tap Save again if needed.";
+    }
+    setMode(state.mode);
   });
   el("source-link").addEventListener("click", event => {
     if (!state.source || !Number.isSafeInteger(sourceTabId)) return;

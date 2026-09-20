@@ -3,10 +3,11 @@
   "use strict";
 
   const MiB = 1024 * 1024;
-  const DEFAULT_MAX_BYTES = 256 * MiB;
-  const HARD_MAX_BYTES = 512 * MiB;
-  const MEMORY_MAX_BYTES = 32 * MiB;
   const ZIP32_MAX = 0xffffffff;
+  // ZIP64 is not supported. Keep sizes below its reserved 32-bit sentinel.
+  const HARD_MAX_BYTES = ZIP32_MAX - 1;
+  const DEFAULT_MAX_BYTES = HARD_MAX_BYTES;
+  const MEMORY_MAX_BYTES = 32 * MiB;
   const UTF8_DESCRIPTOR_FLAGS = 0x0808;
   const encoder = new TextEncoder();
   const crcTable = Uint32Array.from({ length: 256 }, (_, index) => {
@@ -61,30 +62,25 @@
       && !/^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(part));
   }
 
-  function validateFiles(files, maxBytes) {
+  function validateFiles(files) {
     if (!Array.isArray(files) || files.length === 0) throw new ArchiveError("Choose at least one log file.", "EMPTY_INPUT");
-    if (files.length > 65535) throw new ArchiveError("A ZIP batch can contain at most 65,535 files.", "ENTRY_LIMIT");
     const paths = new Set();
-    let overhead = 22;
-    const entries = files.map(file => {
+    return files.map(file => {
       if (!file || !allowedDownloadUrl(file.url)) throw new ArchiveError("A file has an unsupported download address.", "UNSUPPORTED_URL");
       if (!validatePath(file.targetPath)) throw new ArchiveError("A file has an unsafe archive path.", "UNSAFE_PATH");
       const nameLength = encoder.encode(file.targetPath).length;
       if (nameLength > 65535) throw new ArchiveError("An archive path is too long.", "UNSAFE_PATH");
       if (paths.has(file.targetPath)) throw new ArchiveError("The selection contains a duplicate archive path.", "DUPLICATE_PATH");
       paths.add(file.targetPath);
-      overhead += 92 + 2 * nameLength;
-      if (overhead > maxBytes) throw sizeError("opfs", maxBytes);
       // Encode names for output only after the effective storage cap is known.
       return { url: file.url, targetPath: file.targetPath };
     });
-    return { entries, overhead };
   }
 
   function sizeLimit(value) {
     const limit = value === undefined ? DEFAULT_MAX_BYTES : value;
     if (!Number.isSafeInteger(limit) || limit < 1 || limit > HARD_MAX_BYTES) {
-      throw new ArchiveError("Choose a batch size between 1 byte and 512 MiB.", "INVALID_LIMIT");
+      throw new ArchiveError("Choose a ZIP size between 1 byte and just under 4 GiB.", "INVALID_LIMIT");
     }
     return limit;
   }
@@ -100,8 +96,8 @@
   function sizeError(storage, maxBytes) {
     const amount = maxBytes >= MiB ? `${Math.floor(maxBytes / MiB)} MiB` : `${maxBytes} bytes`;
     return new ArchiveError(storage === "memory"
-      ? `This browser is using memory storage. Select fewer files to keep the ZIP under ${amount}.`
-      : `This ZIP exceeds the ${amount} batch limit. Select fewer files.`, "SIZE_LIMIT");
+      ? `A single file cannot fit in this browser's ${amount} memory ZIP limit. Download that file directly from the source page.`
+      : `A single file cannot fit in the ${amount} ZIP limit. Download that file directly from the source page.`, "SIZE_LIMIT");
   }
 
   function record(length, signature) {
@@ -155,6 +151,16 @@
           }
         }
         size += bytes.length;
+      },
+      async truncate(length) {
+        const fullChunks = Math.floor(length / chunkSize);
+        const remainder = length % chunkSize;
+        const tail = fullChunks < chunks.length ? chunks[fullChunks] : pending;
+        pending = new Uint8Array(chunkSize);
+        if (remainder) pending.set(tail.subarray(0, remainder));
+        chunks.length = fullChunks;
+        used = remainder;
+        size = length;
       },
       async finish() {
         if (used) chunks.push(pending.subarray(0, used));
@@ -210,6 +216,10 @@
         storage: "opfs",
         maxBytes,
         async write(bytes) { await writer.write(bytes); },
+        async truncate(length) {
+          await writer.truncate(length);
+          await writer.seek(length);
+        },
         async finish() {
           await writer.close();
           writer = null;
@@ -257,10 +267,12 @@
     });
   }
 
+  // Build one complete ZIP. If count is smaller than files.length, resume with
+  // files.slice(count) after saving and disposing this part.
   async function build(files, options = {}) {
     checkAbort(options.signal);
     const maxBytes = sizeLimit(options.maxBytes);
-    const { entries, overhead } = validateFiles(files, maxBytes);
+    const entries = validateFiles(files);
     const headerTimeoutMs = timeout(options.headerTimeoutMs, 45000);
     const idleTimeoutMs = timeout(options.idleTimeoutMs, 90000);
     const fetchFile = options.fetchFile || ((url, settings) => root.fetch(url, {
@@ -272,6 +284,7 @@
     let bytesReceived = 0;
     let filesDone = 0;
     let currentFile = "";
+    let overhead = 22;
     const central = [];
     const date = zipDate(new Date());
     const progress = () => options.onProgress?.({
@@ -290,10 +303,15 @@
 
     try {
       progress();
-      if (overhead > sink.maxBytes) throw sizeError(sink.storage, sink.maxBytes);
       for (const file of entries) {
         checkAbort(options.signal);
         file.name = encoder.encode(file.targetPath);
+        const fileOverhead = 92 + 2 * file.name.length;
+        if (central.length === 65534 || bytesReceived + overhead + fileOverhead > sink.maxBytes) {
+          if (filesDone) break;
+          throw sizeError(sink.storage, sink.maxBytes);
+        }
+        overhead += fileOverhead;
         currentFile = file.targetPath;
         progress();
         const start = offset;
@@ -311,6 +329,7 @@
         let size = 0;
         let crc = 0xffffffff;
         let bodyComplete = false;
+        let partFull = false;
         try {
           let response;
           try {
@@ -348,6 +367,9 @@
             bytesReceived += value.length;
             progress();
           }
+        } catch (error) {
+          if (error?.code !== "SIZE_LIMIT" || !filesDone || options.signal?.aborted) throw error;
+          partFull = true;
         } finally {
           options.signal?.removeEventListener("abort", cancelFile);
           if (!bodyComplete) {
@@ -356,6 +378,17 @@
             try { Promise.resolve(reader?.cancel()).catch(() => {}); } catch { /* Reader already closed. */ }
           }
           try { reader?.releaseLock(); } catch { /* An adapter may still have a pending read. */ }
+        }
+        if (partFull) {
+          // Unknown or inaccurate Content-Length can fill a part mid-file.
+          // Remove that entry entirely; the next part retries the whole file.
+          try { await sink.truncate(start); } catch (error) {
+            throw safeError(error, "Could not finish this ZIP part. Please try again.", "STORAGE_FAILED", options.signal);
+          }
+          offset = start;
+          bytesReceived -= size;
+          overhead -= fileOverhead;
+          break;
         }
         crc = (crc ^ 0xffffffff) >>> 0;
         const descriptor = record(16, 0x08074b50);
@@ -378,7 +411,7 @@
         await write(file.name);
       }
       const end = record(22, 0x06054b50);
-      put16(end, 8, entries.length); put16(end, 10, entries.length);
+      put16(end, 8, filesDone); put16(end, 10, filesDone);
       put32(end, 12, offset - centralStart); put32(end, 16, centralStart);
       await write(end);
       let blob;
