@@ -90,7 +90,7 @@
         <p id="transfer-status" class="transfer-status" role="status"></p>
         <progress id="transfer-progress" value="0" max="1" aria-label="ZIP preparation progress"></progress>
         <p id="transfer-detail" class="help"></p>
-        <p id="storage-fallback" class="notice" hidden>ZIP limit: 32 MiB</p>
+        <p id="storage-fallback" class="notice" hidden>This browser uses smaller ZIP parts (up to 32 MiB).</p>
       </section>
       <section id="results-section" class="results-section" aria-labelledby="results-title">
         <h2 id="results-title" class="visually-hidden">Matching files</h2><span id="scan-hint" hidden></span>
@@ -116,6 +116,7 @@
         <button id="scan-button" class="button primary" type="button" disabled>Scan files</button>
         <button id="download-button" class="button primary" type="button" disabled hidden>Prepare ZIP</button>
         <a id="save-button" class="button primary" download hidden>Save ZIP</a>
+        <button id="next-button" class="button secondary" type="button" hidden>Saved — prepare next part</button>
         <button id="review-button" class="button secondary" type="button" hidden>Back to results</button>
         <button id="cancel-scan-button" class="button secondary" type="button" hidden>Stop</button>
         <button id="stop-button" class="button secondary" type="button" hidden>Cancel</button>
