@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Comma Bulk Logs for Firefox",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Filter comma logs by recording or upload date, scan routes in parallel, and save selected files together in a ZIP.",
   "permissions": ["storage", "https://useradmin.comma.ai/*", "https://commadata2.blob.core.windows.net/*"],
   "background": { "scripts": ["background.js"], "persistent": false },
