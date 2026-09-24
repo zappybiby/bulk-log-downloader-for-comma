@@ -115,14 +115,32 @@
     return -1;
   }
 
+  function routeTables(doc) {
+    const tables = new Set(doc.querySelectorAll("#table_routes"));
+    // Preserved routes are a separate (possibly collapsed) section. Identify it
+    // by its displayed summary rather than depending on its table's generated ID.
+    for (const summary of doc.querySelectorAll("details > summary")) {
+      const label = (summary.textContent || "").trim().replace(/\s+/g, " ");
+      if (!/^preserved routes\s*\(\d+\)$/i.test(label)) continue;
+      const section = summary.parentElement;
+      for (const table of section.querySelectorAll("table")) {
+        if (table.closest("details") === section && !table.parentElement.closest("table")) tables.add(table);
+      }
+    }
+    return Array.from(tables);
+  }
+
   function collectRouteLinks(doc, baseUrl) {
     const routes = [];
     const seen = new Set();
     const columns = new Map();
     // Device pages also contain route links in crash/event tables. Those are
-    // unrelated to the visible route list and must not enter a bulk download.
-    const scope = doc.querySelector("#table_routes") || doc;
-    for (const link of scope.querySelectorAll('a[href*="onebox="]')) {
+    // unrelated to the regular/preserved route lists and must not enter a bulk download.
+    const tables = routeTables(doc);
+    const links = tables.length ? tables.flatMap(table =>
+      Array.from(table.querySelectorAll('a[href*="onebox="]')).filter(link => link.closest("table") === table))
+      : doc.querySelectorAll('a[href*="onebox="]');
+    for (const link of links) {
       const name = (link.textContent || "").trim();
       const url = allowedUrl(link.getAttribute("href"), PAGE_ORIGIN, baseUrl);
       if (!isRouteName(name) || !url) continue;
@@ -295,7 +313,7 @@
       throw new Error("Sign in to useradmin in the source tab, then choose it again.");
     }
     const routes = collectRouteLinks(doc, url);
-    const isDevice = Boolean(doc.querySelector("#table_routes"));
+    const isDevice = routeTables(doc).length > 0;
     const hasRouteQuery = isRouteName(new URL(url).searchParams.get("onebox") || "");
     let isRoute = Boolean(hasRouteQuery && doc.querySelector("table"));
     if (!isDevice && !isRoute) {
