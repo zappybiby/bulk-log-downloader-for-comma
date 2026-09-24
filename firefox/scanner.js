@@ -134,8 +134,8 @@
         }
         routes.add(key);
         if (dateBasis === "upload") {
-          if (!dateMatches(route.uploadDate, { mode: "custom", fromDate: null, toDate: null })) undatedRoutes += 1;
           if (!dateMatches(route.uploadDate, filter)) {
+            if (!dateMatches(route.uploadDate, { mode: "custom", fromDate: null, toDate: null })) undatedRoutes += 1;
             filteredRoutes += 1;
             continue;
           }
@@ -161,8 +161,10 @@
       const recordingDate = dateMatches(page.recordingDate, { mode: "custom", fromDate: null, toDate: null })
         ? page.recordingDate : null;
       if (dateBasis === "recording") {
-        if (recordingDate === null) undatedRoutes += 1;
         if (!dateMatches(recordingDate, filter)) {
+          // Count only routes actually skipped: All dates and This route also
+          // include files whose recording date is unavailable.
+          if (recordingDate === null) undatedRoutes += 1;
           filteredRoutes += 1;
           return;
         }

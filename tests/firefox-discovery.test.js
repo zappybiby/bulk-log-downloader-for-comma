@@ -59,6 +59,19 @@ test("recognizes a device with only a collapsed preserved route section", () => 
   assert.deepEqual(page.routes.map(route => route.key), [key(3)]);
 });
 
+test("accepts the live preserved-table ID with spaces and pipe queries with slash labels", () => {
+  const preservedRow = row(3).replace(encodeURIComponent(routeName(3)), encodeURIComponent(key(3)));
+  const html = section("preserved routes (1)", preservedRow, "table_preserved routes")
+    + section("routes (1)", row(0), "table_routes");
+  const page = Parser.snapshot(document(html), sourceUrl, ["rlog"]);
+  assert.equal(page.pageKind, "device");
+  assert.equal(page.routes.length, 2);
+  const preserved = page.routes.find(route => route.key === key(3));
+  assert.ok(preserved);
+  assert.equal(new URL(preserved.url).searchParams.get("onebox"), key(3));
+  assert.equal(preserved.uploadDate, "2026-09-24");
+});
+
 test("deduplicates preserved/regular route links and normalizes separators", () => {
   const html = section("preserved routes (1)", row(3))
     + section("routes (2)", row(3, "2026-09-24 12:00:00", "|") + row(0), "table_routes");
